@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Database</title>
+
+    <!--    Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+            crossorigin="anonymous"></script>
+
+    <!--    Main-->
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
+    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+
+    <style th:inline="text">
+
+        body {
+            background-image: url([[@{ '/img/bg/database_bg' + ${pageSize} + '.png' }]]);
+        }
+
+        .page-20 {
+            height: 157vh
+        }
+
+        .page-40 {
+            height: 271.5vh
+        }
+
+        .page-60 {
+            height: 386.5vh
+        }
+
+    </style>
+
+</head>
+<body class="text-center">
+
+<div th:include="fragments/header :: header"></div>
+
+<main class="main-background pt-4" th:classappend="${'page-' + pageSize}">
+    <form th:action="@{/api/pokemons/get/all}">
+        <input class="hidden" th:name="sortBy" th:value="${sortBy}" id="sortBy">
+        <input class="hidden" th:name="sortDir" th:value="${sortDir}" id="sortDir">
+        <input class="hidden" th:name="pageNum" th:value="${pageNum}" id="pageNum">
+        <h2 class="pt-2 pb-3">
+            Pokemon database
+        </h2>
+        <div class="container">
+            <div class="row justify-content-center align-items-center mt-2 mb-4">
+                <div class="col-md-2">
+                    <label>
+                        Pokemons on page
+                    </label>
+                </div>
+                <div class="col-md-1 px-0">
+                    <select class="form-select mx-0" th:name="pageSize" onchange="this.form.submit()">
+                        <option th:selected="${pageSize == 20}" value="20">
+                            20
+                        </option>
+                        <option th:selected="${pageSize == 40}" th:disabled="${totalElements <= 20}" value="40">
+                            40
+                        </option>
+                        <option th:selected="${pageSize == 60}" th:disabled="${totalElements <= 40}" value="60">
+                            60
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-4 d-flex">
+                    <input type="text" class="form-control input-200" placeholder="Pokemon name"
+                           aria-label="Pokemon name" th:name="matchBy" th:value="${matchBy}">
+                    <button class="btn btn-100 mx-2" id="btn-search" type="submit"
+                            onclick="clearElementId('sortBy'); clearElementId('sortDir'); clearElementId('pageNum');
+                                     setElementId('sortBy', 'name'); setElementId('sortDir', 'ASC')">
+                        Search
+                    </button>
+                </div>
+            </div>
+            <table class="table table-light table-rounded">
+                <thead>
+                <tr>
+                    <th scope="col" class="th-large" style="width: 16.3%">
+                        <div class="btn-group col">
+                            # &nbsp
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'id') && (sortDir == 'ASC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'id'); setElementId('sortDir', 'ASC')">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'id') && (sortDir == 'DESC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'id'); setElementId('sortDir', 'DESC')">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </div>
+                    </th>
+                    <th scope="col" style="width: 20.5%">
+                        <div class="btn-group col">
+                            Name &nbsp
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'name') && (sortDir == 'ASC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'name'); setElementId('sortDir', 'ASC')">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'name') && (sortDir == 'DESC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'name'); setElementId('sortDir', 'DESC')">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </div>
+                    </th>
+                    <th scope="col" style="width: 21.8%">
+                        <div class="btn-group col">
+                            Types &nbsp
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'types') && (sortDir == 'ASC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'types'); setElementId('sortDir', 'ASC')">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'types') && (sortDir == 'DESC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'types'); setElementId('sortDir', 'DESC')">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </div>
+                    </th>
+                    <th scope="col" style="width: 23.2%">
+                        Evolution &nbsp
+                    </th>
+                    <th scope="col" style="width: 18.2%">
+                        <div class="btn-group col">
+                            Likes &nbsp
+                            <button class="btn-sort" type="submit" th:classappend=
+                                    "${(sortBy == 'numberOfLikes') && (sortDir == 'ASC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'numberOfLikes'); setElementId('sortDir', 'ASC')">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                            <button class="btn-sort" type="submit" th:classappend
+                                    ="${(sortBy == 'numberOfLikes') && (sortDir == 'DESC') ? 'btn-sort-marked' : ''}"
+                                    onclick="setElementId('sortBy', 'numberOfLikes'); setElementId('sortDir', 'DESC')">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="tr-custom" th:each="pokemon: ${pokemons}" style="cursor: pointer"
+                    th:data-pokemonId="${pokemon.id}"
+                    onclick="getPokemonWithId(this.getAttribute('data-pokemonId'));">
+                    <th scope="row" th:text="${pokemon.id}"></th>
+                    <td th:text="${pokemon.name}"></td>
+                    <td th:text="${pokemon.typeNames}"></td>
+                    <td th:text="${T(pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler)
+                    .getShortenedPokemonEvolutions(pokemon.possibleEvolutions)}"></td>
+                    <td th:text="${pokemon.numberOfLikes}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+                <li class="page-item" th:classappend="${pageNum == 0 ? 'disabled' : ''}">
+                    <button class="page-link" type="submit"
+                            th:data-previousPage="${pageNum - 1}"
+                            onclick="setElementId('pageNum', this.getAttribute('data-previousPage'));">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </button>
+                </li>
+                <li class="page-item" th:classappend="${pageNum == i ? 'active' : ''}"
+                    th:each="i : ${#numbers.sequence(pageLeftLimit, pageRightLimit, 1)}">
+                    <button class="page-link" type="submit" th:text="${i}"
+                            th:data-currentPage="${i}"
+                            onclick="setElementId('pageNum', this.getAttribute('data-currentPage'));">
+                    </button>
+                </li>
+                <li class="page-item" th:classappend="${pageNum == (allPages - 1) ? 'disabled' : ''}">
+                    <button class="page-link" type="submit"
+                            th:data-nextPage="${pageNum + 1}"
+                            onclick="setElementId('pageNum', this.getAttribute('data-nextPage'));">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </form>
+</main>
+
+<div th:include="fragments/footer :: footer"></div>
+
+</body>
+</html>

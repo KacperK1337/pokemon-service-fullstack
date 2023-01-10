@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+
+    <!--    Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+            crossorigin="anonymous"></script>
+
+    <!--    Main-->
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
+    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+
+    <style th:inline="text">
+
+        body {
+            background-image: url([[@{/img/bg/blank_bg.png}]]);
+        }
+
+        .main-background {
+            height: 79vh;
+        }
+
+    </style>
+
+</head>
+<body class="text-center">
+
+<div th:include="fragments/header :: header"></div>
+
+<main class="main-background">
+    <div class="container-fluid px-4 pt-5">
+        <h4 class="h-left-fade-08 mx-2 my-2" th:text="'Welcome ' + ${loggedUser.userName}"></h4>
+        <hr class="hr-short">
+        <p class="p-left-large mx-2 my-2"
+           th:text="${loggedUser.favouritePokemonName == null ?
+           'You don''t have favourite pokemon yet.' :
+            'Your current favourite pokemon is ' + loggedUser.favouritePokemonName + '.'}"></p>
+        <hr class="hr-short">
+        <div class="d-flex">
+            <a class="btn btn-md btn-200 mx-2 my-2" href="/account/update">
+                Change your password
+            </a>
+        </div>
+        <hr class="hr-short">
+        <div class="d-flex">
+            <a class="btn btn-md btn-200 mx-2 my-2" href="/account/delete">
+                Delete your account
+            </a>
+        </div>
+        <hr class="hr-short">
+    </div>
+</main>
+
+<div th:include="fragments/footer :: footer"></div>
+
+</body>
+</html>

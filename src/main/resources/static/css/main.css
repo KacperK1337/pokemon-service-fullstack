@@ -1,0 +1,259 @@
+/* Main */
+body {
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.main-background {
+    background: rgba(255, 255, 255, .6);
+    margin: auto;
+    width: 1000px;
+}
+
+/* Buttons */
+.btn {
+    background-color: rgb(147, 107, 227);
+    border-color: rgb(147, 107, 227);
+    color: white;
+    margin: auto;
+}
+
+.btn:hover {
+    background-color: darkviolet;
+    border-color: darkviolet;
+    color: white;
+}
+
+.btn-sort {
+    background-color: transparent;
+    border: 0;
+    font-size: medium;
+    width: 25px;
+    padding: 0;
+}
+
+.btn-sort:hover {
+    color: darkviolet;
+}
+
+.btn-sort-marked {
+    color: rgb(147, 107, 227) !important;
+}
+
+.btn-pokemon-fav {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+    background-color: rgb(180, 171, 208) !important;
+    border-color: rgb(180, 171, 208);
+    color: black;
+}
+
+.btn-100 {
+    width: 100px;
+}
+
+.btn-170 {
+    width: 170px;
+}
+
+.btn-200 {
+    width: 200px;
+}
+
+.btn-300 {
+    width: 300px;
+}
+
+/* Forms */
+.form-floating {
+    width: 300px;
+    margin: auto;
+}
+
+.form-sign-in {
+    width: 1000px;
+    height: 100%;
+}
+
+.form-control:focus {
+    border-color: rgb(172, 166, 255);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(148, 131, 255, 0.9);
+}
+
+.input-200 {
+    width: 200px;
+}
+
+/* Navigation */
+.dropdown-item {
+    background-color: transparent;
+    color: black !important;
+}
+
+.dropdown-item:hover {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.nav-item {
+    color: black;
+    font-size: large;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.nav-link, .nav-link:visited {
+    color: black !important;
+    font-size: large !important;
+}
+
+.nav-link:hover {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.page-link, .page-link:hover {
+    color: black !important;
+}
+
+.active .page-link {
+    color: white;
+    background-color: rgba(214, 209, 255, 0.9);
+    border-color: rgba(198, 194, 255, 0.9) !important;
+}
+
+.disabled .page-link {
+    color: rgb(143, 143, 143) !important;
+}
+
+.other-link {
+    color: rgba(0, 0, 0, 0.9);
+    text-decoration: none;
+}
+
+.other-link:hover {
+    color: rgb(147, 107, 227);
+}
+
+/* Tables */
+.table {
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align: middle;
+    width: 50vw;
+}
+
+.table-rounded thead th:first-child {
+    border-radius: 7px 0 0 0;
+}
+
+.table-rounded thead th:last-child {
+    border-radius: 0 7px 0 0;
+}
+
+.table-rounded tbody tr:last-child th:first-child {
+    border-radius: 0 0 0 7px;
+}
+
+.table-rounded tbody tr:last-child td:last-child {
+    border-radius: 0 0 7px 0;
+}
+
+.th-large {
+    font-size: large;
+}
+
+.tr-custom:hover {
+    background-color: rgba(214, 209, 255, 0.9) !important;
+    border: rgba(198, 194, 255, 0.9) !important;
+}
+
+.tr-custom:hover td {
+    background-color: transparent !important;
+}
+
+.tr-custom:hover th {
+    background-color: transparent !important;
+}
+
+/* Cards */
+.card-img-index {
+    height: 400px;
+    width: 400px;
+}
+
+.card-img-pokemon {
+    height: 30vw;
+    width: 30vw;
+    padding: 2px;
+    border-radius: 1%;
+}
+
+.card-pokemon {
+    height: 30vw;
+    width: 30vw;
+}
+
+.card-body-index {
+    height: 15vh;
+    background: rgb(246, 243, 255);
+}
+
+.card-body-pokemon {
+    height: 7vh;
+    background: rgb(246, 243, 255);
+}
+
+/* Text */
+.h-left-fade-08 {
+    text-align: left;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.h-left-fade-06 {
+    text-align: left;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.p-left {
+    text-align: left;
+}
+
+.p-left-large {
+    text-align: left;
+    font-size: large;
+}
+
+.hr-short {
+    width: 500px;
+}
+
+.lead {
+    font-weight: 500;
+}
+
+/* Images */
+.img-max {
+    height: 100%;
+    width: 100%;
+}
+
+/* Other */
+.hidden {
+    display: none;
+}
+
+.error {
+    color: rgba(255, 0, 0, 0.96);
+}
+
+.inline-left {
+    display: inline;
+    text-align: left;
+}
+
+.block-left {
+    display: block;
+    text-align: left;
+}
