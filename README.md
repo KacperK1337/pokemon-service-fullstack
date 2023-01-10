@@ -24,7 +24,7 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 ### Usage guide
 
-**Application works with PostgresSQL database. In order to run this app you need have Postgres client installed on your machine and provide some empty database in ***/src/main/resources/application.properties*** file.**
+**Application works with PostgresSQL database. In order to run this app you need to have Postgres client installed on your machine and provide some empty database url with username and password in ***/src/main/resources/application.properties*** file.**
 
 By default, initial data (905 pokemons and 1 superuser) can be entered into database with the help of ***DbDataLoadr*** class. This class reads pokemons and users data from text files located in static resources in ***/src/main/resources/static/db*** directory. When initial data has been loaded, the application can later work in update mode by changing property `spring.jpa.hibernate.ddl-auto=create-drop` to `spring.jpa.hibernate.ddl-auto=update` in ***/src/main/resources/application.properties*** file.
 
