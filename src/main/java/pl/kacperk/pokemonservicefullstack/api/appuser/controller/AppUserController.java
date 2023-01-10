@@ -63,10 +63,4 @@ public class AppUserController {
         return "account-update-success";
     }
 
-    @DeleteMapping("/delete")
-    public String deleteAppUser(@AuthenticationPrincipal AppUserDetails details) throws ServletException {
-        appUserService.deleteLoggedUser(details);
-        return "redirect:/logout";
-    }
-
 }

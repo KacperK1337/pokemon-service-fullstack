@@ -40,7 +40,7 @@ public class SecurityConfig {
                         "/api/pokemons/get/**", "/api/users/register",
                         //static
                         "/css/**", "/img/**", "/js/**").permitAll()
-                .requestMatchers("pokemon-favourite", "/account", "/account/update", "/account/delete").hasRole("USER")
+                .requestMatchers("pokemon-favourite", "/account", "/account/update").hasRole("USER")
                 .requestMatchers("/api/pokemons/like/*").hasAuthority("pokemons:like")
                 .anyRequest().authenticated()
 

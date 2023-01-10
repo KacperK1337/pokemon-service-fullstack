@@ -24,6 +24,4 @@ public interface AppUserService {
 
     void changeLoggedUserPassword(AppUserDetails details,
                                   AppUserPasswordChangeRequestDto passwordChangeRequestDto) throws ServletException;
-
-    void deleteLoggedUser(AppUserDetails details) throws ServletException;
 }

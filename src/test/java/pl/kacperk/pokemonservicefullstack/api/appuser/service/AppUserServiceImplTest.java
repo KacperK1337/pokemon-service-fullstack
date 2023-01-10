@@ -244,36 +244,4 @@ class AppUserServiceImplTest {
         verify(httpServletRequest, never()).logout();
     }
 
-    @Test
-    void deleteLoggedUser_userLoggedIn_userLoggedOutAndDeleted() throws ServletException {
-        // given
-        AppUserDetails testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testAppUser);
-        String detailsUsername = testDetails.getUsername();
-
-        given(appUserRepo.findByUserName(detailsUsername)).willReturn(Optional.of(testAppUser));
-
-        // when
-        underTest.deleteLoggedUser(testDetails);
-
-        // then
-        verify(httpServletRequest).logout();
-        ArgumentCaptor<AppUser> appUserArgumentCaptor = ArgumentCaptor.forClass(AppUser.class);
-        verify(appUserRepo).delete(appUserArgumentCaptor.capture());
-        AppUser capturedAppUser = appUserArgumentCaptor.getValue();
-
-        assertThat(capturedAppUser).isEqualTo(testAppUser);
-    }
-
-    @Test
-    void deleteLoggedUser_userNotLoggedIn_throwResponseStatusException() throws ServletException {
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.deleteLoggedUser(null))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasFieldOrPropertyWithValue("status", HttpStatus.UNAUTHORIZED)
-                .hasMessageContaining("User is not logged in");
-
-        verify(httpServletRequest, never()).logout();
-        verify(appUserRepo, never()).delete(any());
-    }
 }

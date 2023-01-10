@@ -111,32 +111,6 @@ class UrlControllerTest {
     }
 
     @Test
-    void getAccountDelete_withAnonymousUser_correctStatusAndRedirectedUrl() throws Exception {
-        // when
-        ResultActions resultActions = mockMvc.perform(get("/account/delete"));
-
-        // then
-        resultActions.andExpect(status().is3xxRedirection());
-        resultActions.andExpect(redirectedUrl("http://localhost/auth/login"));
-    }
-
-    @Test
-    void getAccountDelete_withLoggedUser_correctStatusAndView() throws Exception {
-        // given
-        MockHttpSession sessionWithLoggedUser =
-                TestUtils.getLoggedUserSession(controllerTestUser, controllerTestUserPassword, mockMvc);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(get("/account/delete")
-                .session(sessionWithLoggedUser)
-        );
-
-        // then
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("account-delete"));
-    }
-
-    @Test
     void getAccountUpdate_withAnonymousUser_correctStatusAndRedirectedUrl() throws Exception {
         // when
         ResultActions resultActions = mockMvc.perform(get("/account/update"));

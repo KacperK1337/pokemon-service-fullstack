@@ -25,11 +25,6 @@ public class UrlController {
         return "account";
     }
 
-    @GetMapping("/account/delete")
-    public String getAccountDelete() {
-        return "account-delete";
-    }
-
     @GetMapping("/account/update")
     public String getAccountUpdate(Model model) {
         AppUserPasswordChangeRequestDto passwordChangeRequestDto = new AppUserPasswordChangeRequestDto();

@@ -271,35 +271,4 @@ public class AppUserControllerTest {
         resultActions.andExpect(view().name("account-update"));
     }
 
-    @Test
-    void deleteAppUser_withAnonymousUser_correctStatusAndRedirectedUrl() throws Exception {
-        // when
-        ResultActions resultActions = mockMvc.perform(delete(requestMappingUrl + "/delete"));
-
-        // then
-        resultActions.andExpect(status().is3xxRedirection());
-        resultActions.andExpect(redirectedUrl("http://localhost/auth/login"));
-    }
-
-    @Test
-    void deleteAppUser_withLoggedUser_correctStatusAndRedirectedUrl() throws Exception {
-        // given
-        MockHttpSession sessionWithLoggedUser =
-                TestUtils.getLoggedUserSession(controllerTestUser, controllerTestUserPassword, mockMvc);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(delete(requestMappingUrl + "/delete")
-                .session(sessionWithLoggedUser)
-        );
-
-        // then
-        String firstDbAppUserName = controllerTestUser.getUserName();
-        assertThatThrownBy(() -> appUserService.getAppUserByName(firstDbAppUserName))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasFieldOrPropertyWithValue("status", HttpStatus.NOT_FOUND)
-                .hasMessageContaining(String.format("User with username %s not found", firstDbAppUserName));
-
-        resultActions.andExpect(status().is3xxRedirection());
-        resultActions.andExpect(redirectedUrl("/logout"));
-    }
 }

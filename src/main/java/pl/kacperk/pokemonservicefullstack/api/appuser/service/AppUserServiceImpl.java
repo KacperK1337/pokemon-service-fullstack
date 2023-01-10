@@ -93,17 +93,4 @@ public class AppUserServiceImpl implements AppUserService {
         httpServletRequest.logout();
     }
 
-    @Transactional
-    @Override
-    public void deleteLoggedUser(AppUserDetails details) throws ServletException {
-        AppUser loggedUser = getLoggedAppUser(details);
-        if (loggedUser == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "User is not logged in"
-            );
-        }
-        httpServletRequest.logout();
-        appUserRepo.delete(loggedUser);
-    }
-
 }
