@@ -8,10 +8,10 @@ Fullstack Spring webapp about pokemons where you can find pokemons, see their st
 
 ### General
 Application provides 3 major functionalities:
-  1. Pokemon database where anyone can search for pokemons and their stats
-  2. Adding pokemon as logged user and the ability to see which pokemons are the most liked among all users
-  3. Secured registration and logging to the website
-  
+1. Pokemon database where anyone can search for pokemons and their stats
+2. Adding pokemon as logged user and the ability to see which pokemons are the most liked among all users
+3. Secured registration and logging to the website
+
 Pokemon database has 905 pokemons up to generation 8. In the database user can view pokemon Pokedex id, name, type/types, evolution (all possibilities), likes (how many users added pokemon to favourites) with the ability to sort returned values and search by pokemon name. When clicked on a pokemon, all information about it is displayed along with a photo. From the level of a single pokemon, user can go to its evolution (if there is any) or add it to favorites.
 
 As mentioned user can see the ranking of the most liked pokemons (20). Additionally user can check its favourite pokemon in account menu and can change it to another Pokemon at will.
@@ -24,44 +24,42 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 ### Usage guide
 
-- **With Docker:** 
+- **Running app with Docker:**
 
 Open any bash in project root and use this set of commands:
 
 ```./mvnw clean package -DskipTests```
 
-```docker build -f Dockerfile_init -t pokemon-docker-init:v1 .```
+```docker build -f Dockerfile -t pokemon-service-fullstack-docker:v1 .```
 
 ```docker-compose up -d```
 
-This will start the application with initial data (905 pokemons and 1 superuser). When initial data has been loaded, the application can later work in update mode. This can be done as below:
+This will start the application with initial data (905 pokemons and 1 superuser).
 
-```docker-compose down```
-
-```docker build -f Dockerfile_prod -t pokemon-docker-prod:v1 .```
-
-```docker-compose up -d```
-
-- **Without Docker:**
+- **Running app without Docker:**
 
 Application works with PostgresSQL database. In order to run this app you need have Postgres client installed on your machine and provide some empty database in ***/src/main/resources/application.properties*** file. After that you can start application manually. Initial data will be entered into database. The application can later work in update mode by changing property `spring.jpa.hibernate.ddl-auto=create-drop` to `spring.jpa.hibernate.ddl-auto=update` in ***/src/main/resources/application.properties*** file.
 
+- **Running tests:**
+
+In order to run tests in ***/test*** directory, you have to provide some empty database in ***/test/resources/application.properties*** file. The database **must be** different from the one used in running application without docker.
+
 ### Used technologies
 The following technologies were used in the production of the application:
-  - Spring security
-  - Spring Data JPA
-  - Spring validation
-  - PostgreSQL
-  - REST API
-  - Thymeleaf
-  - Bootstrap
-  
+- Spring security
+- Spring Data JPA
+- Spring validation
+- PostgreSQL
+- REST API
+- Thymeleaf
+- Bootstrap
+
 In case of written tests for the designed application, the following technologies were used:
-  - JUnit
-  - AssertJ
-  - Mockito
-  - Hamcrest
-  
+- JUnit
+- AssertJ
+- Mockito
+- Hamcrest
+
 ### Demo
 Below is a video showing an example of using all of the functionalities offered by the application.
 
