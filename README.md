@@ -24,9 +24,27 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 ### Usage guide
 
-**Application works with PostgresSQL database. In order to run this app you need to have Postgres client installed on your machine and provide some empty database url with username and password in ***/src/main/resources/application.properties*** file.**
+- **With Docker:** 
 
-By default, initial data (905 pokemons and 1 superuser) can be entered into database with the help of ***DbDataLoadr*** class. This class reads pokemons and users data from text files located in static resources in ***/src/main/resources/static/db*** directory. When initial data has been loaded, the application can later work in update mode by changing property `spring.jpa.hibernate.ddl-auto=create-drop` to `spring.jpa.hibernate.ddl-auto=update` in ***/src/main/resources/application.properties*** file.
+Open any bash in project root and use this set of commands:
+
+```./mvnw clean package -DskipTests```
+
+```docker build -f Dockerfile_init -t pokemon-docker-init:v1 .```
+
+```docker-compose up -d```
+
+This will start the application with initial data (905 pokemons and 1 superuser). When initial data has been loaded, the application can later work in update mode. This can be done as below:
+
+```docker-compose down```
+
+```docker build -f Dockerfile_prod -t pokemon-docker-prod:v1 .```
+
+```docker-compose up -d```
+
+- **Without Docker:**
+
+Application works with PostgresSQL database. In order to run this app you need have Postgres client installed on your machine and provide some empty database in ***/src/main/resources/application.properties*** file. After that you can start application manually. Initial data will be entered into database. The application can later work in update mode by changing property `spring.jpa.hibernate.ddl-auto=create-drop` to `spring.jpa.hibernate.ddl-auto=update` in ***/src/main/resources/application.properties*** file.
 
 ### Used technologies
 The following technologies were used in the production of the application:
