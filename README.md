@@ -66,6 +66,10 @@ Below is a video showing an example of using all of the functionalities offered 
 https://user-images.githubusercontent.com/95027426/211678387-e3abbc21-938d-471e-b396-e8e2a3681fe3.mp4
 
 ### Version history
+**1.0.1**
+
+- docker cooperation
+
 **1.0.0 - Initial stable version**
 
 - pokemons with photo, id, name, type/types, evolution and likes
