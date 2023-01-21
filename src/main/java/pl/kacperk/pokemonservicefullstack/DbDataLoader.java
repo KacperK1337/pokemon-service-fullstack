@@ -50,24 +50,21 @@ public class DbDataLoader {
     public void start() {
         String line;
         String[] fields;
-        try {
-            // add appusers
-            BufferedReader appUserReader =
-                    DbDataLoaderUtils.createResourceBufferedReader("static/db/appusers_data.txt");
+        try (BufferedReader appUserReader =
+                     DbDataLoaderUtils.createResourceBufferedReader("static/db/appusers_data.txt")) {
             while ((line = appUserReader.readLine()) != null) {
                 fields = line.split(" ");
                 addUser(fields[0], fields[1], fields[2]);
             }
-            appUserReader.close();
-
-            // add pokemons
-            BufferedReader pokemonReader =
-                    DbDataLoaderUtils.createResourceBufferedReader("static/db/pokemons_data.txt");
+        } catch (IOException ioEx) {
+            ioEx.printStackTrace();
+        }
+        try (BufferedReader pokemonReader =
+                     DbDataLoaderUtils.createResourceBufferedReader("static/db/pokemons_data.txt")) {
             while ((line = pokemonReader.readLine()) != null) {
                 fields = line.split(" ");
                 addPokemon(fields[0], fields[1], fields[2], fields[3]);
             }
-            pokemonReader.close();
         } catch (IOException ioEx) {
             ioEx.printStackTrace();
         }

@@ -100,7 +100,7 @@ public class PokemonController {
     }
 
     @GetMapping("/like/{id}")
-    private String addPokemonToFavourites(
+    public String addPokemonToFavourites(
             @PathVariable final Long id,
             @AuthenticationPrincipal AppUserDetails details
     ) {
