@@ -26,15 +26,11 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 - **Running app with Docker:**
 
-Open any bash in project root and use this set of commands:
+Simply pass this command:
 
-```./mvnw clean package -DskipTests```
+```docker-compose up```
 
-```docker build -f Dockerfile -t pokemon-service-fullstack-docker:v1 .```
-
-```docker-compose up -d```
-
-This will start the application with initial data (905 pokemons and 1 superuser).
+This will start the application with initial data (905 pokemons and 1 superuser) on port 8080.
 
 - **Running app without Docker:**
 
