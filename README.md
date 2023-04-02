@@ -61,7 +61,8 @@ https://user-images.githubusercontent.com/95027426/211678387-e3abbc21-938d-471e-
 ### Version history
 **1.1.0 - Major performance update [UPCOMING SOON]**
 
-- big app and tests performance 
+- big improvement on app and tests performance 
+- big improvement on code readability
 - improved docker cooperation 
 - testcontainers introduction
 
