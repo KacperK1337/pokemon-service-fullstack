@@ -24,21 +24,17 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 ### Usage guide
 
-- **Running app with Docker:**
+- **Running main app:**
 
-Simply run this command:
+Make sure docker daemon is running on your machine and simply run this command:
 
 ```docker-compose up```
 
 This will start the application with initial data (905 pokemons and 1 superuser) on port 8080.
 
-- **Running app without Docker:**
+- **Running tests: [UPCOMING SOON]**
 
-Application works with PostgresSQL database. In order to run this app you need have Postgres client installed on your machine and provide some empty database in ***/src/main/resources/application.properties*** file. After that you can start application manually. Initial data will be entered into database. The application can later work in update mode by changing property `spring.jpa.hibernate.ddl-auto=create-drop` to `spring.jpa.hibernate.ddl-auto=update` in ***/src/main/resources/application.properties*** file.
-
-- **Running tests:**
-
-In order to run tests in ***/test*** directory, you have to provide some empty database in ***/test/resources/application.properties*** file. The database **must be** different from the one used in running application without docker.
+All integration tests run with Testcontainers and will be ignored if you don't have docker daemon running on your machine.
 
 ### Used technologies
 The following technologies were used in the production of the application:
@@ -55,6 +51,7 @@ In case of written tests for the designed application, the following technologie
 - AssertJ
 - Mockito
 - Hamcrest
+- Testcontainers
 
 ### Demo
 Below is a video showing an example of using all of the functionalities offered by the application.
@@ -62,7 +59,13 @@ Below is a video showing an example of using all of the functionalities offered 
 https://user-images.githubusercontent.com/95027426/211678387-e3abbc21-938d-471e-b396-e8e2a3681fe3.mp4
 
 ### Version history
-**1.0.1**
+**1.1.0 - Major performance update [UPCOMING SOON]**
+
+- big app and tests performance 
+- improved docker cooperation 
+- testcontainers introduction
+
+**1.0.1 - Docker introduction**
 
 - docker cooperation
 
