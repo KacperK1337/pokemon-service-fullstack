@@ -26,7 +26,7 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 - **Running app with Docker:**
 
-Simply pass this command:
+Simply run this command:
 
 ```docker-compose up```
 
