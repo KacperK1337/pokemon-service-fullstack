@@ -8,38 +8,39 @@ class EvolutionHandlerTest {
 
     @Test
     void getShortenedPokemonEvolutions_nullEvolutions_nullResult() {
-        // given
-        String possibleEvolutions = null;
-
         // when
-        String expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
+        final var expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(null);
 
         // then
-        assertThat(expectedShortenedEvolutions).isNull();
+        assertThat(expectedShortenedEvolutions)
+                .isNull();
     }
 
     @Test
     void getShortenedPokemonEvolutions_1PossibleEvolution_resultNotShortened() {
         // given
-        String possibleEvolutions = "testName";
+        final var possibleEvolutions = "testName";
 
         // when
-        String expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
+        final var expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
 
         // then
-        assertThat(expectedShortenedEvolutions).isEqualTo(possibleEvolutions);
+        assertThat(expectedShortenedEvolutions)
+                .isEqualTo(possibleEvolutions);
     }
 
     @Test
     void getShortenedPokemonEvolutions_3PossibleEvolutions_resultShortened() {
         // given
-        String testName = "testName";
-        String possibleEvolutions = testName + "/" + testName + "/" + testName;
+        final var testName = "testName";
+        final var possibleEvolutions = testName + "/" + testName + "/" + testName;
 
         // when
-        String expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
+        final var expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
 
         // then
-        assertThat(expectedShortenedEvolutions).isEqualTo(testName + "/" + testName + "/...");
+        assertThat(expectedShortenedEvolutions)
+                .isEqualTo(testName + "/" + testName + "/...");
     }
+
 }

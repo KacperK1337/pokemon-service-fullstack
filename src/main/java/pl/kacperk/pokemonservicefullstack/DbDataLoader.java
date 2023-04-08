@@ -21,6 +21,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class DbDataLoader {
+
     private final AppUserRepo appUserRepo;
     private final PokemonRepo pokemonRepo;
     private final PasswordEncoder passwordEncoder;

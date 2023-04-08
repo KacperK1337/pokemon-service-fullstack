@@ -3,7 +3,6 @@ package pl.kacperk.pokemonservicefullstack;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +13,7 @@ import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Pokemon;
 import pl.kacperk.pokemonservicefullstack.api.pokemon.repo.PokemonRepo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,19 +45,28 @@ class DbDataLoaderTest {
         // then
         verify(passwordEncoder, times(2)).encode(any());
 
-        ArgumentCaptor<AppUser> appUserArgumentCaptor = ArgumentCaptor.forClass(AppUser.class);
-        ArgumentCaptor<Pokemon> pokemonArgumentCaptor = ArgumentCaptor.forClass(Pokemon.class);
-        verify(appUserRepo, times(2)).save(appUserArgumentCaptor.capture());
-        verify(pokemonRepo, times(905)).save(pokemonArgumentCaptor.capture());
-        AppUser capturedAppUser = appUserArgumentCaptor.getValue();
-        Pokemon capturedPokemon = pokemonArgumentCaptor.getValue();
+        final var appUserArgumentCaptor = forClass(AppUser.class);
+        final var pokemonArgumentCaptor = forClass(Pokemon.class);
+        verify(appUserRepo, times(2))
+                .save(appUserArgumentCaptor.capture());
+        verify(pokemonRepo, times(905))
+                .save(pokemonArgumentCaptor.capture());
+        final var capturedAppUser = appUserArgumentCaptor.getValue();
+        final var capturedPokemon = pokemonArgumentCaptor.getValue();
 
-        assertThat(capturedAppUser.getRole()).isEqualTo(AppUserRole.USER);
-        assertThat(capturedAppUser.getUserName()).isNotEmpty();
+        assertThat(capturedAppUser.getRole())
+                .isEqualTo(AppUserRole.USER);
+        assertThat(capturedAppUser.getUserName())
+                .isNotEmpty();
 
-        assertThat(capturedPokemon.getName()).isNotEmpty();
-        assertThat(capturedPokemon.getPossibleEvolutions().size()).isBetween(0, 8);
-        assertThat(capturedPokemon.getTypes().size()).isBetween(1, 2);
-        assertThat(capturedPokemon.getPhotoUrl()).isNotEmpty();
+        assertThat(capturedPokemon.getName())
+                .isNotEmpty();
+        assertThat(capturedPokemon.getPossibleEvolutions().size())
+                .isBetween(0, 8);
+        assertThat(capturedPokemon.getTypes().size())
+                .isBetween(1, 2);
+        assertThat(capturedPokemon.getPhotoUrl())
+                .isNotEmpty();
     }
+
 }

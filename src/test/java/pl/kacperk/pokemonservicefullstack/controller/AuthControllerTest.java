@@ -8,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import pl.kacperk.pokemonservicefullstack.TestUtils;
+import pl.kacperk.pokemonservicefullstack.ContainerTest;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.api.appuser.service.AppUserService;
@@ -22,10 +21,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.getLoggedUserSession;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.prepareAppUserRepoForControllerTest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AuthControllerTest {
+class AuthControllerTest extends ContainerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,109 +43,171 @@ class AuthControllerTest {
 
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
-        String controllerTestAppUserName = "controllerTestAppUserName";
-        TestUtils.prepareAppUserRepoForControllerTest(
+        final var controllerTestAppUserName = "controllerTestAppUserName";
+        prepareAppUserRepoForControllerTest(
                 appUserRepo, appUserService, controllerTestAppUserName, controllerTestUserPassword
         );
         controllerTestUser = appUserService.getAppUserByName(controllerTestAppUserName);
     }
 
     @Test
-    void getLogin_withAnonymousUser_correctStatusAndView() throws Exception {
+    void getLogin_anonymousUser_correctStatusAndView() throws Exception {
         // when
-        ResultActions resultActions = mockMvc.perform(get(requestMappingUrl + "/login"));
-
-        // then
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("login"));
-    }
-
-    @Test
-    void getLogin_withLoggedUser_correctStatusAndView() throws Exception {
-        // given
-        MockHttpSession sessionWithLoggedUser =
-                TestUtils.getLoggedUserSession(controllerTestUser, controllerTestUserPassword, mockMvc);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(get(requestMappingUrl + "/login")
-                .session(sessionWithLoggedUser)
+        final var resultActions = mockMvc.perform(
+                get(requestMappingUrl + "/login")
         );
 
         // then
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("login"));
+        resultActions.andExpect(
+                status().isOk()
+        );
+        resultActions.andExpect(
+                view().name("login")
+        );
     }
 
     @Test
-    void getLoginError_nullAUTHENTICATION_EXCEPTION_correctModelAttributeAndStatusAndView() throws Exception {
-        // when
-        ResultActions resultActions = mockMvc.perform(get(requestMappingUrl + "/login-error"));
-
-        // then
-        resultActions.andExpect(model().attribute("errorMessage", nullValue()));
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("login"));
-    }
-
-    @Test
-    void getLoginError_notNullAUTHENTICATION_EXCEPTION_correctModelAttributeAndStatusAndView() throws Exception {
+    void getLogin_loggedUser_correctStatusAndView() throws Exception {
         // given
-        MockHttpSession sessionWithAuthenticationException = new MockHttpSession();
-        sessionWithAuthenticationException.setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, new Object());
+        final var sessionWithLoggedUser = getLoggedUserSession(
+                controllerTestUser, controllerTestUserPassword, mockMvc
+        );
 
         // when
-        ResultActions resultActions = mockMvc.perform(get(requestMappingUrl + "/login-error")
-                .session(sessionWithAuthenticationException));
-
-        // then
-        resultActions.andExpect(model().attribute("errorMessage",
-                containsString("Invalid username and password combination")
-        ));
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("login"));
-    }
-
-    @Test
-    void getRegister_withAnonymousUser_correctModelAttributeAndStatusAndView() throws Exception {
-        // when
-        ResultActions resultActions = mockMvc.perform(get(requestMappingUrl + "/register"));
-
-        // then
-        resultActions.andExpect(model().attribute("registerRequestDto",
-                hasProperty("userName", nullValue())
-        ));
-        resultActions.andExpect(model().attribute("registerRequestDto",
-                hasProperty("password", nullValue())
-        ));
-        resultActions.andExpect(model().attribute("registerRequestDto",
-                hasProperty("matchingPassword", nullValue())
-        ));
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("register"));
-    }
-
-    @Test
-    void getRegister_withLoggedUser_correctModelAttributeAndStatusAndView() throws Exception {
-        // given
-        MockHttpSession sessionWithLoggedUser =
-                TestUtils.getLoggedUserSession(controllerTestUser, controllerTestUserPassword, mockMvc);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(get(requestMappingUrl + "/register")
-                .session(sessionWithLoggedUser)
+        final var resultActions = mockMvc.perform(
+                get(requestMappingUrl + "/login")
+                        .session(sessionWithLoggedUser)
         );
 
         // then
-        resultActions.andExpect(model().attribute("registerRequestDto",
-                hasProperty("userName", nullValue())
-        ));
-        resultActions.andExpect(model().attribute("registerRequestDto",
-                hasProperty("password", nullValue())
-        ));
-        resultActions.andExpect(model().attribute("registerRequestDto",
-                hasProperty("matchingPassword", nullValue())
-        ));
-        resultActions.andExpect(status().isOk());
-        resultActions.andExpect(view().name("register"));
+        resultActions.andExpect(
+                status().isOk()
+        );
+        resultActions.andExpect(
+                view().name("login")
+        );
     }
+
+    @Test
+    void getLoginError_nullAuthenticationException_correctModelAttributeStatusView() throws Exception {
+        // when
+        final var resultActions = mockMvc.perform(
+                get(requestMappingUrl + "/login-error")
+        );
+
+        // then
+        resultActions.andExpect(
+                model().attribute(
+                        "errorMessage", nullValue()
+                ));
+        resultActions.andExpect(
+                status().isOk()
+        );
+        resultActions.andExpect(
+                view().name("login")
+        );
+    }
+
+    @Test
+    void getLoginError_notNullAuthenticationException_correctModelAttributeStatusView() throws Exception {
+        // given
+        final var sessionWithAuthenticationException = new MockHttpSession();
+        sessionWithAuthenticationException.setAttribute(
+                WebAttributes.AUTHENTICATION_EXCEPTION, new Object()
+        );
+
+        // when
+        final var resultActions = mockMvc.perform(
+                get(requestMappingUrl + "/login-error")
+                        .session(sessionWithAuthenticationException)
+        );
+
+        // then
+        resultActions.andExpect(
+                model().attribute(
+                        "errorMessage", containsString("Invalid username and password combination")
+                )
+        );
+        resultActions.andExpect(
+                status().isOk()
+        );
+        resultActions.andExpect(
+                view().name("login")
+        );
+    }
+
+    @Test
+    void getRegister_anonymousUser_correctModelAttributeStatusView() throws Exception {
+        // when
+        final var resultActions = mockMvc.perform(
+                get(requestMappingUrl + "/register")
+        );
+
+        // then
+        resultActions.andExpect(
+                model().attribute(
+                        "registerRequestDto", hasProperty(
+                                "userName", nullValue()
+                        )
+                ));
+        resultActions.andExpect(
+                model().attribute(
+                        "registerRequestDto", hasProperty(
+                                "password", nullValue()
+                        )
+                ));
+        resultActions.andExpect(
+                model().attribute(
+                        "registerRequestDto", hasProperty(
+                                "matchingPassword", nullValue()
+                        )
+                ));
+        resultActions.andExpect(
+                status().isOk()
+        );
+        resultActions.andExpect(
+                view().name("register")
+        );
+    }
+
+    @Test
+    void getRegister_loggedUser_correctModelAttributeStatusView() throws Exception {
+        // given
+        final var sessionWithLoggedUser = getLoggedUserSession(
+                controllerTestUser, controllerTestUserPassword, mockMvc
+        );
+
+        // when
+        final var resultActions = mockMvc.perform(
+                get(requestMappingUrl + "/register")
+                        .session(sessionWithLoggedUser)
+        );
+
+        // then
+        resultActions.andExpect(
+                model().attribute(
+                        "registerRequestDto", hasProperty(
+                                "userName", nullValue()
+                        )
+                ));
+        resultActions.andExpect(
+                model().attribute(
+                        "registerRequestDto", hasProperty(
+                                "password", nullValue()
+                        )
+                ));
+        resultActions.andExpect(
+                model().attribute(
+                        "registerRequestDto", hasProperty(
+                                "matchingPassword", nullValue()
+                        )
+                ));
+        resultActions.andExpect(
+                status().isOk()
+        );
+        resultActions.andExpect(
+                view().name("register")
+        );
+    }
+
 }

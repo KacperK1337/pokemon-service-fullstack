@@ -19,54 +19,59 @@ class PasswordMatchesValidatorTest {
     }
 
     @Test
-    void isValid_instanceOfAppUserPasswordChangeRequestDtoAndSamePasswords_valid() {
+    void isValid_appUserPasswordChangeRequestDtoSamePasswords_valid() {
         // given
-        String password = "pass";
+        final var password = "pass";
         passwordChangeRequestDto = new AppUserPasswordChangeRequestDto(password, password);
 
         // when
-        boolean result = passwordMatchesValidator.isValid(passwordChangeRequestDto, null);
+        final var result = passwordMatchesValidator.isValid(passwordChangeRequestDto, null);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result)
+                .isTrue();
     }
 
     @Test
-    void isValid_instanceOfAppUserPasswordChangeRequestDtoAndDifferentPasswords_notValid() {
+    void isValid_appUserPasswordChangeRequestDtoDifferentPasswords_notValid() {
         // given
-        String password = "pass";
+        final var password = "pass";
         passwordChangeRequestDto = new AppUserPasswordChangeRequestDto(password, password.toUpperCase());
 
         // when
-        boolean result = passwordMatchesValidator.isValid(passwordChangeRequestDto, null);
+        final var result = passwordMatchesValidator.isValid(passwordChangeRequestDto, null);
 
         // then
-        assertThat(result).isFalse();
+        assertThat(result)
+                .isFalse();
     }
 
     @Test
-    void isValid_instanceOfAppUserRegisterRequestDtoAndSamePasswords_valid() {
+    void isValid_appUserRegisterRequestDtoSamePasswords_valid() {
         // given
-        String password = "pass";
+        final var password = "pass";
         registerRequestDto = new AppUserRegisterRequestDto(password, password);
 
         // when
-        boolean result = passwordMatchesValidator.isValid(registerRequestDto, null);
+        final var result = passwordMatchesValidator.isValid(registerRequestDto, null);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result)
+                .isTrue();
     }
 
     @Test
-    void isValid_instanceOfAppUserRegisterRequestDtoAndDifferentPasswords_notValid() {
+    void isValid_appUserRegisterRequestDtoDifferentPasswords_notValid() {
         // given
-        String password = "pass";
+        final var password = "pass";
         registerRequestDto = new AppUserRegisterRequestDto(password, password.toUpperCase());
 
         // when
-        boolean result = passwordMatchesValidator.isValid(registerRequestDto, null);
+        final var result = passwordMatchesValidator.isValid(registerRequestDto, null);
 
         // then
-        assertThat(result).isFalse();
+        assertThat(result)
+                .isFalse();
     }
+
 }

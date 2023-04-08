@@ -27,7 +27,9 @@ class AppUserDetailsServiceTest {
     private AppUser testAppUser;
 
     private AppUser createTestAppUser() {
-        return new AppUser(AppUserRole.USER, "testUserName", "testPassword");
+        return new AppUser(
+                AppUserRole.USER, "testUserName", "testPassword"
+        );
     }
 
     @BeforeEach
@@ -39,28 +41,36 @@ class AppUserDetailsServiceTest {
     @Test
     void loadUserByUsername_existingUsername_findByUserNameMethodInvoked() {
         // given
-        String username = testAppUser.getUserName();
+        final var username = testAppUser.getUserName();
 
-        given(appUserRepo.findByUserName(username)).willReturn(Optional.of(testAppUser));
+        given(appUserRepo.findByUserName(username))
+                .willReturn(Optional.of(testAppUser));
 
         // when
         underTest.loadUserByUsername(username);
 
         // then
-        verify(appUserRepo).findByUserName(username);
+        verify(appUserRepo)
+                .findByUserName(username);
     }
 
     @Test
     void loadUserByUsername_nonExistingUsername_throwUsernameNotFoundException() {
         // given
-        String username = testAppUser.getUserName();
+        final var username = testAppUser.getUserName();
 
-        given(appUserRepo.findByUserName(username)).willReturn(Optional.empty());
+        given(appUserRepo.findByUserName(username))
+                .willReturn(Optional.empty());
 
         // when
         // then
         assertThatThrownBy(() -> underTest.loadUserByUsername(username))
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessageContaining(String.format("Username %s not found", username));
+                .isInstanceOf(
+                        UsernameNotFoundException.class
+                )
+                .hasMessageContaining(
+                        String.format("Username %s not found", username)
+                );
     }
+
 }
