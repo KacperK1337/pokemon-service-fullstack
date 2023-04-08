@@ -12,7 +12,6 @@ import java.util.Set;
 
 import static com.google.common.collect.Iterables.getLast;
 import static org.assertj.core.api.Assertions.assertThat;
-import static pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
 import static pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
 
 class PokemonResponseDtoMapperTest {
@@ -35,7 +34,7 @@ class PokemonResponseDtoMapperTest {
         testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
 
         // when
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
         // then
         assertThat(response.getId())
@@ -64,7 +63,7 @@ class PokemonResponseDtoMapperTest {
         testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
 
         // when
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
         // then
         assertThat(response.getId())
@@ -95,7 +94,7 @@ class PokemonResponseDtoMapperTest {
         testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
 
         // when
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
         // then
         assertThat(response.getId())
@@ -124,7 +123,7 @@ class PokemonResponseDtoMapperTest {
         testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
 
         // when
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
         // then
         assertThat(response.getId())
@@ -152,7 +151,7 @@ class PokemonResponseDtoMapperTest {
         testPokemon.setNumberOfLikes(1);
 
         // when
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
         // then
         assertThat(response.getId())

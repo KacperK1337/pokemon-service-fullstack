@@ -28,12 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AppUserControllerTest extends ContainerTest {
 
-    private static final String CONTROLLER_MAPPING = "/api/users";
-    private static final String CONTROLLER_TEST_USER_NAME = "controllerTestUserName";
-    private static final String CONTROLLER_TEST_USER_PASS = "controllerTestUserPass";
-    private static final Long TEST_USER_ID = 1L;
-    private static final String LOGIN_URL = "http://localhost/auth/login";
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -41,6 +35,20 @@ public class AppUserControllerTest extends ContainerTest {
     @Autowired
     private AppUserRepo appUserRepo;
     private AppUser controllerTestUser;
+
+    private static final String CONTROLLER_TEST_USER_NAME = "controllerTestUserName";
+    private static final String CONTROLLER_TEST_USER_PASS = "controllerTestUserPass";
+    private static final Long TEST_USER_ID = 1L;
+    private static final String REGISTER_MAPPING = "/api/users/register";
+    private static final String UPDATE_MAPPING = "/api/users/update";
+    private static final String USER_NAME = "userName";
+    private static final String PASS = "password";
+    private static final String MATCHING_PASS = "matchingPassword";
+    private static final String LOGIN_URL = "http://localhost/auth/login";
+    private static final String REGISTER = "register";
+    private static final String REGISTER_SUCCESS = "register-success";
+    private static final int ERROR_COUNT = 1;
+    private static final String ERROR_MESSAGE = "errorMessage";
 
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
@@ -59,10 +67,10 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            post(CONTROLLER_MAPPING + "/register")
-                .param("userName", testAppUserName)
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserPassword)
+            post(REGISTER_MAPPING)
+                .param(USER_NAME, testAppUserName)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserPassword)
         );
 
         // then
@@ -74,7 +82,7 @@ public class AppUserControllerTest extends ContainerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name("register-success")
+            view().name(REGISTER_SUCCESS)
         );
     }
 
@@ -90,10 +98,10 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            post(CONTROLLER_MAPPING + "/register")
-                .param("userName", testAppUserName)
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserPassword)
+            post(REGISTER_MAPPING)
+                .param(USER_NAME, testAppUserName)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserPassword)
                 .session(sessionWithLoggedUser)
         );
 
@@ -106,7 +114,7 @@ public class AppUserControllerTest extends ContainerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name("register-success")
+            view().name(REGISTER_SUCCESS)
         );
     }
 
@@ -119,21 +127,21 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            post(CONTROLLER_MAPPING + "/register")
-                .param("userName", testAppUserName)
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserName)
+            post(REGISTER_MAPPING)
+                .param(USER_NAME, testAppUserName)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserName)
         );
 
         // then
         resultActions.andExpect(
-            model().errorCount(1)
+            model().errorCount(ERROR_COUNT)
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name("register")
+            view().name(REGISTER)
         );
     }
 
@@ -149,22 +157,22 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            post(CONTROLLER_MAPPING + "/register")
-                .param("userName", testAppUserName)
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserName)
+            post(REGISTER_MAPPING)
+                .param(USER_NAME, testAppUserName)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserName)
                 .session(sessionWithLoggedUser)
         );
 
         // then
         resultActions.andExpect(
-            model().errorCount(1)
+            model().errorCount(ERROR_COUNT)
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name("register")
+            view().name(REGISTER)
         );
     }
 
@@ -176,21 +184,21 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            post(CONTROLLER_MAPPING + "/register")
-                .param("userName", firstDbAppUserName)
-                .param("password", firstDbAppUserPassword)
-                .param("matchingPassword", firstDbAppUserPassword)
+            post(REGISTER_MAPPING)
+                .param(USER_NAME, firstDbAppUserName)
+                .param(PASS, firstDbAppUserPassword)
+                .param(MATCHING_PASS, firstDbAppUserPassword)
         );
 
         // then
         resultActions.andExpect(
-            model().attribute("errorMessage", is(notNullValue()))
+            model().attribute(ERROR_MESSAGE, is(notNullValue()))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name("register")
+            view().name(REGISTER)
         );
     }
 
@@ -205,22 +213,22 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            post(CONTROLLER_MAPPING + "/register")
-                .param("userName", firstDbAppUserName)
-                .param("password", firstDbAppUserPassword)
-                .param("matchingPassword", firstDbAppUserPassword)
+            post(REGISTER_MAPPING)
+                .param(USER_NAME, firstDbAppUserName)
+                .param(PASS, firstDbAppUserPassword)
+                .param(MATCHING_PASS, firstDbAppUserPassword)
                 .session(sessionWithLoggedUser)
         );
 
         // then
         resultActions.andExpect(
-            model().attribute("errorMessage", is(notNullValue()))
+            model().attribute(ERROR_MESSAGE, is(notNullValue()))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name("register")
+            view().name(REGISTER)
         );
     }
 
@@ -232,9 +240,9 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            patch(CONTROLLER_MAPPING + "/update")
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserPassword)
+            patch(UPDATE_MAPPING)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserPassword)
         );
 
         // then
@@ -257,9 +265,9 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            patch(CONTROLLER_MAPPING + "/update")
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserPassword)
+            patch(UPDATE_MAPPING)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserPassword)
                 .session(sessionWithLoggedUser)
         );
 
@@ -289,9 +297,9 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            patch(CONTROLLER_MAPPING + "/update")
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserName)
+            patch(UPDATE_MAPPING)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserName)
         );
 
         // then
@@ -315,9 +323,9 @@ public class AppUserControllerTest extends ContainerTest {
 
         // when
         final var resultActions = mockMvc.perform(
-            patch(CONTROLLER_MAPPING + "/update")
-                .param("password", testAppUserPassword)
-                .param("matchingPassword", testAppUserName)
+            patch(UPDATE_MAPPING)
+                .param(PASS, testAppUserPassword)
+                .param(MATCHING_PASS, testAppUserName)
                 .session(sessionWithLoggedUser)
         );
 

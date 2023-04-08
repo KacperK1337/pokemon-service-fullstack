@@ -32,11 +32,6 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AppUserServiceImplTest {
 
-    private static final Class<ResponseStatusException> RESPONSE_STATUS_EXCEPTION_CLASS
-        = ResponseStatusException.class;
-    private static final String STATUS_FIELD_NAME = "status";
-    private static final HttpStatus NOT_FOUND_STATUS = HttpStatus.NOT_FOUND;
-
     @Mock
     private AppUserRepo appUserRepo;
     @Mock
@@ -45,6 +40,11 @@ class AppUserServiceImplTest {
     private HttpServletRequest httpServletRequest;
     private AppUserServiceImpl underTest;
     private AppUser testAppUser;
+
+    private static final Class<ResponseStatusException> RESPONSE_STATUS_EXCEPTION_CLASS
+        = ResponseStatusException.class;
+    private static final String STATUS = "status";
+    private static final HttpStatus NOT_FOUND_STATUS = HttpStatus.NOT_FOUND;
 
     @BeforeEach
     void setUp() {
@@ -85,7 +85,7 @@ class AppUserServiceImplTest {
                         RESPONSE_STATUS_EXCEPTION_CLASS
                 )
                 .hasFieldOrPropertyWithValue(
-                       STATUS_FIELD_NAME, NOT_FOUND_STATUS
+                    STATUS, NOT_FOUND_STATUS
                 )
                 .hasMessageContaining(
                         String.format("User with id %s not found", appUserId)
@@ -123,7 +123,7 @@ class AppUserServiceImplTest {
                         RESPONSE_STATUS_EXCEPTION_CLASS
                 )
                 .hasFieldOrPropertyWithValue(
-                       STATUS_FIELD_NAME, NOT_FOUND_STATUS
+                    STATUS, NOT_FOUND_STATUS
                 )
                 .hasMessageContaining(
                         String.format("User with username %s not found", appUserName)
@@ -285,7 +285,7 @@ class AppUserServiceImplTest {
                         ResponseStatusException.class
                 )
                 .hasFieldOrPropertyWithValue(
-                        STATUS_FIELD_NAME, HttpStatus.UNAUTHORIZED
+                    STATUS, HttpStatus.UNAUTHORIZED
                 )
                 .hasMessageContaining(
                         "User is not logged in"

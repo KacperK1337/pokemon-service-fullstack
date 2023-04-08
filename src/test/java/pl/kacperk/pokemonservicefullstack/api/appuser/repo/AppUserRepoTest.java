@@ -20,7 +20,6 @@ class AppUserRepoTest extends ContainerTest {
 
     @Autowired
     private AppUserRepo underTest;
-
     private AppUser testAppUser;
 
     @BeforeEach

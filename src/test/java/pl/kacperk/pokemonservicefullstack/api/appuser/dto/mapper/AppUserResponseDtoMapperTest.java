@@ -10,9 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AppUserResponseDtoMapperTest {
 
-    private static final Long TEST_USER_ID = 2L;
-
     private AppUser testAppUser;
+
+    private static final Long TEST_USER_ID = 2L;
+    private static final long TEST_USER_PLACE = TEST_USER_ID - 1;
 
     @BeforeEach
     void setUp() {
@@ -22,9 +23,7 @@ class AppUserResponseDtoMapperTest {
     @Test
     void appUserToAppUserResponseDto_appUserWithoutFavouritePokemon_correctAppUserResponse() {
         // given
-        final var place = OrdinalSuffixGenerator.getNumberWithSuffix(
-            testAppUser.getId() - 1
-        );
+        final var place = OrdinalSuffixGenerator.getNumberWithSuffix(TEST_USER_PLACE);
 
         // when
         final var responseDto = AppUserResponseDtoMapper.appUserToAppUserResponseDto(testAppUser);
@@ -41,9 +40,7 @@ class AppUserResponseDtoMapperTest {
     @Test
     void appUserToAppUserResponseDto_appUserWithFavouritePokemon_correctAppUserResponse() {
         // given
-        final var place = OrdinalSuffixGenerator.getNumberWithSuffix(
-            testAppUser.getId() - 1
-        );
+        final var place = OrdinalSuffixGenerator.getNumberWithSuffix(TEST_USER_PLACE);
         final var favouritePokemonName = "testFavouritePokemonName";
         testAppUser.setFavouritePokemonName(favouritePokemonName);
 
