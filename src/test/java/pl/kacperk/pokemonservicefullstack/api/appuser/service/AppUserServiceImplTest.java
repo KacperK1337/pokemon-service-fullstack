@@ -32,6 +32,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AppUserServiceImplTest {
 
+    private static final Class<ResponseStatusException> RESPONSE_STATUS_EXCEPTION_CLASS
+        = ResponseStatusException.class;
+    private static final String STATUS_FIELD_NAME = "status";
+    private static final HttpStatus NOT_FOUND_STATUS = HttpStatus.NOT_FOUND;
+
     @Mock
     private AppUserRepo appUserRepo;
     @Mock
@@ -77,10 +82,10 @@ class AppUserServiceImplTest {
         // then
         assertThatThrownBy(() -> underTest.getAppUserById(appUserId))
                 .isInstanceOf(
-                        ResponseStatusException.class
+                        RESPONSE_STATUS_EXCEPTION_CLASS
                 )
                 .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.NOT_FOUND
+                       STATUS_FIELD_NAME, NOT_FOUND_STATUS
                 )
                 .hasMessageContaining(
                         String.format("User with id %s not found", appUserId)
@@ -115,10 +120,10 @@ class AppUserServiceImplTest {
         // then
         assertThatThrownBy(() -> underTest.getAppUserByName(appUserName))
                 .isInstanceOf(
-                        ResponseStatusException.class
+                        RESPONSE_STATUS_EXCEPTION_CLASS
                 )
                 .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.NOT_FOUND
+                       STATUS_FIELD_NAME, NOT_FOUND_STATUS
                 )
                 .hasMessageContaining(
                         String.format("User with username %s not found", appUserName)
@@ -280,7 +285,7 @@ class AppUserServiceImplTest {
                         ResponseStatusException.class
                 )
                 .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.UNAUTHORIZED
+                        STATUS_FIELD_NAME, HttpStatus.UNAUTHORIZED
                 )
                 .hasMessageContaining(
                         "User is not logged in"
