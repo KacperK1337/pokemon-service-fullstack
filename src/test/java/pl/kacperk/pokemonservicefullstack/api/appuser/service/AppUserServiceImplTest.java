@@ -4,17 +4,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.server.ResponseStatusException;
-import pl.kacperk.pokemonservicefullstack.TestUtils;
+import pl.kacperk.pokemonservicefullstack.AbstractMockitoTest;
 import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserPasswordChangeRequestDto;
 import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserRegisterRequestDto;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper;
 import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistException;
@@ -28,275 +23,211 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.NOT_FOUND_STATUS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.RESPONSE_STATUS_EXC_CLASS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.STATUS_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.UNAUTHORIZED_STATUS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.USER_NOT_LOGGED_MESS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_ID;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_PASS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
 
-@ExtendWith(MockitoExtension.class)
-class AppUserServiceImplTest {
+class AppUserServiceImplTest extends AbstractMockitoTest {
+
+    private static final Class<UserAlreadyExistException> USER_ALREADY_EXIST_EXC_CLASS =
+        UserAlreadyExistException.class;
+    private static final String USER_NOT_FOUND_BY_ID_MESS = "User with id %s not found";
+    private static final String USER_NOT_FOUND_BY_NAME_MESS = "User with username %s not found";
+    private static final String USER_ALREADY_EXIST_MESS = "An account with that username already exists";
+    private static final String TEST_USER_ENCODED_PASS = "testUserEncodedPassword";
 
     @Mock
-    private AppUserRepo appUserRepo;
+    private AppUserRepo userRepo;
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private HttpServletRequest httpServletRequest;
-    private AppUserServiceImpl underTest;
-    private AppUser testAppUser;
-
-    private static final Class<ResponseStatusException> RESPONSE_STATUS_EXCEPTION_CLASS
-        = ResponseStatusException.class;
-    private static final String STATUS = "status";
-    private static final HttpStatus NOT_FOUND_STATUS = HttpStatus.NOT_FOUND;
+    private AppUserServiceImpl userServiceImpl;
+    private AppUser testUser;
 
     @BeforeEach
     void setUp() {
-        underTest = new AppUserServiceImpl(
-                appUserRepo, passwordEncoder, httpServletRequest
+        userServiceImpl = new AppUserServiceImpl(
+            userRepo, passwordEncoder, httpServletRequest
         );
-        testAppUser = TestUtils.getTestAppUser(1L);
+        testUser = createTestAppUserWithId();
     }
 
     @Test
     void getAppUser_existingId_findByIdMethodInvoked() {
-        // given
-        final var appUserId = testAppUser.getId();
+        given(userRepo.findById(TEST_USER_ID))
+            .willReturn(Optional.of(testUser));
 
-        given(appUserRepo.findById(appUserId))
-                .willReturn(Optional.of(testAppUser));
+        userServiceImpl.getAppUserById(TEST_USER_ID);
 
-        // when
-        underTest.getAppUserById(appUserId);
-
-        // then
-        verify(appUserRepo)
-                .findById(appUserId);
+        verify(userRepo)
+            .findById(TEST_USER_ID);
     }
 
     @Test
     void getAppUser_nonExistingId_throwResponseStatusException() {
-        // given
-        final var appUserId = testAppUser.getId();
+        given(userRepo.findById(TEST_USER_ID))
+            .willReturn(Optional.empty());
 
-        given(appUserRepo.findById(appUserId))
-                .willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.getAppUserById(appUserId))
-                .isInstanceOf(
-                        RESPONSE_STATUS_EXCEPTION_CLASS
-                )
-                .hasFieldOrPropertyWithValue(
-                    STATUS, NOT_FOUND_STATUS
-                )
-                .hasMessageContaining(
-                        String.format("User with id %s not found", appUserId)
-                );
+        assertThatThrownBy(() -> userServiceImpl.getAppUserById(TEST_USER_ID))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND_STATUS)
+            .hasMessageContaining(
+                String.format(USER_NOT_FOUND_BY_ID_MESS, TEST_USER_ID)
+            );
     }
 
     @Test
     void getAppUser_existingUserName_findByUserNameMethodInvoked() {
-        // given
-        final var appUserName = testAppUser.getUserName();
+        given(userRepo.findByUserName(TEST_USER_NAME))
+            .willReturn(Optional.of(testUser));
 
-        given(appUserRepo.findByUserName(appUserName))
-                .willReturn(Optional.of(testAppUser));
+        userServiceImpl.getAppUserByName(TEST_USER_NAME);
 
-        // when
-        underTest.getAppUserByName(appUserName);
-
-        // then
-        verify(appUserRepo)
-                .findByUserName(appUserName);
+        verify(userRepo)
+            .findByUserName(TEST_USER_NAME);
     }
 
     @Test
     void getAppUser_nonExistingUserName_throwResponseStatusException() {
-        // given
-        final var appUserName = testAppUser.getUserName();
+        given(userRepo.findByUserName(TEST_USER_NAME))
+            .willReturn(Optional.empty());
 
-        given(appUserRepo.findByUserName(appUserName))
-                .willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.getAppUserByName(appUserName))
-                .isInstanceOf(
-                        RESPONSE_STATUS_EXCEPTION_CLASS
-                )
-                .hasFieldOrPropertyWithValue(
-                    STATUS, NOT_FOUND_STATUS
-                )
-                .hasMessageContaining(
-                        String.format("User with username %s not found", appUserName)
-                );
+        assertThatThrownBy(() -> userServiceImpl.getAppUserByName(TEST_USER_NAME))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND_STATUS)
+            .hasMessageContaining(
+                String.format(USER_NOT_FOUND_BY_NAME_MESS, TEST_USER_NAME)
+            );
     }
 
     @Test
     void getNumberOfUsers_countByRoleMethodInvoked() {
-        // when
-        underTest.getNumberOfUsers();
+        userServiceImpl.getNumberOfUsers();
 
-        // then
-        verify(appUserRepo)
-                .countByRole(AppUserRole.USER);
+        verify(userRepo)
+            .countByRole(ROLE_USER);
     }
 
     @Test
     void getLoggedAppUser_nullAppUserDetails_nullAppUser() {
-        // when
-        final var expectedAppUser = underTest.getLoggedAppUser(null);
+        final var loggedAppUser = userServiceImpl.getLoggedAppUser(null);
 
-        // then
-        verify(appUserRepo, never())
-                .findByUserName(any());
-
-        assertThat(expectedAppUser)
-                .isNull();
+        verify(userRepo, never())
+            .findByUserName(any());
+        assertThat(loggedAppUser)
+            .isNull();
     }
 
     @Test
     void getLoggedAppUser_notNullAppUserDetails_getAppUserMethodInvoked() {
-        // given
-        final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testAppUser);
-        final var detailsUsername = testDetails.getUsername();
+        final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testUser);
+        final var testDetailsUsername = testDetails.getUsername();
+        given(userRepo.findByUserName(testDetailsUsername))
+            .willReturn(Optional.of(testUser));
 
-        given(appUserRepo.findByUserName(detailsUsername))
-                .willReturn(Optional.of(testAppUser));
+        userServiceImpl.getLoggedAppUser(testDetails);
 
-        // when
-        underTest.getLoggedAppUser(testDetails);
-
-        // then
-        verify(appUserRepo)
-                .findByUserName(detailsUsername);
+        verify(userRepo)
+            .findByUserName(testDetailsUsername);
     }
 
     @Test
     void getAppUserAsResponse_nullAppUser_nullResponse() {
-        // when
-        final var expectedResponse = underTest.getAppUserAsResponse(null);
+        final var userResponse = userServiceImpl.getAppUserAsResponse(null);
 
-        // then
-        assertThat(expectedResponse)
-                .isNull();
+        assertThat(userResponse)
+            .isNull();
     }
 
     @Test
     void getAppUserAsResponse_notNullAppUser_notNullResponse() {
-        // when
-        final var expectedResponse = underTest.getAppUserAsResponse(testAppUser);
+        final var userResponse = userServiceImpl.getAppUserAsResponse(testUser);
 
-        // then
-        assertThat(expectedResponse)
-                .isNotNull();
+        assertThat(userResponse)
+            .isNotNull();
     }
 
     @Test
     void registerAppUser_usernameNotTaken_userSavedToRepoAndEqual() throws UserAlreadyExistException {
-        // given
-        final var appUserName = testAppUser.getUserName();
-        final var appUserPassword = testAppUser.getPassword();
         final var testRegisterRequestDto = new AppUserRegisterRequestDto(
-                appUserName, appUserPassword, appUserPassword
+            TEST_USER_NAME, TEST_USER_PASS, TEST_USER_PASS
         );
+        given(userRepo.findByUserName(TEST_USER_NAME))
+            .willReturn(Optional.empty());
+        given(passwordEncoder.encode(TEST_USER_PASS))
+            .willReturn(TEST_USER_ENCODED_PASS);
 
-        given(appUserRepo.findByUserName(appUserName))
-                .willReturn(Optional.empty());
-        given(passwordEncoder.encode(appUserPassword))
-                .willReturn(appUserPassword.toUpperCase());
+        userServiceImpl.registerAppUser(testRegisterRequestDto);
 
-        // when
-        underTest.registerAppUser(testRegisterRequestDto);
-
-        // then
-        final var appUserArgumentCaptor = forClass(AppUser.class);
-        verify(appUserRepo)
-                .save(appUserArgumentCaptor.capture());
-        final var capturedAppUser = appUserArgumentCaptor.getValue();
-
+        final var userArgumentCaptor = forClass(AppUser.class);
+        verify(userRepo)
+            .save(userArgumentCaptor.capture());
+        final var capturedAppUser = userArgumentCaptor.getValue();
         assertThat(capturedAppUser.getUserName())
-                .isEqualTo(appUserName);
+            .isEqualTo(TEST_USER_NAME);
         assertThat(capturedAppUser.getPassword())
-                .isEqualTo(appUserPassword.toUpperCase());
+            .isEqualTo(TEST_USER_ENCODED_PASS);
     }
 
     @Test
     void registerAppUser_usernameTaken_throwUserAlreadyExistException() {
-        // given
-        final var appUserName = testAppUser.getUserName();
-        final var appUserPassword = testAppUser.getPassword();
         final var testRegisterRequestDto = new AppUserRegisterRequestDto(
-                appUserName, appUserPassword, appUserPassword
+            TEST_USER_NAME, TEST_USER_PASS, TEST_USER_PASS
         );
 
-        given(appUserRepo.findByUserName(any()))
-                .willReturn(Optional.of(testAppUser));
+        given(userRepo.findByUserName(any()))
+            .willReturn(Optional.of(testUser));
 
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.registerAppUser(testRegisterRequestDto))
-                .isInstanceOf(
-                        UserAlreadyExistException.class
-                )
-                .hasMessageContaining(
-                        "An account with that username already exists"
-                );
-
+        assertThatThrownBy(() -> userServiceImpl.registerAppUser(testRegisterRequestDto))
+            .isInstanceOf(USER_ALREADY_EXIST_EXC_CLASS)
+            .hasMessageContaining(USER_ALREADY_EXIST_MESS);
         verify(passwordEncoder, never())
-                .encode(any());
-        verify(appUserRepo, never())
-                .save(any());
+            .encode(any());
+        verify(userRepo, never())
+            .save(any());
     }
 
     @Test
     void changeLoggedUserPassword_userLoggedIn_passwordChangedUserLoggedOut() throws ServletException {
-        // given
-        final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testAppUser);
-        final var appUserName = testDetails.getUsername();
-        final var appUserPassword = testDetails.getPassword();
-        final var testPasswordChangeRequestDto = new AppUserPasswordChangeRequestDto(
-                appUserPassword
-        );
+        final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testUser);
+        final var testUserName = testDetails.getUsername();
+        final var testUserPassword = testDetails.getPassword();
+        final var testPasswordChangeRequestDto = new AppUserPasswordChangeRequestDto(testUserPassword);
+        given(userRepo.findByUserName(testUserName))
+            .willReturn(Optional.of(testUser));
+        given(passwordEncoder.encode(testUserPassword))
+            .willReturn(TEST_USER_ENCODED_PASS);
 
-        given(appUserRepo.findByUserName(appUserName))
-                .willReturn(Optional.of(testAppUser));
-        given(passwordEncoder.encode(appUserPassword))
-                .willReturn(appUserPassword.toUpperCase());
+        userServiceImpl.changeLoggedUserPassword(testDetails, testPasswordChangeRequestDto);
 
-        // when
-        underTest.changeLoggedUserPassword(testDetails, testPasswordChangeRequestDto);
-
-        // then
         verify(httpServletRequest)
-                .logout();
-
-        assertThat(testAppUser.getPassword())
-                .isEqualTo(appUserPassword.toUpperCase());
+            .logout();
+        assertThat(testUser.getPassword())
+            .isEqualTo(TEST_USER_ENCODED_PASS);
     }
 
     @Test
     void changeLoggedUserPassword_userNotLoggedIn_throwResponseStatusException() throws ServletException {
-        // given
         final var testPasswordChangeRequestDto = new AppUserPasswordChangeRequestDto();
 
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.changeLoggedUserPassword(null, testPasswordChangeRequestDto))
-                .isInstanceOf(
-                        ResponseStatusException.class
-                )
-                .hasFieldOrPropertyWithValue(
-                    STATUS, HttpStatus.UNAUTHORIZED
-                )
-                .hasMessageContaining(
-                        "User is not logged in"
-                );
-
-        verify(appUserRepo, never())
-                .findByUserName(any());
+        assertThatThrownBy(() -> userServiceImpl.changeLoggedUserPassword(null, testPasswordChangeRequestDto))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, UNAUTHORIZED_STATUS)
+            .hasMessageContaining(USER_NOT_LOGGED_MESS);
+        verify(userRepo, never())
+            .findByUserName(any());
         verify(passwordEncoder, never())
-                .encode(any());
+            .encode(any());
         verify(httpServletRequest, never())
-                .logout();
+            .logout();
     }
 
 }

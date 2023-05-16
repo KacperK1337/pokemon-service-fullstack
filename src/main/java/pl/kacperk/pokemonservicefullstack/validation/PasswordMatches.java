@@ -1,4 +1,4 @@
-package pl.kacperk.pokemonservicefullstack.util.validation;
+package pl.kacperk.pokemonservicefullstack.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

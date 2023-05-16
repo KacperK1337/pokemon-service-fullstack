@@ -1,311 +1,232 @@
 package pl.kacperk.pokemonservicefullstack.api.pokemon.service;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import pl.kacperk.pokemonservicefullstack.AbstractMockitoTest;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.api.appuser.service.AppUserService;
 import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Type;
 import pl.kacperk.pokemonservicefullstack.api.pokemon.repo.PokemonRepo;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_SORT;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.NON_EXISTING_POKEMON_ID;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.NON_EXISTING_POKEMON_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTIONS_NONE;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_ID;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_TYPES_1;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemon;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemonWithId;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.NOT_FOUND_STATUS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.RESPONSE_STATUS_EXC_CLASS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.STATUS_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.UNAUTHORIZED_STATUS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.USER_NOT_LOGGED_MESS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
 import static pl.kacperk.pokemonservicefullstack.util.pageable.PageableCreator.getPageable;
 
-@ExtendWith(MockitoExtension.class)
-class PokemonServiceImplTest {
+class PokemonServiceImplTest extends AbstractMockitoTest {
+
+    private static final AppUser TEST_USER = createTestAppUser();
+    private static final String POKEMON_NOT_FOUND_BY_ID_MESS = "Pokemon with id %s not found";
+    private static final String POKEMON_NOT_FOUND_BY_NAME_MESS = "Pokemon with name %s not found";
+    private static final String INVALID_REQUEST_PARAMS_MESS = "Invalid request parameters";
+    private static final HttpStatus BAD_REQUEST_STATUS = BAD_REQUEST;
+    private static final String INVALID_SORT = "invalidSort";
 
     @Mock
     private PokemonRepo pokemonRepo;
-
     @Mock
-    private AppUserService appUserService;
-
-    private PokemonServiceImpl underTest;
+    private AppUserService userService;
+    private PokemonServiceImpl pokemonServiceImpl;
     private Pokemon testPokemon;
-    private AppUser loggedTestUser;
-
-    private Pokemon createTestPokemon(final String name) {
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        possibleEvolutions.add("testEvolution");
-        final Set<Type> types = new LinkedHashSet<>();
-        types.add(Type.Water);
-        return new Pokemon(
-                name, possibleEvolutions, types, "testPhotoUrl"
-        );
-    }
-
-    private AppUser createTestAppUser() {
-        return new AppUser(AppUserRole.USER, "testUserName", "testPassword");
-    }
 
     @BeforeEach
     void setUp() {
-        underTest = new PokemonServiceImpl(pokemonRepo, appUserService);
-        testPokemon = createTestPokemon("testPokemon");
+        pokemonServiceImpl = new PokemonServiceImpl(pokemonRepo, userService);
+        testPokemon = createTestPokemonWithId(
+            TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1
+        );
     }
 
     @Test
     void getPokemonById_existingId_findByIdMethodInvoked() {
-        // given
-        final var id = 1L;
+        given(pokemonRepo.findById(TEST_POKEMON_ID))
+            .willReturn(Optional.of(testPokemon));
 
-        given(pokemonRepo.findById(id))
-                .willReturn(Optional.of(testPokemon));
+        pokemonServiceImpl.getPokemonById(TEST_POKEMON_ID);
 
-        // when
-        underTest.getPokemonById(id);
-
-        // then
         verify(pokemonRepo)
-                .findById(id);
+            .findById(TEST_POKEMON_ID);
     }
 
     @Test
     void getPokemonById_nonExistingId_throwResponseStatusException() {
-        // given
-        final var id = 10L;
+        given(pokemonRepo.findById(NON_EXISTING_POKEMON_ID))
+            .willReturn(Optional.empty());
 
-        given(pokemonRepo.findById(id))
-                .willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.getPokemonById(id))
-                .isInstanceOf(
-                        ResponseStatusException.class
-                )
-                .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.NOT_FOUND
-                )
-                .hasMessageContaining(
-                        String.format("Pokemon with id %s not found", id)
-                );
+        assertThatThrownBy(() -> pokemonServiceImpl.getPokemonById(NON_EXISTING_POKEMON_ID))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND_STATUS)
+            .hasMessageContaining(
+                String.format(POKEMON_NOT_FOUND_BY_ID_MESS, NON_EXISTING_POKEMON_ID)
+            );
     }
 
     @Test
     void getPokemonByName_existingName_findByNameMethodInvoked() {
-        // given
-        final var name = testPokemon.getName();
+        given(pokemonRepo.findByName(TEST_POKEMON_NAME))
+            .willReturn(Optional.of(testPokemon));
 
-        given(pokemonRepo.findByName(name))
-                .willReturn(Optional.of(testPokemon));
+        pokemonServiceImpl.getPokemonByName(TEST_POKEMON_NAME);
 
-        // when
-        underTest.getPokemonByName(name);
-
-        // then
         verify(pokemonRepo)
-                .findByName(name);
+            .findByName(TEST_POKEMON_NAME);
     }
 
     @Test
     void getPokemonByName_nonExistingName_throwResponseStatusException() {
-        // given
-        final var name = testPokemon.getName();
-        final var nonExistingName = name.toUpperCase();
+        given(pokemonRepo.findByName(NON_EXISTING_POKEMON_NAME))
+            .willReturn(Optional.empty());
 
-        given(pokemonRepo.findByName(nonExistingName))
-                .willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.getPokemonByName(nonExistingName))
-                .isInstanceOf(
-                        ResponseStatusException.class
-                )
-                .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.NOT_FOUND
-                )
-                .hasMessageContaining(
-                        String.format("Pokemon with name %s not found", nonExistingName)
-                );
+        assertThatThrownBy(() -> pokemonServiceImpl.getPokemonByName(NON_EXISTING_POKEMON_NAME))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND_STATUS)
+            .hasMessageContaining(
+                String.format(POKEMON_NOT_FOUND_BY_NAME_MESS, NON_EXISTING_POKEMON_NAME)
+            );
     }
 
     @Test
     void addPokemonToFavourites_loggedUserWithoutFavouritePokemon_loggedUserWithFavouritePokemonOf1Like() {
-        // given
-        final var id = 1L;
-        loggedTestUser = createTestAppUser();
+        final var loggedTestUser = TEST_USER;
+        given(userService.getLoggedAppUser(any()))
+            .willReturn(loggedTestUser);
+        given(pokemonRepo.findById(TEST_POKEMON_ID))
+            .willReturn(Optional.of(testPokemon));
 
-        given(appUserService.getLoggedAppUser(any()))
-                .willReturn(loggedTestUser);
-        given(pokemonRepo.findById(id))
-                .willReturn(Optional.of(testPokemon));
+        pokemonServiceImpl.addPokemonToFavourites(TEST_POKEMON_ID, any());
 
-        // when
-        underTest.addPokemonToFavourites(id, any());
-
-        // then
         verify(pokemonRepo, never())
-                .findByName(any());
-
+            .findByName(any());
         assertThat(loggedTestUser.getFavouritePokemonName())
-                .isEqualTo(testPokemon.getName());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(testPokemon.getNumberOfLikes())
-                .isEqualTo(1);
+            .isEqualTo(1);
     }
 
     @Test
+    @Transactional
     void addPokemonToFavourites_loggedUserWithFavouritePokemon_LoggedUserWithNewFavouritePokemonOf1Like() {
-        // given
-        final var id = 1L;
-        loggedTestUser = createTestAppUser();
-        final var favouritePokemonName = "someTestName";
-        final var testFavouritePokemon = createTestPokemon(favouritePokemonName);
+        final var loggedTestUser = TEST_USER;
+        final var testFavouritePokemonName = "favouritePokemonName";
+        final var testFavouritePokemon = createTestPokemon(
+            TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1
+        );
+        testFavouritePokemon.setName(testFavouritePokemonName);
         testFavouritePokemon.setNumberOfLikes(1);
-        loggedTestUser.setFavouritePokemonName(favouritePokemonName);
+        loggedTestUser.setFavouritePokemonName(testFavouritePokemonName);
+        given(userService.getLoggedAppUser(any()))
+            .willReturn(loggedTestUser);
+        given(pokemonRepo.findById(TEST_POKEMON_ID))
+            .willReturn(Optional.of(testPokemon));
+        given(pokemonRepo.findByName(testFavouritePokemonName))
+            .willReturn(Optional.of(testFavouritePokemon));
 
-        given(appUserService.getLoggedAppUser(any()))
-                .willReturn(loggedTestUser);
-        given(pokemonRepo.findById(id))
-                .willReturn(Optional.of(testPokemon));
-        given(pokemonRepo.findByName(favouritePokemonName))
-                .willReturn(Optional.of(testFavouritePokemon));
+        pokemonServiceImpl.addPokemonToFavourites(TEST_POKEMON_ID, any());
 
-        // when
-        underTest.addPokemonToFavourites(id, any());
-
-        // then
         verify(pokemonRepo)
-                .findByName(favouritePokemonName);
-
+            .findByName(testFavouritePokemonName);
         assertThat(testFavouritePokemon.getNumberOfLikes())
-                .isEqualTo(0);
+            .isEqualTo(0);
         assertThat(loggedTestUser.getFavouritePokemonName())
-                .isEqualTo(testPokemon.getName());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(testPokemon.getNumberOfLikes())
-                .isEqualTo(1);
+            .isEqualTo(1);
     }
 
     @Test
     void addPokemonToFavourites_userNotLoggedIn_throwResponseStatusException() {
-        // given
-        final var id = 1L;
+        given(userService.getLoggedAppUser(any()))
+            .willReturn(null);
 
-        given(appUserService.getLoggedAppUser(any()))
-                .willReturn(null);
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.addPokemonToFavourites(id, any()))
-                .isInstanceOf(
-                        ResponseStatusException.class
-                )
-                .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.UNAUTHORIZED
-                )
-                .hasMessageContaining(
-                        "User is not logged in"
-                );
-
+        assertThatThrownBy(() -> pokemonServiceImpl.addPokemonToFavourites(TEST_POKEMON_ID, any()))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, UNAUTHORIZED_STATUS)
+            .hasMessageContaining(USER_NOT_LOGGED_MESS);
         verify(pokemonRepo, never())
-                .findById(any());
+            .findById(any());
         verify(pokemonRepo, never())
-                .findByName(any());
+            .findByName(any());
     }
 
     @Test
     void getAll_validParameters_findByNameContainingMethodInvoked() {
-        // given
-        final var pageNumber = 0;
-        final var pageSize = 10;
-        final var sortDirectionName = "ASC";
-        final var fieldToSortBy = "id";
-        final var nameToMach = "";
-        final var requestedPageable = getPageable(pageNumber, pageSize, sortDirectionName, fieldToSortBy);
+        final var requestedPageable = getPageable(0, 10, DEF_SORT, "id");
+        final Page<Pokemon> testPokemonPage = new PageImpl<>(emptyList());
+        given(pokemonRepo.findByNameContaining("", requestedPageable))
+            .willReturn(testPokemonPage);
 
-        final List<Pokemon> testPokemonList = new ArrayList<>();
-        final var testPokemonPage = new PageImpl<>(testPokemonList);
+        pokemonServiceImpl.getAll(0, 10, DEF_SORT, "id", "");
 
-        given(pokemonRepo.findByNameContaining(nameToMach, requestedPageable))
-                .willReturn(testPokemonPage);
-
-        // when
-        underTest.getAll(pageNumber, pageSize, sortDirectionName, fieldToSortBy, nameToMach);
-
-        // then
         verify(pokemonRepo)
-                .findByNameContaining(nameToMach, requestedPageable);
+            .findByNameContaining("", requestedPageable);
     }
 
     @Test
     void getAll_invalidParameter_throwResponseStatusException() {
-        // given
-        final var pageNumber = 0;
-        final var pageSize = 10;
-        final var sortDirectionName = "invalidParameter";
-        final var fieldToSortBy = "id";
-        final var nameToMach = "";
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.getAll(pageNumber, pageSize, sortDirectionName, fieldToSortBy, nameToMach))
-                .isInstanceOf(
-                        ResponseStatusException.class
-                )
-                .hasFieldOrPropertyWithValue(
-                        "status", HttpStatus.BAD_REQUEST
-                )
-                .hasMessageContaining(
-                        "Invalid request parameters"
-                );
+        assertThatThrownBy(() -> pokemonServiceImpl.getAll(0, 10, INVALID_SORT, "id", ""))
+            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, BAD_REQUEST_STATUS)
+            .hasMessageContaining(INVALID_REQUEST_PARAMS_MESS);
 
         verify(pokemonRepo, never())
-                .findByNameContaining(any(), any());
+            .findByNameContaining(any(), any());
     }
 
     @Test
     void getTopPokemon_pokemonOfHighestNumberOfLikes() {
-        // given
-        final var testPokemon1 = createTestPokemon("testPokemon1");
-        final var testPokemon2 = createTestPokemon("testPokemon2");
-        testPokemon2.setNumberOfLikes(2);
-        final List<Pokemon> testPokemonList = new ArrayList<>();
-        testPokemonList.add(testPokemon2);
-        testPokemonList.add(testPokemon1);
-        final var testPokemonPage = new PageImpl<>(testPokemonList);
+        final var testPokemon1 = createTestPokemon(TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1);
+        final var testPokemon2 = createTestPokemon(TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1);
+        testPokemon1.setNumberOfLikes(2);
+        final var testPokemonPage = new PageImpl<>(List.of(
+            testPokemon1, testPokemon2
+        ));
 
         given(pokemonRepo.findByNameContaining(any(), any()))
-                .willReturn(testPokemonPage);
+            .willReturn(testPokemonPage);
 
-        // when
-        final var expectedPokemon = underTest.getTopPokemon();
+        final var expectedPokemon = pokemonServiceImpl.getTopPokemon();
 
-        // then
         assertThat(expectedPokemon.getNumberOfLikes())
-                .isEqualTo(testPokemon2.getNumberOfLikes());
+            .isEqualTo(2);
     }
 
     @Test
     void getRandomPokemon_somePokemon() {
-        // given
         given(pokemonRepo.findById(any()))
-                .willReturn(Optional.of(testPokemon));
+            .willReturn(Optional.of(testPokemon));
 
-        // when
-        final var expectedPokemon = underTest.getRandomPokemon();
+        final var expectedPokemon = pokemonServiceImpl.getRandomPokemon();
 
-        // then
         assertThat(expectedPokemon)
-                .isEqualTo(testPokemon);
+            .isEqualTo(testPokemon);
     }
 
 }

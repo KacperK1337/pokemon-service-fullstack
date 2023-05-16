@@ -1,46 +1,36 @@
 package pl.kacperk.pokemonservicefullstack.util.pokemonevolution;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler.getShortenedPokemonEvolutions;
 
 class EvolutionHandlerTest {
 
-    @Test
-    void getShortenedPokemonEvolutions_nullEvolutions_nullResult() {
-        // when
-        final var expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(null);
+    private static final String TEST_EVOLUTION = "testEvolution";
+    private static final String TWO_POSSIBLE_EVOLUTIONS = TEST_EVOLUTION + "/" + TEST_EVOLUTION;
+    private static final String THREE_POSSIBLE_EVOLUTIONS =
+        TEST_EVOLUTION + "/" + TEST_EVOLUTION + "/" + TEST_EVOLUTION;
+    private static final String EVOLUTIONS_SHORTENED =
+        TEST_EVOLUTION + "/" + TEST_EVOLUTION + "/...";
 
-        // then
-        assertThat(expectedShortenedEvolutions)
-                .isNull();
+    @ParameterizedTest
+    @ValueSource(strings = {TEST_EVOLUTION, TWO_POSSIBLE_EVOLUTIONS})
+    void getShortenedPokemonEvolutions_lessThan2PossibleEvolutions_notShortened(String possibleEvolutions) {
+        final var shortenedEvolutions = getShortenedPokemonEvolutions(possibleEvolutions);
+
+        assertThat(shortenedEvolutions)
+            .isEqualTo(possibleEvolutions);
     }
 
     @Test
-    void getShortenedPokemonEvolutions_1PossibleEvolution_resultNotShortened() {
-        // given
-        final var possibleEvolutions = "testName";
+    void getShortenedPokemonEvolutions_3PossibleEvolutions_shortened() {
+        final var shortenedEvolutions = getShortenedPokemonEvolutions(THREE_POSSIBLE_EVOLUTIONS);
 
-        // when
-        final var expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
-
-        // then
-        assertThat(expectedShortenedEvolutions)
-                .isEqualTo(possibleEvolutions);
-    }
-
-    @Test
-    void getShortenedPokemonEvolutions_3PossibleEvolutions_resultShortened() {
-        // given
-        final var testName = "testName";
-        final var possibleEvolutions = testName + "/" + testName + "/" + testName;
-
-        // when
-        final var expectedShortenedEvolutions = EvolutionHandler.getShortenedPokemonEvolutions(possibleEvolutions);
-
-        // then
-        assertThat(expectedShortenedEvolutions)
-                .isEqualTo(testName + "/" + testName + "/...");
+        assertThat(shortenedEvolutions)
+            .isEqualTo(EVOLUTIONS_SHORTENED);
     }
 
 }

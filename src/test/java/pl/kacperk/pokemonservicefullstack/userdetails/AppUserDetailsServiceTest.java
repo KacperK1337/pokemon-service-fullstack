@@ -2,12 +2,10 @@ package pl.kacperk.pokemonservicefullstack.userdetails;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import pl.kacperk.pokemonservicefullstack.AbstractMockitoTest;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsService;
 
@@ -16,61 +14,47 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
 
-@ExtendWith(MockitoExtension.class)
-class AppUserDetailsServiceTest {
+class AppUserDetailsServiceTest extends AbstractMockitoTest {
+
+    private static final Class<UsernameNotFoundException> USERNAME_NOT_FOUND_EXCEPTION_CLASS =
+        UsernameNotFoundException.class;
+    private static final String USERNAME_NOT_FOUND_MESS = "Username %s not found";
 
     @Mock
-    private AppUserRepo appUserRepo;
-
-    private AppUserDetailsService underTest;
-    private AppUser testAppUser;
-
-    private AppUser createTestAppUser() {
-        return new AppUser(
-                AppUserRole.USER, "testUserName", "testPassword"
-        );
-    }
+    private AppUserRepo userRepo;
+    private AppUserDetailsService userDetailsService;
+    private AppUser testUser;
 
     @BeforeEach
     void setUp() {
-        underTest = new AppUserDetailsService(appUserRepo);
-        testAppUser = createTestAppUser();
+        userDetailsService = new AppUserDetailsService(userRepo);
+        testUser = createTestAppUser();
     }
 
     @Test
     void loadUserByUsername_existingUsername_findByUserNameMethodInvoked() {
-        // given
-        final var username = testAppUser.getUserName();
+        given(userRepo.findByUserName(TEST_USER_NAME))
+            .willReturn(Optional.of(testUser));
 
-        given(appUserRepo.findByUserName(username))
-                .willReturn(Optional.of(testAppUser));
+        userDetailsService.loadUserByUsername(TEST_USER_NAME);
 
-        // when
-        underTest.loadUserByUsername(username);
-
-        // then
-        verify(appUserRepo)
-                .findByUserName(username);
+        verify(userRepo)
+            .findByUserName(TEST_USER_NAME);
     }
 
     @Test
     void loadUserByUsername_nonExistingUsername_throwUsernameNotFoundException() {
-        // given
-        final var username = testAppUser.getUserName();
+        given(userRepo.findByUserName(TEST_USER_NAME))
+            .willReturn(Optional.empty());
 
-        given(appUserRepo.findByUserName(username))
-                .willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> underTest.loadUserByUsername(username))
-                .isInstanceOf(
-                        UsernameNotFoundException.class
-                )
-                .hasMessageContaining(
-                        String.format("Username %s not found", username)
-                );
+        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(TEST_USER_NAME))
+            .isInstanceOf(USERNAME_NOT_FOUND_EXCEPTION_CLASS)
+            .hasMessageContaining(
+                String.format(USERNAME_NOT_FOUND_MESS, TEST_USER_NAME)
+            );
     }
 
 }

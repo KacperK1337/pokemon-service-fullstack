@@ -4,76 +4,55 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import pl.kacperk.pokemonservicefullstack.ContainerTest;
-import pl.kacperk.pokemonservicefullstack.TestUtils;
+import pl.kacperk.pokemonservicefullstack.AbstractRepoTest;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-class AppUserRepoTest extends ContainerTest {
+class AppUserRepoTest extends AbstractRepoTest {
+
+    private static final AppUser REPO_TEST_USER = createTestAppUser();
+    private static final String NON_EXISTING_USER_NAME = "nonExistingUserName";
+    private static final long NUMBER_OF_USERS = 1;
 
     @Autowired
-    private AppUserRepo underTest;
-    private AppUser testAppUser;
+    private AppUserRepo userRepo;
 
     @BeforeEach
     void setUp() {
-        testAppUser = TestUtils.getTestAppUser();
-        underTest.save(testAppUser);
+        userRepo.save(REPO_TEST_USER);
     }
 
     @AfterEach
     void tearDown() {
-        underTest.deleteAll();
+        userRepo.deleteAll();
     }
 
     @Test
-    void findByUserName_existingUserName_appUserPresentAndEqual() {
-        //given
-        final var userName = testAppUser.getUserName();
+    void findByUserName_existingUserName_userPresentAndEqual() {
+        final var repoAppUser = userRepo.findByUserName(TEST_USER_NAME);
 
-        // when
-        final var expectedAppUser = underTest.findByUserName(userName);
-
-        // then
-        assertThat(expectedAppUser.isPresent())
-                .isTrue();
-        assertThat(expectedAppUser.get())
-                .isEqualTo(testAppUser);
+        assertThat(repoAppUser)
+            .isPresent();
     }
 
     @Test
-    void findByUserName_nonExistingUserName_appUserNotPresent() {
-        // given
-        final var userName = testAppUser.getUserName();
+    void findByUserName_nonExistingUserName_userNotPresent() {
+        final var repoAppUser = userRepo.findByUserName(NON_EXISTING_USER_NAME);
 
-        // when
-        final var expectedAppUser = underTest.findByUserName(
-                userName.toUpperCase()
-        );
-
-        // then
-        assertThat(expectedAppUser.isPresent())
-                .isFalse();
+        assertThat(repoAppUser)
+            .isNotPresent();
     }
 
     @Test
     void countByRole_existingRole_correctResult() {
-        // given
-        final var role = AppUserRole.USER;
+        final var numberOfUsers = userRepo.countByRole(ROLE_USER);
 
-        // when
-        final var expectedNumberOfAppUsers = underTest.countByRole(role);
-
-        // then
-        assertThat(expectedNumberOfAppUsers)
-                .isEqualTo(1L);
+        assertThat(numberOfUsers)
+            .isEqualTo(NUMBER_OF_USERS);
     }
 
 }

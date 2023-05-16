@@ -1,10 +1,9 @@
-package pl.kacperk.pokemonservicefullstack.util.validation;
+package pl.kacperk.pokemonservicefullstack.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserPasswordChangeRequestDto;
 import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserRegisterRequestDto;
-
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 

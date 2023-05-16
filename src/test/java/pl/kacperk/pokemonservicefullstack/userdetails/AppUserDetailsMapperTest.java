@@ -3,45 +3,64 @@ package pl.kacperk.pokemonservicefullstack.userdetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_PASS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
 import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.appUserToAppUserDetails;
 
 class AppUserDetailsMapperTest {
 
-    private AppUser testAppUser;
-
-    private AppUser createTestAppUser() {
-        return new AppUser(
-                AppUserRole.USER, "testUserName", "testPassword"
-        );
-    }
+    private AppUser testUser;
 
     @BeforeEach
     void setUp() {
-        testAppUser = createTestAppUser();
+        testUser = createTestAppUser();
     }
 
     @Test
-    void appUserToAppUserDetails_normalValues_correctAppUserDetails() {
-        // when
-        final var details = appUserToAppUserDetails(testAppUser);
+    void userToUserDetails_testUser_correctUserDetails() {
+        final var details = appUserToAppUserDetails(testUser);
 
-        // then
         assertThat(details.getAuthorities())
-                .isEqualTo(testAppUser
-                        .getRole()
-                        .getGrantedAuthorities());
+            .isEqualTo(
+                testUser
+                    .getRole()
+                    .getGrantedAuthorities()
+            );
         assertThat(details.getUsername())
-                .isEqualTo(testAppUser.getUserName());
+            .isEqualTo(TEST_USER_NAME);
         assertThat(details.getPassword())
-                .isEqualTo(testAppUser.getPassword());
+            .isEqualTo(TEST_USER_PASS);
         assertThat(true)
-                .isEqualTo(details.isAccountNonExpired())
-                .isEqualTo(details.isAccountNonLocked())
-                .isEqualTo(details.isCredentialsNonExpired())
-                .isEqualTo(details.isEnabled());
+            .isEqualTo(details.isAccountNonExpired())
+            .isEqualTo(details.isAccountNonLocked())
+            .isEqualTo(details.isCredentialsNonExpired())
+            .isEqualTo(details.isEnabled());
+    }
+
+    @Test
+    void userToUserDetails_customUser_correctUserDetails() {
+        testUser.setAccountNonExpired(false);
+        final var details = appUserToAppUserDetails(testUser);
+
+        assertThat(details.getAuthorities())
+            .isEqualTo(
+                testUser
+                    .getRole()
+                    .getGrantedAuthorities()
+            );
+        assertThat(details.getUsername())
+            .isEqualTo(TEST_USER_NAME);
+        assertThat(details.getPassword())
+            .isEqualTo(TEST_USER_PASS);
+        assertThat(details.isAccountNonExpired())
+            .isFalse();
+        assertThat(true)
+            .isEqualTo(details.isAccountNonLocked())
+            .isEqualTo(details.isCredentialsNonExpired())
+            .isEqualTo(details.isEnabled());
     }
 
 }

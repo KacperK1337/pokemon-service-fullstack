@@ -1,92 +1,84 @@
 package pl.kacperk.pokemonservicefullstack.util.pagenavigation;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_PAGE_NUM;
+import static pl.kacperk.pokemonservicefullstack.util.pagenavigation.PageLimitsCalculator.ALL_PAGES_LIMIT;
+import static pl.kacperk.pokemonservicefullstack.util.pagenavigation.PageLimitsCalculator.NEXT_PAGES_LIMIT;
+import static pl.kacperk.pokemonservicefullstack.util.pagenavigation.PageLimitsCalculator.PREVIOUS_PAGES_LIMIT;
+import static pl.kacperk.pokemonservicefullstack.util.pagenavigation.PageLimitsCalculator.getPageLimits;
 
 class PageLimitsCalculatorTest {
 
-    private final int prevPagesLimit = 11;
-    private final int nextPagesLimit = 3;
+    private static final int TOTAL_PAGES_OVER_ALL_PAGES_LIMIT = 20;
+
+    static IntStream pageNumbersBeforeAllPagesLimit() {
+        return IntStream.range(0, ALL_PAGES_LIMIT);
+    }
+
+    static IntStream pageNumbersToPreviousPagesLimit() {
+        return IntStream.range(0, PREVIOUS_PAGES_LIMIT + 1);
+    }
+
+    static IntStream pageNumbersBetweenPagesLimits() {
+        return IntStream.range(
+            PREVIOUS_PAGES_LIMIT + 1, TOTAL_PAGES_OVER_ALL_PAGES_LIMIT - NEXT_PAGES_LIMIT
+        );
+    }
+
+    static IntStream pageNumbersOverNextPagesLimit() {
+        return IntStream.range(
+            TOTAL_PAGES_OVER_ALL_PAGES_LIMIT - NEXT_PAGES_LIMIT, TOTAL_PAGES_OVER_ALL_PAGES_LIMIT
+        );
+    }
 
     @Test
     void getPageLimits_1Page_correctLimits() {
-        // given
-        final var allPages = 1;
-        final var pageNumber = 0;
+        final var pageLimits = getPageLimits(1, DEF_PAGE_NUM);
 
-        // when
-        final var pageLimits = PageLimitsCalculator.getPageLimits(allPages, pageNumber);
-
-        // then
-        assertThat(pageLimits[0])
-                .isEqualTo(0);
-        assertThat(pageLimits[1])
-                .isEqualTo(0);
+        assertThat(pageLimits)
+            .containsOnly(0, 0);
     }
 
-    @Test
-    void getPageLimits_15Pages_correctLimits() {
-        // given
-        final var allPages = 15;
-        final var pageNumber = 0;
+    @ParameterizedTest
+    @MethodSource("pageNumbersBeforeAllPagesLimit")
+    void getPageLimits_allPagesLimit_correctLimits(int pageNumber) {
+        final var pageLimits = getPageLimits(ALL_PAGES_LIMIT, pageNumber);
 
-        // when
-        final var pageLimits = PageLimitsCalculator.getPageLimits(allPages, pageNumber);
-
-        // then
-        assertThat(pageLimits[0])
-                .isEqualTo(0);
-        assertThat(pageLimits[1])
-                .isEqualTo(allPages - 1);
+        assertThat(pageLimits)
+            .containsOnly(0, ALL_PAGES_LIMIT - 1);
     }
 
-    @Test
-    void getPageLimits_16Pages11thPage_correctLimits() {
-        // given
-        final var allPages = 16;
-        final var pageNumber = 11;
+    @ParameterizedTest
+    @MethodSource("pageNumbersToPreviousPagesLimit")
+    void getPageLimits_PageNumberInPreviousPagesLimit_correctLimits(int pageNumber) {
+        final var pageLimits = getPageLimits(TOTAL_PAGES_OVER_ALL_PAGES_LIMIT, pageNumber);
 
-        // when
-        final var pageLimits = PageLimitsCalculator.getPageLimits(allPages, pageNumber);
-
-        // then
-        assertThat(pageLimits[0])
-                .isEqualTo(0);
-        assertThat(pageLimits[1])
-                .isEqualTo(pageNumber + nextPagesLimit);
+        assertThat(pageLimits)
+            .containsOnly(0, ALL_PAGES_LIMIT - 1);
     }
 
-    @Test
-    void getPageLimits_16Pages12thPage_correctLimits() {
-        // given
-        final var allPages = 16;
-        final var pageNumber = 12;
+    @ParameterizedTest
+    @MethodSource("pageNumbersBetweenPagesLimits")
+    void getPageLimits_PageNumberBetweenLimits_correctLimits(int pageNumber) {
+        final var pageLimits = getPageLimits(TOTAL_PAGES_OVER_ALL_PAGES_LIMIT, pageNumber);
 
-        // when
-        final var pageLimits = PageLimitsCalculator.getPageLimits(allPages, pageNumber);
-
-        // then
-        assertThat(pageLimits[0])
-                .isEqualTo(pageNumber - prevPagesLimit);
-        assertThat(pageLimits[1])
-                .isEqualTo(pageNumber + nextPagesLimit);
+        assertThat(pageLimits)
+            .containsOnly(pageNumber - PREVIOUS_PAGES_LIMIT, pageNumber + NEXT_PAGES_LIMIT);
     }
 
-    @Test
-    void getPageLimits_16PagesWith13thPage_correctLimits() {
-        // given
-        final var allPages = 16;
-        final var pageNumber = 13;
+    @ParameterizedTest
+    @MethodSource("pageNumbersOverNextPagesLimit")
+    void getPageLimits_PageNumberInNextPagesLimit_correctLimits(int pageNumber) {
+        final var pageLimits = getPageLimits(TOTAL_PAGES_OVER_ALL_PAGES_LIMIT, pageNumber);
 
-        // when
-        final var pageLimits = PageLimitsCalculator.getPageLimits(allPages, pageNumber);
-
-        // then
-        assertThat(pageLimits[0])
-                .isEqualTo(allPages - 1 - prevPagesLimit - nextPagesLimit);
-        assertThat(pageLimits[1])
-                .isEqualTo(allPages - 1);
+        assertThat(pageLimits)
+            .containsOnly(TOTAL_PAGES_OVER_ALL_PAGES_LIMIT - ALL_PAGES_LIMIT, TOTAL_PAGES_OVER_ALL_PAGES_LIMIT - 1);
     }
 
 }

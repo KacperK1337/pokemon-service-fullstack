@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.kacperk.pokemonservicefullstack.util.validation.PasswordMatches;
+import pl.kacperk.pokemonservicefullstack.validation.PasswordMatches;
 
 @Getter
 @Setter

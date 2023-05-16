@@ -1,2 +1,2 @@
-USER testuser testuserpass
+USER testuser1 testuserpass1
 USER testuser2 testuserpass2

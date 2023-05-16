@@ -2,203 +2,179 @@ package pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Type;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.Iterables.getLast;
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.DEF_POKEMON_LIKES;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTIONS_1;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTIONS_2;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTIONS_NONE;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTION_1;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTION_2;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_ID;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_PHOTO_URL;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_TYPES_1;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_TYPES_2;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_TYPE_1;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_TYPE_2;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemon;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemonWithId;
+import static pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
 import static pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
 
 class PokemonResponseDtoMapperTest {
 
-    private Pokemon testPokemon;
-
-    private Pokemon createTestPokemon(final String name, final Set<String> possibleEvolutions, final Set<Type> types) {
-        return new Pokemon(
-                name, possibleEvolutions, types, "testPhotoUrl"
-        );
-    }
+    private static final Set<String> TEST_POKEMON_EVOLUTIONS_2_NAMES_SET = Set.of(
+        TEST_POKEMON_EVOLUTION_1 + " / " + TEST_POKEMON_EVOLUTION_2,
+        TEST_POKEMON_EVOLUTION_2 + " / " + TEST_POKEMON_EVOLUTION_1
+    );
+    private static final String TEST_POKEMON_TYPE_1_NAME = TEST_POKEMON_TYPE_1.name();
+    private static final String TEST_POKEMON_TYPE_2_NAME = TEST_POKEMON_TYPE_2.name();
+    private static final Set<String> TEST_POKEMON_TYPES_2_NAMES_SET = Set.of(
+        TEST_POKEMON_TYPE_1_NAME + ", " + TEST_POKEMON_TYPE_2_NAME,
+        TEST_POKEMON_TYPE_2_NAME + ", " + TEST_POKEMON_TYPE_1_NAME
+    );
+    private static final String POKEMON_RESPONSE_DTO_POSSIBLE_EVOLUTIONS_FIELD = "possibleEvolutions";
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWithoutEvolution_correctPokemonResponse() {
-        // given
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        final Set<Type> types = new LinkedHashSet<>();
-        final var type1 = Type.Water;
-        types.add(type1);
-        testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
+        final var testPokemon = createTestPokemonWithId(
+            TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1
+        );
 
-        // when
-        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToPokemonResponseDto(testPokemon);
 
-        // then
         assertThat(response.getId())
-                .isEqualTo(testPokemon.getId());
+            .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
-                .isEqualTo(testPokemon.getName());
-        assertThat(response.getPhotoUrl())
-                .isEqualTo(testPokemon.getPhotoUrl());
-        assertThat(response.getTypeNames())
-                .isEqualTo(type1.name());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(response.getPossibleEvolutions())
-                .isNull();
+            .isNull();
+        assertThat(response.getTypeNames())
+            .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
+        assertThat(response.getPhotoUrl())
+            .isEqualTo(TEST_POKEMON_PHOTO_URL);
         assertThat(response.getNumberOfLikes())
-                .isEqualTo(testPokemon.getNumberOfLikes());
+            .isEqualTo(DEF_POKEMON_LIKES);
     }
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWith1PossibleEvolution_correctPokemonResponse() {
-        // given
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        final var possibleEvolution1 = "testEvolution1";
-        possibleEvolutions.add(possibleEvolution1);
-        final Set<Type> types = new LinkedHashSet<>();
-        final var type1 = Type.Water;
-        types.add(type1);
-        testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
+        final var testPokemon = createTestPokemonWithId(
+            TEST_POKEMON_EVOLUTIONS_1, TEST_POKEMON_TYPES_1
+        );
 
-        // when
-        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToPokemonResponseDto(testPokemon);
 
-        // then
         assertThat(response.getId())
-                .isEqualTo(testPokemon.getId());
+            .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
-                .isEqualTo(testPokemon.getName());
-        assertThat(response.getPhotoUrl())
-                .isEqualTo(testPokemon.getPhotoUrl());
-        assertThat(response.getTypeNames())
-                .isEqualTo(type1.name());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(response.getPossibleEvolutions())
-                .isEqualTo(possibleEvolution1);
+            .isEqualTo(TEST_POKEMON_EVOLUTION_1);
+        assertThat(response.getTypeNames())
+            .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
+        assertThat(response.getPhotoUrl())
+            .isEqualTo(TEST_POKEMON_PHOTO_URL);
         assertThat(response.getNumberOfLikes())
-                .isEqualTo(testPokemon.getNumberOfLikes());
+            .isEqualTo(DEF_POKEMON_LIKES);
     }
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWith2PossibleEvolutions_correctPokemonResponse() {
-        // given
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        final var possibleEvolution1 = "testEvolution1";
-        possibleEvolutions.add(possibleEvolution1);
-        final var possibleEvolution2 = "testEvolution2";
-        possibleEvolutions.add(possibleEvolution2);
-        final Set<Type> types = new LinkedHashSet<>();
-        final var type1 = Type.Water;
-        types.add(type1);
-        testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
+        final var testPokemon = createTestPokemonWithId(
+            TEST_POKEMON_EVOLUTIONS_2, TEST_POKEMON_TYPES_1
+        );
 
-        // when
-        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToPokemonResponseDto(testPokemon);
 
-        // then
         assertThat(response.getId())
-                .isEqualTo(testPokemon.getId());
+            .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
-                .isEqualTo(testPokemon.getName());
-        assertThat(response.getPhotoUrl())
-                .isEqualTo(testPokemon.getPhotoUrl());
-        assertThat(response.getTypeNames())
-                .isEqualTo(type1.name());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(response.getPossibleEvolutions())
-                .isEqualTo(possibleEvolution1 + " / " + possibleEvolution2);
+            .isIn(TEST_POKEMON_EVOLUTIONS_2_NAMES_SET);
+        assertThat(response.getTypeNames())
+            .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
+        assertThat(response.getPhotoUrl())
+            .isEqualTo(TEST_POKEMON_PHOTO_URL);
         assertThat(response.getNumberOfLikes())
-                .isEqualTo(testPokemon.getNumberOfLikes());
+            .isEqualTo(DEF_POKEMON_LIKES);
     }
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWith2Types_correctPokemonResponse() {
-        // given
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        final Set<Type> types = new LinkedHashSet<>();
-        final var type1 = Type.Water;
-        types.add(type1);
-        final var type2 = Type.Grass;
-        types.add(type2);
-        testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
+        final var testPokemon = createTestPokemonWithId(
+            TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_2
+        );
 
-        // when
-        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToPokemonResponseDto(testPokemon);
 
-        // then
         assertThat(response.getId())
-                .isEqualTo(testPokemon.getId());
+            .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
-                .isEqualTo(testPokemon.getName());
-        assertThat(response.getPhotoUrl())
-                .isEqualTo(testPokemon.getPhotoUrl());
-        assertThat(response.getTypeNames())
-                .isEqualTo(type1.name() + ", " + type2.name());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(response.getPossibleEvolutions())
-                .isNull();
+            .isNull();
+        assertThat(response.getTypeNames())
+            .isIn(TEST_POKEMON_TYPES_2_NAMES_SET);
+        assertThat(response.getPhotoUrl())
+            .isEqualTo(TEST_POKEMON_PHOTO_URL);
         assertThat(response.getNumberOfLikes())
-                .isEqualTo(testPokemon.getNumberOfLikes());
+            .isEqualTo(DEF_POKEMON_LIKES);
     }
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWith1Like_correctPokemonResponse() {
-        // given
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        final Set<Type> types = new LinkedHashSet<>();
-        final var type1 = Type.Water;
-        types.add(type1);
-        testPokemon = createTestPokemon("testPokemon", possibleEvolutions, types);
-        testPokemon.setNumberOfLikes(1);
+        final var testPokemon = createTestPokemonWithId(
+            TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1
+        );
+        final var pokemonLikes = 1;
+        testPokemon.setNumberOfLikes(pokemonLikes);
 
-        // when
-        final var response = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToPokemonResponseDto(testPokemon);
 
-        // then
         assertThat(response.getId())
-                .isEqualTo(testPokemon.getId());
+            .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
-                .isEqualTo(testPokemon.getName());
-        assertThat(response.getPhotoUrl())
-                .isEqualTo(testPokemon.getPhotoUrl());
-        assertThat(response.getTypeNames())
-                .isEqualTo(type1.name());
+            .isEqualTo(TEST_POKEMON_NAME);
         assertThat(response.getPossibleEvolutions())
-                .isNull();
+            .isNull();
+        assertThat(response.getTypeNames())
+            .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
+        assertThat(response.getPhotoUrl())
+            .isEqualTo(TEST_POKEMON_PHOTO_URL);
         assertThat(response.getNumberOfLikes())
-                .isEqualTo(testPokemon.getNumberOfLikes());
+            .isEqualTo(pokemonLikes);
     }
 
     @Test
     void pokemonsToPokemonResponseDtos_variousPokemons_correctSetOfPokemons() {
-        // given
-        final Set<String> possibleEvolutions = new LinkedHashSet<>();
-        final Set<Type> types = new LinkedHashSet<>();
-        final var type1 = Type.Water;
-        types.add(type1);
+        final var testPokemon1 = createTestPokemon(
+            TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1
+        );
+        final var testPokemon2 = createTestPokemon(
+            TEST_POKEMON_EVOLUTIONS_1, TEST_POKEMON_TYPES_1
+        );
+        final var testPokemonsPage = new PageImpl<>(List.of(
+            testPokemon1, testPokemon2
+        ));
 
-        final List<Pokemon> testPokemonsList = new ArrayList<>();
-        final var testPokemon1 = createTestPokemon("testPokemon1", possibleEvolutions, types);
-        testPokemonsList.add(testPokemon1);
-        final var testPokemon2 = createTestPokemon("testPokemon2", possibleEvolutions, types);
-        testPokemonsList.add(testPokemon2);
-        final var testPokemonsPage = new PageImpl<>(testPokemonsList);
-
-        // when
         final var responseSet = pokemonsToPokemonResponseDtos(testPokemonsPage);
-        final var response1 = responseSet
-                .iterator()
-                .next();
-        final var response2 = getLast(responseSet);
 
-        // then
         assertThat(responseSet.size())
-                .isEqualTo(2);
-
-        assertThat(response1.getName())
-                .isEqualTo(testPokemon1.getName());
-
-        assertThat(response2.getName())
-                .isEqualTo(testPokemon2.getName());
+            .isEqualTo(2);
+        assertThat(responseSet)
+            .element(0)
+            .hasFieldOrPropertyWithValue(POKEMON_RESPONSE_DTO_POSSIBLE_EVOLUTIONS_FIELD, null);
+        assertThat(responseSet)
+            .element(1)
+            .hasFieldOrPropertyWithValue(
+                POKEMON_RESPONSE_DTO_POSSIBLE_EVOLUTIONS_FIELD, TEST_POKEMON_EVOLUTION_1
+            );
     }
 
 }

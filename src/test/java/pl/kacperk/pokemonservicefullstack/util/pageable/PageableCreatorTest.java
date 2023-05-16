@@ -1,64 +1,35 @@
 package pl.kacperk.pokemonservicefullstack.util.pageable;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_FIELD_TO_SORT;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_PAGE_NUM;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_PAGE_SIZE;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_SORT;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.NON_DEF_SORT;
+import static pl.kacperk.pokemonservicefullstack.util.pageable.PageableCreator.getPageable;
 
 class PageableCreatorTest {
 
-    @Test
-    void getPageable_exampleParamsAscSort_pageableParamsEqualToProvided() {
-        // given
-        final var pageNumber = 2;
-        final var pageSize = 10;
-        final var fieldToSortBy = "someField";
-        final var sortDirectionName = "ASC";
-
+    @ParameterizedTest
+    @ValueSource(strings = {DEF_SORT, NON_DEF_SORT})
+    void getPageable_differentSortDir_pageableParamsCorrect(String sortDirection) {
         final var expectedSortDirection = SortDirectionEnum
-                .valueOf(sortDirectionName)
-                .getSortDirection();
-        final var expectedSort = Sort.by(expectedSortDirection, fieldToSortBy);
+            .valueOf(sortDirection)
+            .getSortDirection();
+        final var expectedSort = Sort.by(expectedSortDirection, DEF_FIELD_TO_SORT);
 
-        // when
-        final var pageable = PageableCreator.getPageable(
-                pageNumber, pageSize, sortDirectionName, fieldToSortBy
-        );
+        final var pageable = getPageable(DEF_PAGE_NUM, DEF_PAGE_SIZE, sortDirection, DEF_FIELD_TO_SORT);
 
-        // then
         assertThat(pageable.getPageNumber())
-                .isEqualTo(pageNumber);
+            .isEqualTo(DEF_PAGE_NUM);
         assertThat(pageable.getPageSize())
-                .isEqualTo(pageSize);
+            .isEqualTo(DEF_PAGE_SIZE);
         assertThat(pageable.getSort())
-                .isEqualTo(expectedSort);
-    }
-
-    @Test
-    void getPageable_exampleParamsDescSort_pageableParamsEqualToProvided() {
-        // given
-        final var pageNumber = 2;
-        final var pageSize = 10;
-        final var fieldToSortBy = "someField";
-        final var sortDirectionName = "DESC";
-
-        final var expectedSortDirection = SortDirectionEnum
-                .valueOf(sortDirectionName)
-                .getSortDirection();
-        final var expectedSort = Sort.by(expectedSortDirection, fieldToSortBy);
-
-        // when
-        final var pageable = PageableCreator.getPageable(
-                pageNumber, pageSize, sortDirectionName, fieldToSortBy
-        );
-
-        // then
-        assertThat(pageable.getPageNumber())
-                .isEqualTo(pageNumber);
-        assertThat(pageable.getPageSize())
-                .isEqualTo(pageSize);
-        assertThat(pageable.getSort())
-                .isEqualTo(expectedSort);
+            .isEqualTo(expectedSort);
     }
 
 }

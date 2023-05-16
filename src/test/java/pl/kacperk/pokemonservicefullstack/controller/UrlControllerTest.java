@@ -1,21 +1,18 @@
 package pl.kacperk.pokemonservicefullstack.controller;
 
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.kacperk.pokemonservicefullstack.ContainerTest;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
+import pl.kacperk.pokemonservicefullstack.AbstractControllerTest;
 import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.api.appuser.service.AppUserService;
 import pl.kacperk.pokemonservicefullstack.api.pokemon.service.PokemonService;
 import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistException;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -24,350 +21,301 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.getLoggedUserSession;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.prepareAppUserRepoForControllerTest;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.ACCOUNT_UPDATE_VIEW_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.ID_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.LOGIN_URL;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.MATCHING_PASS_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.NAME_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.PASS_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.PHOTO_URL_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.POSSIBLE_EVOLUTIONS_PROP;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_NAME;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_PASS;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_REQUEST_DTO;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.getLoggedUserSession;
 import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.appUserToAppUserDetails;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ExtendWith(MockitoExtension.class)
-class UrlControllerTest extends ContainerTest {
+class UrlControllerTest extends AbstractControllerTest {
+
+    private static final String ABOUT_MAPPING = "/about";
+    private static final String ACCOUNT_MAPPING = "/account";
+    private static final String ACCOUNT_UPDATE_MAPPING = "/account/update";
+    private static final String FAQS_MAPPING = "/faqs";
+    private static final String INDEX_MAPPING = "/";
+    private static final String POKEMON_FAVOURITE_MAPPING = "/pokemon-favourite";
+
+    private static final String PASS_CHANGE_REQUEST_DTO_ATR = "passwordChangeRequestDto";
+    private static final String NUMBER_OF_USERS_ATR = "numberOfUsers";
+    private static final String TOP_POKEMON_ATR = "topPokemon";
+
+    private static final String TYPES_PROP = "types";
+
+    private static final String ABOUT_VIEW_NAME = "about";
+    private static final String ACCOUNT_VIEW_NAME = "account";
+    private static final String FAQS_VIEW_NAME = "faqs";
+    private static final String INDEX_VIEW_NAME = "index";
+    private static final String POKEMON_FAVOURITE_VIEW_NAME = "pokemon-favourite";
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
-    private AppUserService appUserService;
-
+    private AppUserService userService;
     @Autowired
-    private AppUserRepo appUserRepo;
-
+    private AppUserRepo userRepo;
     @Autowired
     private PokemonService pokemonService;
 
-    private AppUser controllerTestUser;
-    private final String controllerTestUserPassword = "controllerTestUserPassword";
-
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
-        final var controllerTestAppUserName = "controllerTestAppUserName";
-        prepareAppUserRepoForControllerTest(
-                appUserRepo, appUserService, controllerTestAppUserName, controllerTestUserPassword
-        );
-        controllerTestUser = appUserService.getAppUserByName(controllerTestAppUserName);
+        userService.registerAppUser(REGISTER_REQUEST_DTO);
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepo.deleteAll();
     }
 
     @Test
     void getAbout_anonymousUser_correctStatusView() throws Exception {
-        // when
         final var resultActions = mockMvc.perform(
-                get("/about")
+            get(ABOUT_MAPPING)
         );
 
-        // then
         resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("about")
+            view().name(ABOUT_VIEW_NAME)
         );
     }
 
     @Test
     void getAbout_loggedUser_correctStatusView() throws Exception {
-        // given
         final var sessionWithLoggedUser = getLoggedUserSession(
-                controllerTestUser, controllerTestUserPassword, mockMvc
+            REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/about")
-                        .session(sessionWithLoggedUser)
+            get(ABOUT_MAPPING)
+                .session(sessionWithLoggedUser)
         );
 
-        // then
         resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("about")
+            view().name(ABOUT_VIEW_NAME)
         );
     }
 
     @Test
     void getAccount_anonymousUser_correctStatusRedirectedUrl() throws Exception {
-        // when
         final var resultActions = mockMvc.perform(
-                get("/account")
+            get(ACCOUNT_MAPPING)
         );
 
-        // then
         resultActions.andExpect(
-                status().is3xxRedirection()
+            status().is3xxRedirection()
         );
         resultActions.andExpect(
-                redirectedUrl("http://localhost/auth/login")
+            redirectedUrl(LOGIN_URL)
         );
     }
 
     @Test
     void getAccount_loggedUser_correctStatusView() throws Exception {
-        // given
         final var sessionWithLoggedUser = getLoggedUserSession(
-                controllerTestUser, controllerTestUserPassword, mockMvc
+            REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/account")
-                        .session(sessionWithLoggedUser)
+            get(ACCOUNT_MAPPING)
+                .session(sessionWithLoggedUser)
         );
 
-        // then
         resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("account")
+            view().name(ACCOUNT_VIEW_NAME)
         );
     }
 
     @Test
     void getAccountUpdate_anonymousUser_correctStatusRedirectedUrl() throws Exception {
-        // when
         final var resultActions = mockMvc.perform(
-                get("/account/update")
+            get(ACCOUNT_UPDATE_MAPPING)
         );
 
-        // then
         resultActions.andExpect(
-                status().is3xxRedirection()
+            status().is3xxRedirection()
         );
         resultActions.andExpect(
-                redirectedUrl("http://localhost/auth/login")
+            redirectedUrl(LOGIN_URL)
         );
     }
 
     @Test
     void getAccountUpdate_loggedUser_correctModelAttributeStatusView() throws Exception {
-        // given
         final var sessionWithLoggedUser = getLoggedUserSession(
-                controllerTestUser, controllerTestUserPassword, mockMvc
+            REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/account/update")
-                        .session(sessionWithLoggedUser)
+            get(ACCOUNT_UPDATE_MAPPING)
+                .session(sessionWithLoggedUser)
         );
 
-        // then
         resultActions.andExpect(
-                model().attribute(
-                        "passwordChangeRequestDto", hasProperty(
-                                "password", nullValue()
-                        )
-                ));
+            model().attribute(PASS_CHANGE_REQUEST_DTO_ATR, allOf(
+                hasProperty(PASS_PROP, nullValue()),
+                hasProperty(MATCHING_PASS_PROP, nullValue())
+            ))
+        );
+
         resultActions.andExpect(
-                model().attribute(
-                        "passwordChangeRequestDto", hasProperty(
-                                "matchingPassword", nullValue()
-                        )
-                ));
-        resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("account-update")
+            view().name(ACCOUNT_UPDATE_VIEW_NAME)
         );
     }
 
     @Test
     void getFaqs_anonymousUser_correctStatusView() throws Exception {
-        // when
         final var resultActions = mockMvc.perform(
-                get("/faqs")
+            get(FAQS_MAPPING)
         );
 
-        // then
         resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("faqs")
+            view().name(FAQS_VIEW_NAME)
         );
     }
 
     @Test
     void getFaqs_loggedUser_correctStatusView() throws Exception {
-        // given
         final var sessionWithLoggedUser = getLoggedUserSession(
-                controllerTestUser, controllerTestUserPassword, mockMvc
+            REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/faqs")
-                        .session(sessionWithLoggedUser)
+            get(FAQS_MAPPING)
+                .session(sessionWithLoggedUser)
         );
 
-        // then
         resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("faqs")
+            view().name(FAQS_VIEW_NAME)
         );
     }
 
     @Test
     @Transactional
     void getIndex_anonymousUser_correctModelAttributesStatusView() throws Exception {
-        // given
-        final var firstDbPokemon = pokemonService.getPokemonById(1L);
-        final var firstDbAppUserDetails = appUserToAppUserDetails(controllerTestUser);
-        pokemonService.addPokemonToFavourites(1L, firstDbAppUserDetails);
+        final var registeredPokemonId = 3L;
+        final var registeredPokemon = pokemonService.getPokemonById(registeredPokemonId);
+        final var registeredUser = userService.getAppUserByName(REGISTERED_USER_NAME);
+        final var registeredUserDetails = appUserToAppUserDetails(registeredUser);
+        pokemonService.addPokemonToFavourites(registeredPokemonId, registeredUserDetails);
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/")
+            get(INDEX_MAPPING)
         );
 
-        // then
         resultActions.andExpect(
-                model().attribute(
-                        "numberOfUsers", is(1L)
-                ));
+            model().attribute(
+                NUMBER_OF_USERS_ATR, is(1L)
+            ));
         resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "id", is(firstDbPokemon.getId())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "name", is(firstDbPokemon.getName())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "possibleEvolutions", is(firstDbPokemon.getPossibleEvolutions())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "types", is(firstDbPokemon.getTypes())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty("photoUrl", is(firstDbPokemon.getPhotoUrl()))
-                ));
-        resultActions.andExpect(
-                status().isOk()
+            model().attribute(TOP_POKEMON_ATR, allOf(
+                hasProperty(ID_PROP, is(registeredPokemonId)),
+                hasProperty(NAME_PROP, is(registeredPokemon.getName())),
+                hasProperty(POSSIBLE_EVOLUTIONS_PROP, is(registeredPokemon.getPossibleEvolutions())),
+                hasProperty(TYPES_PROP, is(registeredPokemon.getTypes())),
+                hasProperty(PHOTO_URL_PROP, is(registeredPokemon.getPhotoUrl()))
+            ))
         );
         resultActions.andExpect(
-                view().name("index")
+            status().isOk()
+        );
+        resultActions.andExpect(
+            view().name(INDEX_VIEW_NAME)
         );
     }
 
     @Test
     @Transactional
     void getIndex_loggedUser_correctModelAttributesStatusView() throws Exception {
-        // given
         final var sessionWithLoggedUser = getLoggedUserSession(
-                controllerTestUser, controllerTestUserPassword, mockMvc
+            REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
-        final var firstDbPokemon = pokemonService.getPokemonById(1L);
-        final var firstDbAppUserDetails = appUserToAppUserDetails(controllerTestUser);
-        pokemonService.addPokemonToFavourites(1L, firstDbAppUserDetails);
+        final var registeredPokemonId = 3L;
+        final var registeredPokemon = pokemonService.getPokemonById(registeredPokemonId);
+        final var registeredUser = userService.getAppUserByName(REGISTERED_USER_NAME);
+        final var registeredUserDetails = appUserToAppUserDetails(registeredUser);
+        pokemonService.addPokemonToFavourites(registeredPokemonId, registeredUserDetails);
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/")
-                        .session(sessionWithLoggedUser)
+            get(INDEX_MAPPING)
+                .session(sessionWithLoggedUser)
         );
 
-        // then
         resultActions.andExpect(
-                model().attribute(
-                        "numberOfUsers", is(1L)
-                ));
+            model().attribute(
+                NUMBER_OF_USERS_ATR, is(1L)
+            ));
         resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "id", is(firstDbPokemon.getId())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty("name", is(firstDbPokemon.getName())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute("topPokemon", hasProperty(
-                                "possibleEvolutions", is(firstDbPokemon.getPossibleEvolutions())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "types", is(firstDbPokemon.getTypes())
-                        )
-                ));
-        resultActions.andExpect(
-                model().attribute(
-                        "topPokemon", hasProperty(
-                                "photoUrl", is(firstDbPokemon.getPhotoUrl())
-                        )
-                ));
-        resultActions.andExpect(
-                status().isOk()
+            model().attribute(TOP_POKEMON_ATR, allOf(
+                hasProperty(ID_PROP, is(registeredPokemonId)),
+                hasProperty(NAME_PROP, is(registeredPokemon.getName())),
+                hasProperty(POSSIBLE_EVOLUTIONS_PROP, is(registeredPokemon.getPossibleEvolutions())),
+                hasProperty(TYPES_PROP, is(registeredPokemon.getTypes())),
+                hasProperty(PHOTO_URL_PROP, is(registeredPokemon.getPhotoUrl()))
+            ))
         );
         resultActions.andExpect(
-                view().name("index")
+            status().isOk()
+        );
+        resultActions.andExpect(
+            view().name(INDEX_VIEW_NAME)
         );
     }
 
     @Test
     void getPokemonFavourite_anonymousUser_correctStatusRedirectedUrl() throws Exception {
-        // when
         final var resultActions = mockMvc.perform(
-                get("/pokemon-favourite")
+            get(POKEMON_FAVOURITE_MAPPING)
         );
 
-        // then
         resultActions.andExpect(
-                status().is3xxRedirection()
+            status().is3xxRedirection()
         );
         resultActions.andExpect(
-                redirectedUrl("http://localhost/auth/login")
+            redirectedUrl(LOGIN_URL)
         );
     }
 
     @Test
     void getPokemonFavourite_loggedUser_correctStatusView() throws Exception {
-        // given
         final var sessionWithLoggedUser = getLoggedUserSession(
-                controllerTestUser, controllerTestUserPassword, mockMvc
+            REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
-        // when
         final var resultActions = mockMvc.perform(
-                get("/pokemon-favourite")
-                        .session(sessionWithLoggedUser)
+            get(POKEMON_FAVOURITE_MAPPING)
+                .session(sessionWithLoggedUser)
         );
 
-        // then
         resultActions.andExpect(
-                status().isOk()
+            status().isOk()
         );
         resultActions.andExpect(
-                view().name("pokemon-favourite")
+            view().name(POKEMON_FAVOURITE_VIEW_NAME)
         );
     }
 
