@@ -1,4 +1,4 @@
-package pl.kacperk.pokemonservicefullstack.api.pokemon.controller;
+package pl.kacperk.pokemonservicefullstack.controller;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
@@ -30,11 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.EVOLUTIONS_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.ID_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.LOGIN_URL;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.NAME_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.PHOTO_URL_PROP;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.POSSIBLE_EVOLUTIONS_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_REQUEST_DTO;
@@ -44,58 +44,53 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_MAT
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_PAGE_NUM;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_PAGE_SIZE;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_SORT;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.NON_DEF_FIELD_TO_SORT;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.NON_DEF_MATCH;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.NON_DEF_PAGE_NUM;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.NON_DEF_PAGE_SIZE;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.NON_DEF_SORT;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_ID;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.ALL_PAGES_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.DATABASE_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.EVOLUTIONS_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.EVOLUTIONS_SET_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.GET_POKEMON_NO_PARAMS_ERROR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.ID_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.MATCH_BY_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.MATCH_BY_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.NAME_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.PAGE_LEFT_LIMIT_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.PAGE_NUM_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.PAGE_NUM_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.PAGE_RIGHT_LIMIT_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.PAGE_SIZE_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.PAGE_SIZE_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMONS_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMONS_GET_ALL_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMONS_GET_POKEMON_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMONS_GET_RANDOM_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMONS_GET_TOP_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMONS_LIKE_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMON_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMON_FAVOURITE_URL;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.POKEMON_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.RANKING_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.SORT_BY_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.SORT_BY_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.SORT_DIR_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.SORT_DIR_REQUEST_PARAM;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.TOP_POKEMONS_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.PokemonController.TOTAL_ELEMENTS_ATTR;
 
 class PokemonControllerTest extends AbstractControllerTest {
-
-    private static final String POKEMONS_GET_POKEMON_MAPPING = "/api/pokemons/get/pokemon";
-    private static final String POKEMONS_GET_RANDOM_MAPPING = "/api/pokemons/get/random";
-    private static final String POKEMONS_GET_ALL_MAPPING = "/api/pokemons/get/all";
-    private static final String POKEMONS_GET_TOP_MAPPING = "/api/pokemons/get/top";
-    private static final String POKEMONS_LIKE_MAPPING = "/api/pokemons/like/{id}";
-
-    private static final String ID_PARAM = "id";
-    private static final String NAME_PARAM = "name";
-    private static final String PAGE_NUM_PARAM = "pageNum";
-    private static final String PAGE_SIZE_PARAM = "pageSize";
-    private static final String SORT_DIR_PARAM = "sortDir";
-    private static final String SORT_BY_PARAM = "sortBy";
-    private static final String MATCH_BY_PARAM = "matchBy";
-
-    private static final String POSSIBLE_EVOLUTIONS_SET_ATR = "possibleEvolutionsSet";
-    private static final String POSSIBLE_EVOLUTIONS_ATR = "possibleEvolutions";
-    private static final String POKEMON_ATR = "pokemon";
-    private static final String PAGE_NUM_ATR = "pageNum";
-    private static final String PAGE_SIZE_ATR = "pageSize";
-    private static final String SORT_DIR_ATR = "sortDir";
-    private static final String SORT_BY_ATR = "sortBy";
-    private static final String MATCH_BY_ATR = "matchBy";
-    private static final String POKEMONS_ATR = "pokemons";
-    private static final String ALL_PAGES_ATR = "allPages";
-    private static final String TOTAL_ELEMENTS_ATR = "totalElements";
-    private static final String PAGE_LEFT_LIMIT_ATR = "pageLeftLimit";
-    private static final String PAGE_RIGHT_LIMIT_ATR = "pageRightLimit";
-    private static final String TOP_POKEMONS_ATR = "topPokemons";
 
     private static final String NUMBER_OF_LIKES_PROP = "numberOfLikes";
     private static final String TYPE_NAMES_PROP = "typeNames";
 
-    private static final String POKEMON_VIEW_NAME = "pokemon";
-    private static final String DATABASE_VIEW_NAME = "database";
-    private static final String RANKING_VIEW_NAME = "ranking";
-
-    private static final String POKEMON_FAVOURITE_URL = "/pokemon-favourite";
-
-    private static final String GET_POKEMON_NO_PARAMS_ERROR = "Pokemon can only be found by its id or name";
     private static final int MIN_EVOLUTIONS = 0;
     private static final int MAX_EVOLUTIONS = 2;
     private static final long MIN_POKEMON_ID = 1;
     private static final long MAX_POKEMON_ID = 905;
-    private static final int NON_DEF_PAGE_NUM = 1;
-    private static final int NON_DEF_PAGE_SIZE = 40;
-    private static final String NON_DEF_FIELD_TO_SORT = "name";
-    private static final String NON_DEF_MATCH = "B";
 
     @Autowired
     private MockMvc mockMvc;
@@ -126,20 +121,20 @@ class PokemonControllerTest extends AbstractControllerTest {
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)
-                .param(ID_PARAM, String.valueOf(TEST_POKEMON_ID))
+                .param(ID_REQUEST_PARAM, String.valueOf(TEST_POKEMON_ID))
         );
 
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_SET_ATR, expectedEvolutionsSet)
+            model().attribute(EVOLUTIONS_SET_ATTR, expectedEvolutionsSet)
         );
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_ATR, expectedEvolutions)
+            model().attribute(EVOLUTIONS_ATTR, expectedEvolutions)
         );
         resultActions.andExpect(
-            model().attribute(POKEMON_ATR, allOf(
+            model().attribute(POKEMON_ATTR, allOf(
                 hasProperty(ID_PROP, is(expectedPokemonResponse.getId())),
                 hasProperty(NAME_PROP, is(expectedPokemonResponse.getName())),
-                hasProperty(POSSIBLE_EVOLUTIONS_PROP, is(notNullValue())),
+                hasProperty(EVOLUTIONS_PROP, is(notNullValue())),
                 hasProperty(TYPE_NAMES_PROP, is(notNullValue())),
                 hasProperty(PHOTO_URL_PROP, is(expectedPokemonResponse.getPhotoUrl())),
                 hasProperty(NUMBER_OF_LIKES_PROP, is(expectedPokemonResponse.getNumberOfLikes()))
@@ -149,7 +144,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(POKEMON_VIEW_NAME)
+            view().name(POKEMON_VIEW)
         );
     }
 
@@ -166,21 +161,21 @@ class PokemonControllerTest extends AbstractControllerTest {
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)
-                .param(ID_PARAM, String.valueOf(TEST_POKEMON_ID))
+                .param(ID_REQUEST_PARAM, String.valueOf(TEST_POKEMON_ID))
                 .session(sessionWithLoggedUser)
         );
 
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_SET_ATR, expectedEvolutionsSet)
+            model().attribute(EVOLUTIONS_SET_ATTR, expectedEvolutionsSet)
         );
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_ATR, expectedEvolutions)
+            model().attribute(EVOLUTIONS_ATTR, expectedEvolutions)
         );
         resultActions.andExpect(
-            model().attribute(POKEMON_ATR, allOf(
+            model().attribute(POKEMON_ATTR, allOf(
                 hasProperty(ID_PROP, is(expectedPokemonResponse.getId())),
                 hasProperty(NAME_PROP, is(expectedPokemonResponse.getName())),
-                hasProperty(POSSIBLE_EVOLUTIONS_PROP, is(notNullValue())),
+                hasProperty(EVOLUTIONS_PROP, is(notNullValue())),
                 hasProperty(TYPE_NAMES_PROP, is(notNullValue())),
                 hasProperty(PHOTO_URL_PROP, is(expectedPokemonResponse.getPhotoUrl())),
                 hasProperty(NUMBER_OF_LIKES_PROP, is(expectedPokemonResponse.getNumberOfLikes()))
@@ -190,7 +185,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(POKEMON_VIEW_NAME)
+            view().name(POKEMON_VIEW)
         );
     }
 
@@ -205,20 +200,20 @@ class PokemonControllerTest extends AbstractControllerTest {
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)
-                .param(NAME_PARAM, testPokemonName)
+                .param(NAME_REQUEST_PARAM, testPokemonName)
         );
 
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_SET_ATR, expectedEvolutionsSet)
+            model().attribute(EVOLUTIONS_SET_ATTR, expectedEvolutionsSet)
         );
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_ATR, expectedEvolutions)
+            model().attribute(EVOLUTIONS_ATTR, expectedEvolutions)
         );
         resultActions.andExpect(
-            model().attribute(POKEMON_ATR, allOf(
+            model().attribute(POKEMON_ATTR, allOf(
                 hasProperty(ID_PROP, is(expectedPokemonResponse.getId())),
                 hasProperty(NAME_PROP, is(expectedPokemonResponse.getName())),
-                hasProperty(POSSIBLE_EVOLUTIONS_PROP, is(notNullValue())),
+                hasProperty(EVOLUTIONS_PROP, is(notNullValue())),
                 hasProperty(TYPE_NAMES_PROP, is(notNullValue())),
                 hasProperty(PHOTO_URL_PROP, is(expectedPokemonResponse.getPhotoUrl())),
                 hasProperty(NUMBER_OF_LIKES_PROP, is(expectedPokemonResponse.getNumberOfLikes()))
@@ -228,7 +223,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(POKEMON_VIEW_NAME)
+            view().name(POKEMON_VIEW)
         );
     }
 
@@ -246,21 +241,21 @@ class PokemonControllerTest extends AbstractControllerTest {
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)
-                .param(NAME_PARAM, testPokemonName)
+                .param(NAME_REQUEST_PARAM, testPokemonName)
                 .session(sessionWithLoggedUser)
         );
 
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_SET_ATR, expectedEvolutionsSet)
+            model().attribute(EVOLUTIONS_SET_ATTR, expectedEvolutionsSet)
         );
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_ATR, expectedEvolutions)
+            model().attribute(EVOLUTIONS_ATTR, expectedEvolutions)
         );
         resultActions.andExpect(
-            model().attribute(POKEMON_ATR, allOf(
+            model().attribute(POKEMON_ATTR, allOf(
                 hasProperty(ID_PROP, is(expectedPokemonResponse.getId())),
                 hasProperty(NAME_PROP, is(expectedPokemonResponse.getName())),
-                hasProperty(POSSIBLE_EVOLUTIONS_PROP, is(notNullValue())),
+                hasProperty(EVOLUTIONS_PROP, is(notNullValue())),
                 hasProperty(TYPE_NAMES_PROP, is(notNullValue())),
                 hasProperty(PHOTO_URL_PROP, is(expectedPokemonResponse.getPhotoUrl())),
                 hasProperty(NUMBER_OF_LIKES_PROP, is(expectedPokemonResponse.getNumberOfLikes()))
@@ -270,7 +265,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(POKEMON_VIEW_NAME)
+            view().name(POKEMON_VIEW)
         );
     }
 
@@ -318,25 +313,25 @@ class PokemonControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_SET_ATR, hasSize(
+            model().attribute(EVOLUTIONS_SET_ATTR, hasSize(
                 both(greaterThanOrEqualTo(MIN_EVOLUTIONS))
                     .and(lessThanOrEqualTo(MAX_EVOLUTIONS))
             ))
         );
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_ATR, is(
+            model().attribute(EVOLUTIONS_ATTR, is(
                 both(greaterThanOrEqualTo(MIN_EVOLUTIONS))
                     .and(lessThanOrEqualTo(MAX_EVOLUTIONS))
             ))
         );
         resultActions.andExpect(
-            model().attribute(POKEMON_ATR, allOf(
-                hasProperty(ID_PARAM, is(
+            model().attribute(POKEMON_ATTR, allOf(
+                hasProperty(ID_REQUEST_PARAM, is(
                     both(greaterThanOrEqualTo(MIN_POKEMON_ID))
                         .and(lessThanOrEqualTo(MAX_POKEMON_ID))
                 )),
                 hasProperty(NAME_PROP, is(notNullValue())),
-                hasProperty(POSSIBLE_EVOLUTIONS_PROP),
+                hasProperty(EVOLUTIONS_PROP),
                 hasProperty(TYPE_NAMES_PROP, is(notNullValue())),
                 hasProperty(PHOTO_URL_PROP, is(notNullValue())),
                 hasProperty(NUMBER_OF_LIKES_PROP, is(0))
@@ -346,7 +341,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(POKEMON_VIEW_NAME)
+            view().name(POKEMON_VIEW)
         );
     }
 
@@ -362,25 +357,25 @@ class PokemonControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_SET_ATR, hasSize(
+            model().attribute(EVOLUTIONS_SET_ATTR, hasSize(
                 both(greaterThanOrEqualTo(MIN_EVOLUTIONS))
                     .and(lessThanOrEqualTo(MAX_EVOLUTIONS))
             ))
         );
         resultActions.andExpect(
-            model().attribute(POSSIBLE_EVOLUTIONS_ATR, is(
+            model().attribute(EVOLUTIONS_ATTR, is(
                 both(greaterThanOrEqualTo(MIN_EVOLUTIONS))
                     .and(lessThanOrEqualTo(MAX_EVOLUTIONS))
             ))
         );
         resultActions.andExpect(
-            model().attribute(POKEMON_ATR, allOf(
-                hasProperty(ID_PARAM, is(
+            model().attribute(POKEMON_ATTR, allOf(
+                hasProperty(ID_REQUEST_PARAM, is(
                     both(greaterThanOrEqualTo(MIN_POKEMON_ID))
                         .and(lessThanOrEqualTo(MAX_POKEMON_ID))
                 )),
                 hasProperty(NAME_PROP, is(notNullValue())),
-                hasProperty(POSSIBLE_EVOLUTIONS_PROP),
+                hasProperty(EVOLUTIONS_PROP),
                 hasProperty(TYPE_NAMES_PROP, is(notNullValue())),
                 hasProperty(PHOTO_URL_PROP, is(notNullValue())),
                 hasProperty(NUMBER_OF_LIKES_PROP, is(0))
@@ -390,7 +385,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(POKEMON_VIEW_NAME)
+            view().name(POKEMON_VIEW)
         );
     }
 
@@ -408,40 +403,40 @@ class PokemonControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(PAGE_NUM_ATR, is(DEF_PAGE_NUM))
+            model().attribute(PAGE_NUM_ATTR, is(DEF_PAGE_NUM))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_SIZE_ATR, is(DEF_PAGE_SIZE))
+            model().attribute(PAGE_SIZE_ATTR, is(DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(SORT_DIR_ATR, is(DEF_SORT))
+            model().attribute(SORT_DIR_ATTR, is(DEF_SORT))
         );
         resultActions.andExpect(
-            model().attribute(SORT_BY_ATR, is(DEF_FIELD_TO_SORT))
+            model().attribute(SORT_BY_ATTR, is(DEF_FIELD_TO_SORT))
         );
         resultActions.andExpect(
-            model().attribute(MATCH_BY_ATR, is(DEF_MATCH))
+            model().attribute(MATCH_BY_ATTR, is(DEF_MATCH))
         );
         resultActions.andExpect(
-            model().attribute(POKEMONS_ATR, hasSize(DEF_PAGE_SIZE))
+            model().attribute(POKEMONS_ATTR, hasSize(DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(ALL_PAGES_ATR, is(expectedTotalPages))
+            model().attribute(ALL_PAGES_ATTR, is(expectedTotalPages))
         );
         resultActions.andExpect(
-            model().attribute(TOTAL_ELEMENTS_ATR, is(expectedTotalElements))
+            model().attribute(TOTAL_ELEMENTS_ATTR, is(expectedTotalElements))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_LEFT_LIMIT_ATR, is(expectedPageLimits[0]))
+            model().attribute(PAGE_LEFT_LIMIT_ATTR, is(expectedPageLimits[0]))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_RIGHT_LIMIT_ATR, is(expectedPageLimits[1]))
+            model().attribute(PAGE_RIGHT_LIMIT_ATTR, is(expectedPageLimits[1]))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(DATABASE_VIEW_NAME)
+            view().name(DATABASE_VIEW)
         );
     }
 
@@ -463,40 +458,40 @@ class PokemonControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(PAGE_NUM_ATR, is(DEF_PAGE_NUM))
+            model().attribute(PAGE_NUM_ATTR, is(DEF_PAGE_NUM))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_SIZE_ATR, is(DEF_PAGE_SIZE))
+            model().attribute(PAGE_SIZE_ATTR, is(DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(SORT_DIR_ATR, is(DEF_SORT))
+            model().attribute(SORT_DIR_ATTR, is(DEF_SORT))
         );
         resultActions.andExpect(
-            model().attribute(SORT_BY_ATR, is(DEF_FIELD_TO_SORT))
+            model().attribute(SORT_BY_ATTR, is(DEF_FIELD_TO_SORT))
         );
         resultActions.andExpect(
-            model().attribute(MATCH_BY_ATR, is(DEF_MATCH))
+            model().attribute(MATCH_BY_ATTR, is(DEF_MATCH))
         );
         resultActions.andExpect(
-            model().attribute(POKEMONS_ATR, hasSize(DEF_PAGE_SIZE))
+            model().attribute(POKEMONS_ATTR, hasSize(DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(ALL_PAGES_ATR, is(expectedAllPages))
+            model().attribute(ALL_PAGES_ATTR, is(expectedAllPages))
         );
         resultActions.andExpect(
-            model().attribute(TOTAL_ELEMENTS_ATR, is(expectedTotalElements))
+            model().attribute(TOTAL_ELEMENTS_ATTR, is(expectedTotalElements))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_LEFT_LIMIT_ATR, is(expectedPageLimits[0]))
+            model().attribute(PAGE_LEFT_LIMIT_ATTR, is(expectedPageLimits[0]))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_RIGHT_LIMIT_ATR, is(expectedPageLimits[1]))
+            model().attribute(PAGE_RIGHT_LIMIT_ATTR, is(expectedPageLimits[1]))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(DATABASE_VIEW_NAME)
+            view().name(DATABASE_VIEW)
         );
     }
 
@@ -511,51 +506,51 @@ class PokemonControllerTest extends AbstractControllerTest {
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_ALL_MAPPING)
-                .param(PAGE_NUM_PARAM, String.valueOf(NON_DEF_PAGE_NUM))
-                .param(PAGE_SIZE_PARAM, String.valueOf(NON_DEF_PAGE_SIZE))
-                .param(SORT_DIR_PARAM, NON_DEF_SORT)
-                .param(SORT_BY_PARAM, NON_DEF_FIELD_TO_SORT)
-                .param(MATCH_BY_PARAM, NON_DEF_MATCH)
+                .param(PAGE_NUM_REQUEST_PARAM, String.valueOf(NON_DEF_PAGE_NUM))
+                .param(PAGE_SIZE_REQUEST_PARAM, String.valueOf(NON_DEF_PAGE_SIZE))
+                .param(SORT_DIR_REQUEST_PARAM, NON_DEF_SORT)
+                .param(SORT_BY_REQUEST_PARAM, NON_DEF_FIELD_TO_SORT)
+                .param(MATCH_BY_REQUEST_PARAM, NON_DEF_MATCH)
         );
 
         resultActions.andExpect(
-            model().attribute(PAGE_NUM_ATR, is(NON_DEF_PAGE_NUM))
+            model().attribute(PAGE_NUM_ATTR, is(NON_DEF_PAGE_NUM))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_SIZE_ATR, is(NON_DEF_PAGE_SIZE))
+            model().attribute(PAGE_SIZE_ATTR, is(NON_DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(SORT_DIR_ATR, is(NON_DEF_SORT))
+            model().attribute(SORT_DIR_ATTR, is(NON_DEF_SORT))
         );
         resultActions.andExpect(
-            model().attribute(SORT_BY_ATR, is(NON_DEF_FIELD_TO_SORT))
+            model().attribute(SORT_BY_ATTR, is(NON_DEF_FIELD_TO_SORT))
         );
         resultActions.andExpect(
-            model().attribute(MATCH_BY_ATR, is(NON_DEF_MATCH))
+            model().attribute(MATCH_BY_ATTR, is(NON_DEF_MATCH))
         );
         resultActions.andExpect(
-            model().attribute(POKEMONS_ATR, hasSize(
+            model().attribute(POKEMONS_ATTR, hasSize(
                 both(greaterThanOrEqualTo(0))
                     .and(lessThanOrEqualTo(NON_DEF_PAGE_SIZE))
             ))
         );
         resultActions.andExpect(
-            model().attribute(ALL_PAGES_ATR, is(expectedAllPages))
+            model().attribute(ALL_PAGES_ATTR, is(expectedAllPages))
         );
         resultActions.andExpect(
-            model().attribute(TOTAL_ELEMENTS_ATR, is(expectedTotalElements))
+            model().attribute(TOTAL_ELEMENTS_ATTR, is(expectedTotalElements))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_LEFT_LIMIT_ATR, is(expectedPageLimits[0]))
+            model().attribute(PAGE_LEFT_LIMIT_ATTR, is(expectedPageLimits[0]))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_RIGHT_LIMIT_ATR, is(expectedPageLimits[1]))
+            model().attribute(PAGE_RIGHT_LIMIT_ATTR, is(expectedPageLimits[1]))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(DATABASE_VIEW_NAME)
+            view().name(DATABASE_VIEW)
         );
     }
 
@@ -573,57 +568,57 @@ class PokemonControllerTest extends AbstractControllerTest {
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_ALL_MAPPING)
-                .param(PAGE_NUM_PARAM, String.valueOf(NON_DEF_PAGE_NUM))
-                .param(PAGE_SIZE_PARAM, String.valueOf(NON_DEF_PAGE_SIZE))
-                .param(SORT_DIR_PARAM, NON_DEF_SORT)
-                .param(SORT_BY_PARAM, NON_DEF_FIELD_TO_SORT)
-                .param(MATCH_BY_PARAM, NON_DEF_MATCH)
+                .param(PAGE_NUM_REQUEST_PARAM, String.valueOf(NON_DEF_PAGE_NUM))
+                .param(PAGE_SIZE_REQUEST_PARAM, String.valueOf(NON_DEF_PAGE_SIZE))
+                .param(SORT_DIR_REQUEST_PARAM, NON_DEF_SORT)
+                .param(SORT_BY_REQUEST_PARAM, NON_DEF_FIELD_TO_SORT)
+                .param(MATCH_BY_REQUEST_PARAM, NON_DEF_MATCH)
                 .session(sessionWithLoggedUser)
         );
 
         resultActions.andExpect(
             model().attribute(
-                PAGE_NUM_ATR, is(NON_DEF_PAGE_NUM)
+                PAGE_NUM_ATTR, is(NON_DEF_PAGE_NUM)
             ));
         resultActions.andExpect(
             model().attribute(
-                PAGE_SIZE_ATR, is(NON_DEF_PAGE_SIZE)
+                PAGE_SIZE_ATTR, is(NON_DEF_PAGE_SIZE)
             ));
         resultActions.andExpect(
             model().attribute(
-                SORT_DIR_ATR, is(NON_DEF_SORT)
+                SORT_DIR_ATTR, is(NON_DEF_SORT)
             ));
         resultActions.andExpect(
             model().attribute(
-                SORT_BY_ATR, is(NON_DEF_FIELD_TO_SORT)
+                SORT_BY_ATTR, is(NON_DEF_FIELD_TO_SORT)
             ));
         resultActions.andExpect(
             model().attribute(
-                MATCH_BY_ATR, is(NON_DEF_MATCH)
+                MATCH_BY_ATTR, is(NON_DEF_MATCH)
             ));
         resultActions.andExpect(
-            model().attribute(POKEMONS_ATR, hasSize(
+            model().attribute(POKEMONS_ATTR, hasSize(
                 both(greaterThanOrEqualTo(0))
                     .and(lessThanOrEqualTo(NON_DEF_PAGE_SIZE))
             ))
         );
         resultActions.andExpect(
-            model().attribute(ALL_PAGES_ATR, is(expectedAllPages))
+            model().attribute(ALL_PAGES_ATTR, is(expectedAllPages))
         );
         resultActions.andExpect(
-            model().attribute(TOTAL_ELEMENTS_ATR, is(expectedTotalElements))
+            model().attribute(TOTAL_ELEMENTS_ATTR, is(expectedTotalElements))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_LEFT_LIMIT_ATR, is(expectedPageLimits[0]))
+            model().attribute(PAGE_LEFT_LIMIT_ATTR, is(expectedPageLimits[0]))
         );
         resultActions.andExpect(
-            model().attribute(PAGE_RIGHT_LIMIT_ATR, is(expectedPageLimits[1]))
+            model().attribute(PAGE_RIGHT_LIMIT_ATTR, is(expectedPageLimits[1]))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(DATABASE_VIEW_NAME)
+            view().name(DATABASE_VIEW)
         );
     }
 
@@ -631,18 +626,17 @@ class PokemonControllerTest extends AbstractControllerTest {
     @Transactional
     void getTopPokemons_anonymousUser_correctModelAttributeStatusView() throws Exception {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
-        testPokemon.like();
+        testPokemon.setNumberOfLikes(1);
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_TOP_MAPPING)
         );
-        testPokemon.unlike();
 
         resultActions.andExpect(
-            model().attribute(TOP_POKEMONS_ATR, hasSize(DEF_PAGE_SIZE))
+            model().attribute(TOP_POKEMONS_ATTR, hasSize(DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(TOP_POKEMONS_ATR, hasItem(
+            model().attribute(TOP_POKEMONS_ATTR, hasItem(
                 hasProperty(NUMBER_OF_LIKES_PROP, is(1))
             ))
         );
@@ -650,7 +644,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(RANKING_VIEW_NAME)
+            view().name(RANKING_VIEW)
         );
     }
 
@@ -658,7 +652,7 @@ class PokemonControllerTest extends AbstractControllerTest {
     @Transactional
     void getTopPokemons_loggedUser_correctModelAttributeStatusView() throws Exception {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
-        testPokemon.like();
+        testPokemon.setNumberOfLikes(1);
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
@@ -667,13 +661,12 @@ class PokemonControllerTest extends AbstractControllerTest {
             get(POKEMONS_GET_TOP_MAPPING)
                 .session(sessionWithLoggedUser)
         );
-        testPokemon.unlike();
 
         resultActions.andExpect(
-            model().attribute(TOP_POKEMONS_ATR, hasSize(DEF_PAGE_SIZE))
+            model().attribute(TOP_POKEMONS_ATTR, hasSize(DEF_PAGE_SIZE))
         );
         resultActions.andExpect(
-            model().attribute(TOP_POKEMONS_ATR, hasItem(
+            model().attribute(TOP_POKEMONS_ATTR, hasItem(
                 hasProperty(NUMBER_OF_LIKES_PROP, is(1))
             ))
         );
@@ -681,7 +674,7 @@ class PokemonControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(RANKING_VIEW_NAME)
+            view().name(RANKING_VIEW)
         );
     }
 
@@ -703,7 +696,6 @@ class PokemonControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional
     void addPokemonToFavourites_loggedUser_correctStatusRedirectedUrl() throws Exception {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
         final var pokemonId = testPokemon.getId();
@@ -715,7 +707,6 @@ class PokemonControllerTest extends AbstractControllerTest {
             get(POKEMONS_LIKE_MAPPING, pokemonId)
                 .session(sessionWithLoggedUser)
         );
-        testPokemon.unlike();
 
         resultActions.andExpect(
             status().is3xxRedirection()

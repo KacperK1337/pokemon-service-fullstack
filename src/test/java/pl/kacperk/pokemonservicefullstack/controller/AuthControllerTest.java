@@ -21,28 +21,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.ERROR_MESSAGE_ATR;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.LOGIN_MAPPING;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.MATCHING_PASS_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.PASS_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_REQUEST_DTO;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_VIEW_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.getLoggedUserSession;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.ERROR_MSG_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.LOGIN_ERROR_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.LOGIN_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.LOGIN_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.REGISTER_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.REGISTER_REQUEST_DTO_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.REGISTER_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.USERNAME_PASS_COMBINATION_ERROR;
 
 class AuthControllerTest extends AbstractControllerTest {
 
-    private static final String LOGIN_ERROR_MAPPING = "/auth/login-error";
-    private static final String REGISTER_MAPPING = "/auth/register";
-
-    private static final String REGISTER_REQUEST_DTO_ATR = "registerRequestDto";
-
     private static final String USER_NAME_PROP = "userName";
-
-    private static final String LOGIN_VIEW_NAME = "login";
-
-    private static final String USERNAME_AND_PASS_ERROR = "Invalid username and password combination";
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,7 +67,7 @@ class AuthControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(LOGIN_VIEW_NAME)
+            view().name(LOGIN_VIEW)
         );
     }
 
@@ -90,7 +86,7 @@ class AuthControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(LOGIN_VIEW_NAME)
+            view().name(LOGIN_VIEW)
         );
     }
 
@@ -101,13 +97,13 @@ class AuthControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(ERROR_MESSAGE_ATR, is(nullValue()))
+            model().attribute(ERROR_MSG_ATTR, is(nullValue()))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(LOGIN_VIEW_NAME)
+            view().name(LOGIN_VIEW)
         );
     }
 
@@ -122,13 +118,13 @@ class AuthControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(ERROR_MESSAGE_ATR, containsString(USERNAME_AND_PASS_ERROR))
+            model().attribute(ERROR_MSG_ATTR, containsString(USERNAME_PASS_COMBINATION_ERROR))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(LOGIN_VIEW_NAME)
+            view().name(LOGIN_VIEW)
         );
     }
 
@@ -139,7 +135,7 @@ class AuthControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(REGISTER_REQUEST_DTO_ATR, allOf(
+            model().attribute(REGISTER_REQUEST_DTO_ATTR, allOf(
                 hasProperty(USER_NAME_PROP, nullValue()),
                 hasProperty(PASS_PROP, nullValue()),
                 hasProperty(MATCHING_PASS_PROP, nullValue())
@@ -149,7 +145,7 @@ class AuthControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_VIEW_NAME)
+            view().name(REGISTER_VIEW)
         );
     }
 
@@ -165,7 +161,7 @@ class AuthControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(REGISTER_REQUEST_DTO_ATR, allOf(
+            model().attribute(REGISTER_REQUEST_DTO_ATTR, allOf(
                 hasProperty(USER_NAME_PROP, nullValue()),
                 hasProperty(PASS_PROP, nullValue()),
                 hasProperty(MATCHING_PASS_PROP, nullValue())
@@ -175,7 +171,7 @@ class AuthControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_VIEW_NAME)
+            view().name(REGISTER_VIEW)
         );
     }
 

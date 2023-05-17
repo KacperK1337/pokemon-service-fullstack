@@ -41,12 +41,12 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
     private static final String USER_NOT_FOUND_BY_ID_MESS = "User with id %s not found";
     private static final String USER_NOT_FOUND_BY_NAME_MESS = "User with username %s not found";
     private static final String USER_ALREADY_EXIST_MESS = "An account with that username already exists";
-    private static final String TEST_USER_ENCODED_PASS = "testUserEncodedPassword";
+    private static final String TEST_USER_ENCODED_PASS = "testUserEncodedPass";
 
     @Mock
     private AppUserRepo userRepo;
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passEncoder;
     @Mock
     private HttpServletRequest httpServletRequest;
     private AppUserServiceImpl userServiceImpl;
@@ -55,7 +55,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
     @BeforeEach
     void setUp() {
         userServiceImpl = new AppUserServiceImpl(
-            userRepo, passwordEncoder, httpServletRequest
+            userRepo, passEncoder, httpServletRequest
         );
         testUser = createTestAppUserWithId();
     }
@@ -162,7 +162,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         );
         given(userRepo.findByUserName(TEST_USER_NAME))
             .willReturn(Optional.empty());
-        given(passwordEncoder.encode(TEST_USER_PASS))
+        given(passEncoder.encode(TEST_USER_PASS))
             .willReturn(TEST_USER_ENCODED_PASS);
 
         userServiceImpl.registerAppUser(testRegisterRequestDto);
@@ -189,24 +189,24 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         assertThatThrownBy(() -> userServiceImpl.registerAppUser(testRegisterRequestDto))
             .isInstanceOf(USER_ALREADY_EXIST_EXC_CLASS)
             .hasMessageContaining(USER_ALREADY_EXIST_MESS);
-        verify(passwordEncoder, never())
+        verify(passEncoder, never())
             .encode(any());
         verify(userRepo, never())
             .save(any());
     }
 
     @Test
-    void changeLoggedUserPassword_userLoggedIn_passwordChangedUserLoggedOut() throws ServletException {
+    void changeLoggedUserPass_userLoggedIn_passChangedUserLoggedOut() throws ServletException {
         final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testUser);
         final var testUserName = testDetails.getUsername();
-        final var testUserPassword = testDetails.getPassword();
-        final var testPasswordChangeRequestDto = new AppUserPasswordChangeRequestDto(testUserPassword);
+        final var testUserPass = testDetails.getPassword();
+        final var testPassChangeRequestDto = new AppUserPasswordChangeRequestDto(testUserPass);
         given(userRepo.findByUserName(testUserName))
             .willReturn(Optional.of(testUser));
-        given(passwordEncoder.encode(testUserPassword))
+        given(passEncoder.encode(testUserPass))
             .willReturn(TEST_USER_ENCODED_PASS);
 
-        userServiceImpl.changeLoggedUserPassword(testDetails, testPasswordChangeRequestDto);
+        userServiceImpl.changeLoggedUserPassword(testDetails, testPassChangeRequestDto);
 
         verify(httpServletRequest)
             .logout();
@@ -215,16 +215,16 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
     }
 
     @Test
-    void changeLoggedUserPassword_userNotLoggedIn_throwResponseStatusException() throws ServletException {
-        final var testPasswordChangeRequestDto = new AppUserPasswordChangeRequestDto();
+    void changeLoggedUserPass_userNotLoggedIn_throwResponseStatusException() throws ServletException {
+        final var testPassChangeRequestDto = new AppUserPasswordChangeRequestDto();
 
-        assertThatThrownBy(() -> userServiceImpl.changeLoggedUserPassword(null, testPasswordChangeRequestDto))
+        assertThatThrownBy(() -> userServiceImpl.changeLoggedUserPassword(null, testPassChangeRequestDto))
             .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
             .hasFieldOrPropertyWithValue(STATUS_PROP, UNAUTHORIZED_STATUS)
             .hasMessageContaining(USER_NOT_LOGGED_MESS);
         verify(userRepo, never())
             .findByUserName(any());
-        verify(passwordEncoder, never())
+        verify(passEncoder, never())
             .encode(any());
         verify(httpServletRequest, never())
             .logout();

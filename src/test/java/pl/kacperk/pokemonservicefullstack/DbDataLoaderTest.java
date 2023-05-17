@@ -25,12 +25,12 @@ class DbDataLoaderTest {
     @Mock
     private PokemonRepo pokemonRepo;
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passEncoder;
     private DbDataLoader dbDataLoader;
 
     @BeforeEach
     void setUp() {
-        dbDataLoader = new DbDataLoader(userRepo, pokemonRepo, passwordEncoder);
+        dbDataLoader = new DbDataLoader(userRepo, pokemonRepo, passEncoder);
     }
 
     @AfterEach
@@ -43,7 +43,7 @@ class DbDataLoaderTest {
     void start_usersResourcesNotEmpty_resourcesSavedToRepo() {
         dbDataLoader.start();
 
-        verify(passwordEncoder, times(TOTAL_RESOURCE_TEST_USERS))
+        verify(passEncoder, times(TOTAL_RESOURCE_TEST_USERS))
             .encode(any());
         verify(userRepo, times(TOTAL_RESOURCE_TEST_USERS))
             .save(any());

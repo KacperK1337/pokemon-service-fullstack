@@ -24,7 +24,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.PageableUtils.DEF_SORT;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.NON_EXISTING_POKEMON_ID;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.NON_EXISTING_POKEMON_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_EVOLUTIONS_NONE;
@@ -178,12 +177,12 @@ class PokemonServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void getAll_validParameters_findByNameContainingMethodInvoked() {
-        final var requestedPageable = getPageable(0, 10, DEF_SORT, "id");
+        final var requestedPageable = getPageable(0, 10, "ASC", "id");
         final Page<Pokemon> testPokemonPage = new PageImpl<>(emptyList());
         given(pokemonRepo.findByNameContaining("", requestedPageable))
             .willReturn(testPokemonPage);
 
-        pokemonServiceImpl.getAll(0, 10, DEF_SORT, "id", "");
+        pokemonServiceImpl.getAll(0, 10, "ASC", "id", "");
 
         verify(pokemonRepo)
             .findByNameContaining("", requestedPageable);

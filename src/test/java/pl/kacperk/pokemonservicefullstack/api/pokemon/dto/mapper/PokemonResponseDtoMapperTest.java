@@ -37,7 +37,7 @@ class PokemonResponseDtoMapperTest {
         TEST_POKEMON_TYPE_1_NAME + ", " + TEST_POKEMON_TYPE_2_NAME,
         TEST_POKEMON_TYPE_2_NAME + ", " + TEST_POKEMON_TYPE_1_NAME
     );
-    private static final String POKEMON_RESPONSE_DTO_POSSIBLE_EVOLUTIONS_FIELD = "possibleEvolutions";
+    private static final String POKEMON_RESPONSE_DTO_EVOLUTIONS_FIELD = "possibleEvolutions";
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWithoutEvolution_correctPokemonResponse() {
@@ -169,11 +169,11 @@ class PokemonResponseDtoMapperTest {
             .isEqualTo(2);
         assertThat(responseSet)
             .element(0)
-            .hasFieldOrPropertyWithValue(POKEMON_RESPONSE_DTO_POSSIBLE_EVOLUTIONS_FIELD, null);
+            .hasFieldOrPropertyWithValue(POKEMON_RESPONSE_DTO_EVOLUTIONS_FIELD, null);
         assertThat(responseSet)
             .element(1)
             .hasFieldOrPropertyWithValue(
-                POKEMON_RESPONSE_DTO_POSSIBLE_EVOLUTIONS_FIELD, TEST_POKEMON_EVOLUTION_1
+                POKEMON_RESPONSE_DTO_EVOLUTIONS_FIELD, TEST_POKEMON_EVOLUTION_1
             );
     }
 

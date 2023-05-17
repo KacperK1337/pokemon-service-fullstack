@@ -11,32 +11,32 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_P
 
 class PasswordMatchesValidatorTest {
 
-    private PasswordMatchesValidator passwordMatchesValidator;
+    private PasswordMatchesValidator passMatchesValidator;
 
     @BeforeEach
     void setUp() {
-        passwordMatchesValidator = new PasswordMatchesValidator();
+        passMatchesValidator = new PasswordMatchesValidator();
     }
 
     @Test
-    void isValid_passwordChangeRequestDtoMatchingPass_valid() {
-        final var passwordChangeRequestDto = new AppUserPasswordChangeRequestDto(
+    void isValid_passChangeRequestDtoMatchingPass_valid() {
+        final var passChangeRequestDto = new AppUserPasswordChangeRequestDto(
             TEST_USER_PASS, TEST_USER_PASS
         );
 
-        final var result = passwordMatchesValidator.isValid(passwordChangeRequestDto, null);
+        final var result = passMatchesValidator.isValid(passChangeRequestDto, null);
 
         assertThat(result)
             .isTrue();
     }
 
     @Test
-    void isValid_passwordChangeRequestDtoNonMatchingPass_notValid() {
-        final var passwordChangeRequestDto = new AppUserPasswordChangeRequestDto(
+    void isValid_passChangeRequestDtoNonMatchingPass_notValid() {
+        final var passChangeRequestDto = new AppUserPasswordChangeRequestDto(
             TEST_USER_PASS, TEST_USER_NAME
         );
 
-        final var result = passwordMatchesValidator.isValid(passwordChangeRequestDto, null);
+        final var result = passMatchesValidator.isValid(passChangeRequestDto, null);
 
         assertThat(result)
             .isFalse();
@@ -48,7 +48,7 @@ class PasswordMatchesValidatorTest {
             TEST_USER_PASS, TEST_USER_PASS
         );
 
-        final var result = passwordMatchesValidator.isValid(registerRequestDto, null);
+        final var result = passMatchesValidator.isValid(registerRequestDto, null);
 
         assertThat(result)
             .isTrue();
@@ -60,7 +60,7 @@ class PasswordMatchesValidatorTest {
             TEST_USER_PASS, TEST_USER_NAME
         );
 
-        final var result = passwordMatchesValidator.isValid(registerRequestDto, null);
+        final var result = passMatchesValidator.isValid(registerRequestDto, null);
 
         assertThat(result)
             .isFalse();

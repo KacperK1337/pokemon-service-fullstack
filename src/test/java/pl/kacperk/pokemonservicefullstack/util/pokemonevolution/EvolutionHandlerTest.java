@@ -10,14 +10,14 @@ import static pl.kacperk.pokemonservicefullstack.util.pokemonevolution.Evolution
 class EvolutionHandlerTest {
 
     private static final String TEST_EVOLUTION = "testEvolution";
-    private static final String TWO_POSSIBLE_EVOLUTIONS = TEST_EVOLUTION + "/" + TEST_EVOLUTION;
-    private static final String THREE_POSSIBLE_EVOLUTIONS =
+    private static final String TWO_EVOLUTIONS = TEST_EVOLUTION + "/" + TEST_EVOLUTION;
+    private static final String THREE_EVOLUTIONS =
         TEST_EVOLUTION + "/" + TEST_EVOLUTION + "/" + TEST_EVOLUTION;
     private static final String EVOLUTIONS_SHORTENED =
         TEST_EVOLUTION + "/" + TEST_EVOLUTION + "/...";
 
     @ParameterizedTest
-    @ValueSource(strings = {TEST_EVOLUTION, TWO_POSSIBLE_EVOLUTIONS})
+    @ValueSource(strings = {TEST_EVOLUTION, TWO_EVOLUTIONS})
     void getShortenedPokemonEvolutions_lessThan2PossibleEvolutions_notShortened(String possibleEvolutions) {
         final var shortenedEvolutions = getShortenedPokemonEvolutions(possibleEvolutions);
 
@@ -27,7 +27,7 @@ class EvolutionHandlerTest {
 
     @Test
     void getShortenedPokemonEvolutions_3PossibleEvolutions_shortened() {
-        final var shortenedEvolutions = getShortenedPokemonEvolutions(THREE_POSSIBLE_EVOLUTIONS);
+        final var shortenedEvolutions = getShortenedPokemonEvolutions(THREE_EVOLUTIONS);
 
         assertThat(shortenedEvolutions)
             .isEqualTo(EVOLUTIONS_SHORTENED);

@@ -1,4 +1,4 @@
-package pl.kacperk.pokemonservicefullstack.controller;
+package pl.kacperk.pokemonservicefullstack.controller.advice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

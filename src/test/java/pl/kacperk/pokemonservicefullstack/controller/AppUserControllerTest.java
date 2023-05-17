@@ -1,4 +1,4 @@
-package pl.kacperk.pokemonservicefullstack.api.appuser.controller;
+package pl.kacperk.pokemonservicefullstack.controller;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,30 +19,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.ACCOUNT_UPDATE_VIEW_NAME;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.ERROR_MESSAGE_ATR;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.LOGIN_URL;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.PASS_PARAM;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_REQUEST_DTO;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_VIEW_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.getLoggedUserSession;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
+import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.ACCOUNT_UPDATE_SUCCESS_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.LOGGED_USER_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.REGISTER_SUCCESS_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.USERS_REGISTER_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.USERS_UPDATE_MAPPING;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.ERROR_MSG_ATTR;
+import static pl.kacperk.pokemonservicefullstack.controller.AuthController.REGISTER_VIEW;
+import static pl.kacperk.pokemonservicefullstack.controller.UrlController.ACCOUNT_UPDATE_VIEW;
 
 class AppUserControllerTest extends AbstractControllerTest {
 
-    private static final String USERS_REGISTER_MAPPING = "/api/users/register";
-    private static final String USERS_UPDATE_MAPPING = "/api/users/update";
-
     private static final String USER_NAME_PARAM = "userName";
+    private static final String PASS_PARAM = "password";
     private static final String MATCHING_PASS_PARAM = "matchingPassword";
-
-    private static final String LOGGED_USER_ATR = "loggedUser";
-
-    private static final String REGISTER_SUCCESS_VIEW_NAME = "register-success";
-    private static final String ACCOUNT_UPDATE_SUCCESS_VIEW_NAME = "account-update-success";
-
     private static final int ERROR_COUNT = 1;
 
     @Autowired
@@ -66,20 +62,20 @@ class AppUserControllerTest extends AbstractControllerTest {
     void registerUser_anonymousUserNoErrors_correctStatusView() throws Exception {
         final var testUser = createTestAppUserWithId();
         final var testUserName = testUser.getUserName();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
 
         final var resultActions = mockMvc.perform(
             post(USERS_REGISTER_MAPPING)
                 .param(USER_NAME_PARAM, testUserName)
-                .param(PASS_PARAM, testUserPassword)
-                .param(MATCHING_PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
+                .param(MATCHING_PASS_PARAM, testUserPass)
         );
 
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_SUCCESS_VIEW_NAME)
+            view().name(REGISTER_SUCCESS_VIEW)
         );
     }
 
@@ -87,7 +83,7 @@ class AppUserControllerTest extends AbstractControllerTest {
     void registerUser_loggedUserNoErrors_correctStatusView() throws Exception {
         final var testUser = createTestAppUserWithId();
         final var testUserName = testUser.getUserName();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
@@ -95,8 +91,8 @@ class AppUserControllerTest extends AbstractControllerTest {
         final var resultActions = mockMvc.perform(
             post(USERS_REGISTER_MAPPING)
                 .param(USER_NAME_PARAM, testUserName)
-                .param(PASS_PARAM, testUserPassword)
-                .param(MATCHING_PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
+                .param(MATCHING_PASS_PARAM, testUserPass)
                 .session(sessionWithLoggedUser)
         );
 
@@ -104,7 +100,7 @@ class AppUserControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_SUCCESS_VIEW_NAME)
+            view().name(REGISTER_SUCCESS_VIEW)
         );
     }
 
@@ -112,12 +108,12 @@ class AppUserControllerTest extends AbstractControllerTest {
     void registerUser_anonymousUserValidationError_correctErrorCountStatusView() throws Exception {
         final var testUser = createTestAppUserWithId();
         final var testUserName = testUser.getUserName();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
 
         final var resultActions = mockMvc.perform(
             post(USERS_REGISTER_MAPPING)
                 .param(USER_NAME_PARAM, testUserName)
-                .param(PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
                 .param(MATCHING_PASS_PARAM, testUserName)
         );
 
@@ -128,7 +124,7 @@ class AppUserControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_VIEW_NAME)
+            view().name(REGISTER_VIEW)
         );
     }
 
@@ -136,7 +132,7 @@ class AppUserControllerTest extends AbstractControllerTest {
     void registerAppUser_loggedUserValidationError_correctErrorCountStatusView() throws Exception {
         final var testUser = createTestAppUserWithId();
         final var testUserName = testUser.getUserName();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
@@ -144,7 +140,7 @@ class AppUserControllerTest extends AbstractControllerTest {
         final var resultActions = mockMvc.perform(
             post(USERS_REGISTER_MAPPING)
                 .param(USER_NAME_PARAM, testUserName)
-                .param(PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
                 .param(MATCHING_PASS_PARAM, testUserName)
                 .session(sessionWithLoggedUser)
         );
@@ -156,7 +152,7 @@ class AppUserControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_VIEW_NAME)
+            view().name(REGISTER_VIEW)
         );
     }
 
@@ -170,13 +166,13 @@ class AppUserControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(ERROR_MESSAGE_ATR, is(notNullValue()))
+            model().attribute(ERROR_MSG_ATTR, is(notNullValue()))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_VIEW_NAME)
+            view().name(REGISTER_VIEW)
         );
     }
 
@@ -195,25 +191,25 @@ class AppUserControllerTest extends AbstractControllerTest {
         );
 
         resultActions.andExpect(
-            model().attribute(ERROR_MESSAGE_ATR, is(notNullValue()))
+            model().attribute(ERROR_MSG_ATTR, is(notNullValue()))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(REGISTER_VIEW_NAME)
+            view().name(REGISTER_VIEW)
         );
     }
 
     @Test
-    void changeAppUserPassword_anonymousUserNoErrors_correctStatusRedirectedUrl() throws Exception {
+    void changeAppUserPass_anonymousUserNoErrors_correctStatusRedirectedUrl() throws Exception {
         final var testUser = createTestAppUserWithId();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
 
         final var resultActions = mockMvc.perform(
             patch(USERS_UPDATE_MAPPING)
-                .param(PASS_PARAM, testUserPassword)
-                .param(MATCHING_PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
+                .param(MATCHING_PASS_PARAM, testUserPass)
         );
 
         resultActions.andExpect(
@@ -225,40 +221,40 @@ class AppUserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void changeAppUserPassword_loggedUserNoErrors_correctStatusRedirectedUrl() throws Exception {
+    void changeAppUserPass_loggedUserNoErrors_correctStatusRedirectedUrl() throws Exception {
         final var testUser = createTestAppUserWithId();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
         final var resultActions = mockMvc.perform(
             patch(USERS_UPDATE_MAPPING)
-                .param(PASS_PARAM, testUserPassword)
-                .param(MATCHING_PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
+                .param(MATCHING_PASS_PARAM, testUserPass)
                 .session(sessionWithLoggedUser)
         );
 
         resultActions.andExpect(
-            model().attribute(LOGGED_USER_ATR, is(nullValue()))
+            model().attribute(LOGGED_USER_ATTR, is(nullValue()))
         );
         resultActions.andExpect(
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(ACCOUNT_UPDATE_SUCCESS_VIEW_NAME)
+            view().name(ACCOUNT_UPDATE_SUCCESS_VIEW)
         );
     }
 
     @Test
-    void changeAppUserPassword_anonymousUserValidationError_correctStatusRedirectedUrl() throws Exception {
+    void changeAppUserPass_anonymousUserValidationError_correctStatusRedirectedUrl() throws Exception {
         final var testUser = createTestAppUserWithId();
         final var testUserName = testUser.getUserName();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
 
         final var resultActions = mockMvc.perform(
             patch(USERS_UPDATE_MAPPING)
-                .param(PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
                 .param(MATCHING_PASS_PARAM, testUserName)
         );
 
@@ -271,17 +267,17 @@ class AppUserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void changeAppUserPassword_loggedUserValidationError_correctStatusRedirectedUrl() throws Exception {
+    void changeAppUserPass_loggedUserValidationError_correctStatusRedirectedUrl() throws Exception {
         final var testUser = createTestAppUserWithId();
         final var testUserName = testUser.getUserName();
-        final var testUserPassword = testUser.getPassword();
+        final var testUserPass = testUser.getPassword();
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
 
         final var resultActions = mockMvc.perform(
             patch(USERS_UPDATE_MAPPING)
-                .param(PASS_PARAM, testUserPassword)
+                .param(PASS_PARAM, testUserPass)
                 .param(MATCHING_PASS_PARAM, testUserName)
                 .session(sessionWithLoggedUser)
         );
@@ -293,7 +289,7 @@ class AppUserControllerTest extends AbstractControllerTest {
             status().isOk()
         );
         resultActions.andExpect(
-            view().name(ACCOUNT_UPDATE_VIEW_NAME)
+            view().name(ACCOUNT_UPDATE_VIEW)
         );
     }
 

@@ -29,7 +29,7 @@ public class TestUtils {
 
         public static final long TEST_USER_ID = 2;
         public static final String TEST_USER_NAME = "testUserName";
-        public static final String TEST_USER_PASS = "testUserPassword";
+        public static final String TEST_USER_PASS = "testUserPass";
         public static final AppUserRole ROLE_USER = USER;
 
         public static AppUser createTestAppUser() {
@@ -95,43 +95,36 @@ public class TestUtils {
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, REGISTERED_USER_PASS
         );
 
-        public static final String LOGIN_MAPPING = "/auth/login";
-
-        public static final String PASS_PARAM = "password";
-
-        public static final String ERROR_MESSAGE_ATR = "errorMessage";
-
         public static final String PASS_PROP = "password";
         public static final String MATCHING_PASS_PROP = "matchingPassword";
         public static final String ID_PROP = "id";
         public static final String NAME_PROP = "name";
-        public static final String POSSIBLE_EVOLUTIONS_PROP = "possibleEvolutions";
+        public static final String EVOLUTIONS_PROP = "possibleEvolutions";
         public static final String PHOTO_URL_PROP = "photoUrl";
-
-        public static final String REGISTER_VIEW_NAME = "register";
-        public static final String ACCOUNT_UPDATE_VIEW_NAME = "account-update";
 
         public static final String LOGIN_URL = "http://localhost/auth/login";
 
+        private static final String LOGIN_MAPPING = "/auth/login";
         private static final String USERNAME_PARAM = "username";
-        private static final String SECURITY_CONTEXT_ATR = "SPRING_SECURITY_CONTEXT";
+        private static final String PASS_PARAM = "password";
+        private static final String SECURITY_CONTEXT_ATTR = "SPRING_SECURITY_CONTEXT";
 
         public static MockHttpSession getLoggedUserSession(
-            final String registeredAppUserName, final String registeredAppUserPassword,
+            final String registeredAppUserName, final String registeredAppUserPass,
             final MockMvc mockMvc
         ) throws Exception {
             final ResultActions resultLoginActions = mockMvc.perform(
                 post(LOGIN_MAPPING)
                     .param(USERNAME_PARAM, registeredAppUserName)
-                    .param(PASS_PARAM, registeredAppUserPassword)
+                    .param(PASS_PARAM, registeredAppUserPass)
             );
             final SecurityContext securityContext = (SecurityContext) resultLoginActions
                 .andReturn()
                 .getRequest()
                 .getSession()
-                .getAttribute(SECURITY_CONTEXT_ATR);
+                .getAttribute(SECURITY_CONTEXT_ATTR);
             final MockHttpSession sessionWithLoggedUser = new MockHttpSession();
-            sessionWithLoggedUser.setAttribute(SECURITY_CONTEXT_ATR, securityContext);
+            sessionWithLoggedUser.setAttribute(SECURITY_CONTEXT_ATTR, securityContext);
             return sessionWithLoggedUser;
         }
 
@@ -151,11 +144,15 @@ public class TestUtils {
     public static class PageableUtils {
 
         public static final int DEF_PAGE_NUM = 0;
+        public static final int NON_DEF_PAGE_NUM = 1;
         public static final int DEF_PAGE_SIZE = 20;
+        public static final int NON_DEF_PAGE_SIZE = 40;
         public static final String DEF_SORT = "ASC";
         public static final String NON_DEF_SORT = "DESC";
         public static final String DEF_FIELD_TO_SORT = "id";
+        public static final String NON_DEF_FIELD_TO_SORT = "name";
         public static final String DEF_MATCH = "";
+        public static final String NON_DEF_MATCH = "B";
 
     }
 
