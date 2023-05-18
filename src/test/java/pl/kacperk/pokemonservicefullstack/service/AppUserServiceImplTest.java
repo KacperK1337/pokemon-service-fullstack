@@ -29,7 +29,6 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.STATUS_P
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.UNAUTHORIZED_STATUS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.USER_NOT_LOGGED_MESS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_ID;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
@@ -38,7 +37,6 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     private static final Class<UserAlreadyExistException> USER_ALREADY_EXIST_EXC_CLASS =
         UserAlreadyExistException.class;
-    private static final String USER_NOT_FOUND_BY_ID_MESS = "User with id %s not found";
     private static final String USER_NOT_FOUND_BY_NAME_MESS = "User with username %s not found";
     private static final String USER_ALREADY_EXIST_MESS = "An account with that username already exists";
     private static final String TEST_USER_ENCODED_PASS = "testUserEncodedPass";
@@ -58,30 +56,6 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
             userRepo, passEncoder, httpServletRequest
         );
         testUser = createTestAppUserWithId();
-    }
-
-    @Test
-    void getAppUser_existingId_findByIdMethodInvoked() {
-        given(userRepo.findById(TEST_USER_ID))
-            .willReturn(Optional.of(testUser));
-
-        userServiceImpl.getAppUserById(TEST_USER_ID);
-
-        verify(userRepo)
-            .findById(TEST_USER_ID);
-    }
-
-    @Test
-    void getAppUser_nonExistingId_throwResponseStatusException() {
-        given(userRepo.findById(TEST_USER_ID))
-            .willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> userServiceImpl.getAppUserById(TEST_USER_ID))
-            .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
-            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND_STATUS)
-            .hasMessageContaining(
-                String.format(USER_NOT_FOUND_BY_ID_MESS, TEST_USER_ID)
-            );
     }
 
     @Test

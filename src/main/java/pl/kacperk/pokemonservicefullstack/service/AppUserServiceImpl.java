@@ -27,14 +27,6 @@ public class AppUserServiceImpl implements AppUserService {
     private final HttpServletRequest httpServletRequest;
 
     @Override
-    public AppUser getAppUserById(Long id) {
-        return appUserRepo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, String.format("User with id %s not found", id)
-                ));
-    }
-
-    @Override
     public AppUser getAppUserByName(String userName) {
         return appUserRepo.findByUserName(userName).orElseThrow(() ->
                 new ResponseStatusException(

@@ -10,8 +10,6 @@ import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistExcepti
 
 public interface AppUserService {
 
-    AppUser getAppUserById(Long id);
-
     AppUser getAppUserByName(String userName);
 
     long getNumberOfUsers();
