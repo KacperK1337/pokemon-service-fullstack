@@ -1,6 +1,5 @@
 package pl.kacperk.pokemonservicefullstack.repo;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,8 @@ class AppUserRepoTest extends AbstractRepoTest {
 
     @BeforeEach
     void setUp() {
-        userRepo.save(REPO_TEST_USER);
-    }
-
-    @AfterEach
-    void tearDown() {
         userRepo.deleteAll();
+        userRepo.save(REPO_TEST_USER);
     }
 
     @Test

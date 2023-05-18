@@ -1,6 +1,5 @@
 package pl.kacperk.pokemonservicefullstack.controller;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +49,8 @@ class AppUserControllerTest extends AbstractControllerTest {
 
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
-        userService.registerAppUser(REGISTER_REQUEST_DTO);
-    }
-
-    @AfterEach
-    void tearDown() {
         userRepo.deleteAll();
+        userService.registerAppUser(REGISTER_REQUEST_DTO);
     }
 
     @Test
