@@ -1,6 +1,6 @@
 package pl.kacperk.pokemonservicefullstack.security.userdetails;
 
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 
 public class AppUserDetailsMapper {
 

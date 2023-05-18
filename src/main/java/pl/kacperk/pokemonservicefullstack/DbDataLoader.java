@@ -5,12 +5,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
-import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Type;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.repo.PokemonRepo;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
+import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type;
+import pl.kacperk.pokemonservicefullstack.repo.PokemonRepo;
 import pl.kacperk.pokemonservicefullstack.util.dbdataloader.DbDataLoaderUtils;
 
 import java.io.BufferedReader;

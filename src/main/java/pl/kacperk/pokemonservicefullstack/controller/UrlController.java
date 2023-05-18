@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserPasswordChangeRequestDto;
-import pl.kacperk.pokemonservicefullstack.api.appuser.service.AppUserService;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.service.PokemonService;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserPasswordChangeRequestDto;
+import pl.kacperk.pokemonservicefullstack.service.AppUserService;
+import pl.kacperk.pokemonservicefullstack.service.PokemonService;
 
 @Controller
 @RequiredArgsConstructor

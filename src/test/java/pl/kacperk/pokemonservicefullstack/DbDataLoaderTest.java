@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.repo.PokemonRepo;
+import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
+import pl.kacperk.pokemonservicefullstack.repo.PokemonRepo;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;

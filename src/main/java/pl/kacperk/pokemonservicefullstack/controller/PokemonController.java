@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.dto.response.PokemonResponseDto;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.service.PokemonService;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDto;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
+import pl.kacperk.pokemonservicefullstack.service.PokemonService;
 import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetails;
 
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
-import static pl.kacperk.pokemonservicefullstack.api.pokemon.dto.mapper.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
 import static pl.kacperk.pokemonservicefullstack.util.pagenavigation.PageLimitsCalculator.getPageLimits;
 
 @Controller

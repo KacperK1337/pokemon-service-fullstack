@@ -2,11 +2,10 @@ package pl.kacperk.pokemonservicefullstack;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserRegisterRequestDto;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.model.Type;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type;
 
 import java.util.Set;
 
@@ -14,10 +13,9 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUserRole.USER;
-import static pl.kacperk.pokemonservicefullstack.api.pokemon.model.Type.Grass;
-import static pl.kacperk.pokemonservicefullstack.api.pokemon.model.Type.Water;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type.Grass;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type.Water;
 
 public class TestUtils {
 
