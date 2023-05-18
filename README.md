@@ -3,8 +3,8 @@ Fullstack Spring webapp about pokemons where you can find pokemons, see their st
 
 ### Section links
 
-|[General](#general)|[Usage guide](#usage-guide)|[Used technologies](#used-technologies)|[Demo](#demo)|[Version history](#version-history)|[Feedback](#feedback)|
-|:-----------------:|:-------------------------:|:-------------------------------------:|:-----------:|:---------------------------------:|:-------------------:|
+|[General](#general)|[Usage guide](#usage-guide)|[Used technologies](#used-technologies)|[Demo](#demo)|
+|:-----------------:|:-------------------------:|:-------------------------------------:|:-----------:|
 
 ### General
 Application provides 3 major functionalities:
@@ -57,24 +57,3 @@ In case of written tests for the designed application, the following technologie
 Below is a video showing an example of using all of the functionalities offered by the application.
 
 https://user-images.githubusercontent.com/95027426/211678387-e3abbc21-938d-471e-b396-e8e2a3681fe3.mp4
-
-### Version history
-**1.1.0 - Major performance update [UPCOMING SOON]**
-
-- big improvement on app and tests performance 
-- big improvement on code readability
-- improved docker cooperation 
-- testcontainers introduction
-
-**1.0.1 - Docker introduction**
-
-- docker cooperation
-
-**1.0.0 - Initial stable version**
-
-- pokemons with photo, id, name, type/types, evolution and likes
-- register/login by username and password
-- no responsiveness
-
-### Feedback
-If you have any questions or comments regarding the app, please place them in Discussion panel or contact me directly.
