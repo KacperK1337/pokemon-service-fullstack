@@ -1,10 +1,6 @@
 package pl.kacperk.pokemonservicefullstack;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.server.ResponseStatusException;
 import pl.kacperk.pokemonservicefullstack.api.appuser.dto.request.AppUserRegisterRequestDto;
 import pl.kacperk.pokemonservicefullstack.api.appuser.model.AppUser;
@@ -85,49 +81,6 @@ public class TestUtils {
             testPokemon.setId(TEST_POKEMON_ID);
             return testPokemon;
         }
-    }
-
-    public static class ControllerUtils {
-
-        public static final String REGISTERED_USER_NAME = "registeredUserName";
-        public static final String REGISTERED_USER_PASS = "registeredUserPass";
-        public static final AppUserRegisterRequestDto REGISTER_REQUEST_DTO = new AppUserRegisterRequestDto(
-            REGISTERED_USER_NAME, REGISTERED_USER_PASS, REGISTERED_USER_PASS
-        );
-
-        public static final String PASS_PROP = "password";
-        public static final String MATCHING_PASS_PROP = "matchingPassword";
-        public static final String ID_PROP = "id";
-        public static final String NAME_PROP = "name";
-        public static final String EVOLUTIONS_PROP = "possibleEvolutions";
-        public static final String PHOTO_URL_PROP = "photoUrl";
-
-        public static final String LOGIN_URL = "http://localhost/auth/login";
-
-        private static final String LOGIN_MAPPING = "/auth/login";
-        private static final String USERNAME_PARAM = "username";
-        private static final String PASS_PARAM = "password";
-        private static final String SECURITY_CONTEXT_ATTR = "SPRING_SECURITY_CONTEXT";
-
-        public static MockHttpSession getLoggedUserSession(
-            final String registeredAppUserName, final String registeredAppUserPass,
-            final MockMvc mockMvc
-        ) throws Exception {
-            final ResultActions resultLoginActions = mockMvc.perform(
-                post(LOGIN_MAPPING)
-                    .param(USERNAME_PARAM, registeredAppUserName)
-                    .param(PASS_PARAM, registeredAppUserPass)
-            );
-            final SecurityContext securityContext = (SecurityContext) resultLoginActions
-                .andReturn()
-                .getRequest()
-                .getSession()
-                .getAttribute(SECURITY_CONTEXT_ATTR);
-            final MockHttpSession sessionWithLoggedUser = new MockHttpSession();
-            sessionWithLoggedUser.setAttribute(SECURITY_CONTEXT_ATTR, securityContext);
-            return sessionWithLoggedUser;
-        }
-
     }
 
     public static class ServiceUtils {

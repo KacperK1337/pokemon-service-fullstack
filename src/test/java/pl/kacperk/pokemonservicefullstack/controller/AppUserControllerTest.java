@@ -19,11 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.LOGIN_URL;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_NAME;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTERED_USER_PASS;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.REGISTER_REQUEST_DTO;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ControllerUtils.getLoggedUserSession;
+import static pl.kacperk.pokemonservicefullstack.controller.ControllerTestUtils.LOGIN_URL;
+import static pl.kacperk.pokemonservicefullstack.controller.ControllerTestUtils.REGISTERED_USER_NAME;
+import static pl.kacperk.pokemonservicefullstack.controller.ControllerTestUtils.REGISTERED_USER_PASS;
+import static pl.kacperk.pokemonservicefullstack.controller.ControllerTestUtils.REGISTER_REQUEST_DTO;
+import static pl.kacperk.pokemonservicefullstack.controller.ControllerTestUtils.getLoggedUserSession;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
 import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.ACCOUNT_UPDATE_SUCCESS_VIEW;
 import static pl.kacperk.pokemonservicefullstack.controller.AppUserController.LOGGED_USER_ATTR;
