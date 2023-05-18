@@ -17,7 +17,7 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("loggedUser")
     public AppUserResponseDto getLoggedUserResponse(@AuthenticationPrincipal AppUserDetails appUserDetails) {
-        AppUser loggedUser = appUserService.getLoggedAppUser(appUserDetails);
-        return appUserService.getAppUserAsResponse(loggedUser);
+        AppUser loggedUser = appUserService.getLoggedUser(appUserDetails);
+        return appUserService.getUserAsResponse(loggedUser);
     }
 }

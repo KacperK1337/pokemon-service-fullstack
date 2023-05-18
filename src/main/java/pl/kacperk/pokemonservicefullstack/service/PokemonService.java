@@ -6,15 +6,19 @@ import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetails;
 
 public interface PokemonService {
 
-    Pokemon getPokemonById(Long id);
+    Pokemon getPokemonById(final Long id);
 
-    Pokemon getPokemonByName(String name);
+    Pokemon getPokemonByName(final String name);
 
-    void addPokemonToFavourites(Long id, AppUserDetails details);
+    void addPokemonToFavourites(final Long id, final AppUserDetails userDetails);
 
-    Page<Pokemon> getAll(Integer pageNumber, Integer pageSize,
-                         String sortDirectionName, String fieldToSortBy,
-                         String nameToMach);
+    Page<Pokemon> getAllPokemons(
+        final Integer pageNumber, final Integer pageSize,
+        final String sortDirectionName, final String fieldToSortBy,
+        final String nameToMach
+    );
+
+    Page<Pokemon> getTopPokemons();
 
     Pokemon getTopPokemon();
 

@@ -103,7 +103,7 @@ class PokemonControllerTest extends AbstractControllerTest {
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
         userRepo.deleteAll();
-        userService.registerAppUser(REGISTER_REQUEST_DTO);
+        userService.registerUser(REGISTER_REQUEST_DTO);
     }
 
     @Test
@@ -386,7 +386,7 @@ class PokemonControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllPokemons_defaultParamsAnonymousUser_correctModelAttributesStatusView() throws Exception {
-        final var expectedPokemons = pokemonService.getAll(
+        final var expectedPokemons = pokemonService.getAllPokemons(
             DEF_PAGE_NUM, DEF_PAGE_SIZE, DEF_SORT, DEF_FIELD_TO_SORT, DEF_MATCH
         );
         final var expectedTotalPages = expectedPokemons.getTotalPages();
@@ -440,7 +440,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
-        final var expectedPokemons = pokemonService.getAll(
+        final var expectedPokemons = pokemonService.getAllPokemons(
             DEF_PAGE_NUM, DEF_PAGE_SIZE, DEF_SORT, DEF_FIELD_TO_SORT, DEF_MATCH
         );
         final var expectedAllPages = expectedPokemons.getTotalPages();
@@ -492,7 +492,7 @@ class PokemonControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllPokemons_nonDefaultParamsAnonymousUser_correctModelAttributesStatusView() throws Exception {
-        final var expectedPokemons = pokemonService.getAll(
+        final var expectedPokemons = pokemonService.getAllPokemons(
             NON_DEF_PAGE_NUM, NON_DEF_PAGE_SIZE, NON_DEF_SORT, NON_DEF_FIELD_TO_SORT, NON_DEF_MATCH
         );
         final var expectedAllPages = expectedPokemons.getTotalPages();
@@ -554,7 +554,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
-        final var expectedPokemons = pokemonService.getAll(
+        final var expectedPokemons = pokemonService.getAllPokemons(
             NON_DEF_PAGE_NUM, NON_DEF_PAGE_SIZE, NON_DEF_SORT, NON_DEF_FIELD_TO_SORT, NON_DEF_MATCH
         );
         final var expectedAllPages = expectedPokemons.getTotalPages();

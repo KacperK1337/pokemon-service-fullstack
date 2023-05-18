@@ -2,7 +2,6 @@ package pl.kacperk.pokemonservicefullstack.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,14 +66,7 @@ public class PokemonController {
 
     protected static final String POKEMON_FAVOURITE_URL = "/pokemon-favourite";
 
-    protected static final HttpStatus BAD_REQUEST_STATUS = BAD_REQUEST;
     protected static final String GET_POKEMON_NO_PARAMS_ERROR = "Pokemon can only be found by its id or name";
-
-    protected static final int TOP_POKEMONS_PAGE_NUM = 0;
-    protected static final int TOP_POKEMONS_PAGE_SIZE = 20;
-    protected static final String TOP_POKEMONS_SORT_DIR = "DESC";
-    protected static final String TOP_POKEMONS_SORT_FIELD = "numberOfLikes";
-    protected static final String TOP_POKEMONS_MATCH_BY = "";
 
     private final PokemonService pokemonService;
 
@@ -86,7 +78,7 @@ public class PokemonController {
                 return pokemonService.getPokemonByName(name);
             } else {
                 throw new ResponseStatusException(
-                    BAD_REQUEST_STATUS, GET_POKEMON_NO_PARAMS_ERROR
+                    BAD_REQUEST, GET_POKEMON_NO_PARAMS_ERROR
                 );
             }
         }
@@ -148,7 +140,7 @@ public class PokemonController {
         model.addAttribute(SORT_BY_ATTR, fieldToSortBy);
         model.addAttribute(MATCH_BY_ATTR, nameToMatch);
 
-        final Page<Pokemon> pokemons = pokemonService.getAll(
+        final Page<Pokemon> pokemons = pokemonService.getAllPokemons(
             pageNumber, pageSize,
             sortDirectionName, fieldToSortBy,
             nameToMatch
@@ -168,11 +160,7 @@ public class PokemonController {
 
     @GetMapping(POKEMONS_GET_TOP_MAPPING)
     public String getTopPokemons(final Model model) {
-        final Page<Pokemon> topPokemons = pokemonService.getAll(
-            TOP_POKEMONS_PAGE_NUM, TOP_POKEMONS_PAGE_SIZE,
-            TOP_POKEMONS_SORT_DIR, TOP_POKEMONS_SORT_FIELD,
-            TOP_POKEMONS_MATCH_BY
-        );
+        final Page<Pokemon> topPokemons = pokemonService.getTopPokemons();
         final Set<PokemonResponseDto> responseDtos = pokemonsToPokemonResponseDtos(topPokemons);
         model.addAttribute(TOP_POKEMONS_ATTR, responseDtos);
 

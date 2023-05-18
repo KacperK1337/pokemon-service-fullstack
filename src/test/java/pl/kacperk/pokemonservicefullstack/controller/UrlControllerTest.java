@@ -64,7 +64,7 @@ class UrlControllerTest extends AbstractControllerTest {
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
         userRepo.deleteAll();
-        userService.registerAppUser(REGISTER_REQUEST_DTO);
+        userService.registerUser(REGISTER_REQUEST_DTO);
     }
 
     @Test
@@ -211,7 +211,7 @@ class UrlControllerTest extends AbstractControllerTest {
     void getIndex_anonymousUser_correctModelAttributesStatusView() throws Exception {
         final var registeredPokemonId = 3L;
         final var registeredPokemon = pokemonService.getPokemonById(registeredPokemonId);
-        final var registeredUser = userService.getAppUserByName(REGISTERED_USER_NAME);
+        final var registeredUser = userService.getUserByName(REGISTERED_USER_NAME);
         final var registeredUserDetails = appUserToAppUserDetails(registeredUser);
         pokemonService.addPokemonToFavourites(registeredPokemonId, registeredUserDetails);
 
@@ -248,7 +248,7 @@ class UrlControllerTest extends AbstractControllerTest {
         );
         final var registeredPokemonId = 3L;
         final var registeredPokemon = pokemonService.getPokemonById(registeredPokemonId);
-        final var registeredUser = userService.getAppUserByName(REGISTERED_USER_NAME);
+        final var registeredUser = userService.getUserByName(REGISTERED_USER_NAME);
         final var registeredUserDetails = appUserToAppUserDetails(registeredUser);
         pokemonService.addPokemonToFavourites(registeredPokemonId, registeredUserDetails);
 

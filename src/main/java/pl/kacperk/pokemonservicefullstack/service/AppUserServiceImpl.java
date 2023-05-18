@@ -4,84 +4,100 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserPasswordChangeRequestDto;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserRegisterRequestDto;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDto;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetails;
 import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistException;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper.appUserToAppUserResponseDto;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
 
 @Service
 @RequiredArgsConstructor
 public class AppUserServiceImpl implements AppUserService {
 
-    private final AppUserRepo appUserRepo;
-    private final PasswordEncoder passwordEncoder;
+    protected static final String USER_NOT_FOUND_BY_NAME_MESS = "User with username %s not found";
+    protected static final String USER_ALREADY_EXIST_MESS = "An account with that username already exists";
+    protected static final String USER_NOT_LOGGED_MESS = "User is not logged in";
+
+    private final AppUserRepo userRepo;
+    private final PasswordEncoder passEncoder;
     private final HttpServletRequest httpServletRequest;
 
     @Override
-    public AppUser getAppUserByName(String userName) {
-        return appUserRepo.findByUserName(userName).orElseThrow(() ->
+    public AppUser getUserByName(final String userName) {
+        return userRepo
+            .findByUserName(userName)
+            .orElseThrow(() ->
                 new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, String.format("User with username %s not found", userName)
+                    NOT_FOUND, String.format(USER_NOT_FOUND_BY_NAME_MESS, userName)
                 ));
     }
 
     @Override
     public long getNumberOfUsers() {
-        return appUserRepo.countByRole(AppUserRole.USER);
+        return userRepo.countByRole(USER);
     }
 
     @Override
-    public AppUser getLoggedAppUser(AppUserDetails details) {
-        if (details != null) {
-            String userName = details.getUsername();
-            return getAppUserByName(userName);
+    public AppUser getLoggedUser(final AppUserDetails userDetails) {
+        if (userDetails != null) {
+            final String userName = userDetails.getUsername();
+            return getUserByName(userName);
         } else {
             return null;
         }
     }
 
     @Override
-    public AppUserResponseDto getAppUserAsResponse(AppUser user) {
-        return (user == null ? null : AppUserResponseDtoMapper.appUserToAppUserResponseDto(user));
+    public AppUserResponseDto getUserAsResponse(AppUser user) {
+        return (user == null ? null : appUserToAppUserResponseDto(user));
     }
 
     @Transactional
     @Override
-    public void registerAppUser(AppUserRegisterRequestDto registerRequestDto) throws UserAlreadyExistException {
-        String requestedUserName = registerRequestDto.getUserName();
-        if (appUserRepo.findByUserName(requestedUserName).isPresent()) {
-            throw new UserAlreadyExistException("An account with that username already exists");
+    public void registerUser(final AppUserRegisterRequestDto registerRequestDto) throws UserAlreadyExistException {
+        final String requestUserName = registerRequestDto.getUserName();
+        if (
+            userRepo
+                .findByUserName(requestUserName)
+                .isPresent()
+        ) {
+            throw new UserAlreadyExistException(USER_ALREADY_EXIST_MESS);
         }
-        AppUser newUser = new AppUser(
-                AppUserRole.valueOf("USER"),
-                requestedUserName,
-                passwordEncoder.encode(registerRequestDto.getPassword())
+        final String encodedRequestPass = passEncoder.encode(
+            registerRequestDto.getPassword()
         );
-        appUserRepo.save(newUser);
+        final AppUser requestUser = new AppUser(
+            USER, requestUserName, encodedRequestPass
+        );
+        userRepo.save(requestUser);
     }
 
     @Transactional
     @Override
     public void changeLoggedUserPassword(
-            AppUserDetails details,
-            AppUserPasswordChangeRequestDto passwordChangeRequestDto) throws ServletException {
-        AppUser loggedUser = getLoggedAppUser(details);
+        final AppUserDetails userDetails,
+        final AppUserPasswordChangeRequestDto passChangeRequestDto
+    ) throws ServletException {
+        final AppUser loggedUser = getLoggedUser(userDetails);
         if (loggedUser == null) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "User is not logged in"
+                UNAUTHORIZED, USER_NOT_LOGGED_MESS
             );
         }
-        String newPassword = passwordChangeRequestDto.getPassword();
-        loggedUser.setPassword(passwordEncoder.encode(newPassword));
+        final String newEncodedPass = passEncoder.encode(
+            passChangeRequestDto.getPassword()
+        );
+        loggedUser.setPassword(newEncodedPass);
         httpServletRequest.logout();
     }
 

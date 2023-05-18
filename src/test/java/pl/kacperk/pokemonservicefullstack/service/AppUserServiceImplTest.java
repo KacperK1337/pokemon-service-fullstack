@@ -23,22 +23,22 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.NOT_FOUND_STATUS;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.RESPONSE_STATUS_EXC_CLASS;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.STATUS_PROP;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.UNAUTHORIZED_STATUS;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.ServiceUtils.USER_NOT_LOGGED_MESS;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static pl.kacperk.pokemonservicefullstack.service.ServiceTestUtils.RESPONSE_STATUS_EXC_CLASS;
+import static pl.kacperk.pokemonservicefullstack.service.ServiceTestUtils.STATUS_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
+import static pl.kacperk.pokemonservicefullstack.service.AppUserServiceImpl.USER_ALREADY_EXIST_MESS;
+import static pl.kacperk.pokemonservicefullstack.service.AppUserServiceImpl.USER_NOT_FOUND_BY_NAME_MESS;
+import static pl.kacperk.pokemonservicefullstack.service.AppUserServiceImpl.USER_NOT_LOGGED_MESS;
 
 class AppUserServiceImplTest extends AbstractMockitoTest {
 
     private static final Class<UserAlreadyExistException> USER_ALREADY_EXIST_EXC_CLASS =
         UserAlreadyExistException.class;
-    private static final String USER_NOT_FOUND_BY_NAME_MESS = "User with username %s not found";
-    private static final String USER_ALREADY_EXIST_MESS = "An account with that username already exists";
     private static final String TEST_USER_ENCODED_PASS = "testUserEncodedPass";
 
     @Mock
@@ -63,7 +63,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         given(userRepo.findByUserName(TEST_USER_NAME))
             .willReturn(Optional.of(testUser));
 
-        userServiceImpl.getAppUserByName(TEST_USER_NAME);
+        userServiceImpl.getUserByName(TEST_USER_NAME);
 
         verify(userRepo)
             .findByUserName(TEST_USER_NAME);
@@ -74,9 +74,9 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         given(userRepo.findByUserName(TEST_USER_NAME))
             .willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userServiceImpl.getAppUserByName(TEST_USER_NAME))
+        assertThatThrownBy(() -> userServiceImpl.getUserByName(TEST_USER_NAME))
             .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
-            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND_STATUS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, NOT_FOUND)
             .hasMessageContaining(
                 String.format(USER_NOT_FOUND_BY_NAME_MESS, TEST_USER_NAME)
             );
@@ -92,7 +92,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void getLoggedAppUser_nullAppUserDetails_nullAppUser() {
-        final var loggedAppUser = userServiceImpl.getLoggedAppUser(null);
+        final var loggedAppUser = userServiceImpl.getLoggedUser(null);
 
         verify(userRepo, never())
             .findByUserName(any());
@@ -107,7 +107,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         given(userRepo.findByUserName(testDetailsUsername))
             .willReturn(Optional.of(testUser));
 
-        userServiceImpl.getLoggedAppUser(testDetails);
+        userServiceImpl.getLoggedUser(testDetails);
 
         verify(userRepo)
             .findByUserName(testDetailsUsername);
@@ -115,7 +115,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void getAppUserAsResponse_nullAppUser_nullResponse() {
-        final var userResponse = userServiceImpl.getAppUserAsResponse(null);
+        final var userResponse = userServiceImpl.getUserAsResponse(null);
 
         assertThat(userResponse)
             .isNull();
@@ -123,7 +123,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void getAppUserAsResponse_notNullAppUser_notNullResponse() {
-        final var userResponse = userServiceImpl.getAppUserAsResponse(testUser);
+        final var userResponse = userServiceImpl.getUserAsResponse(testUser);
 
         assertThat(userResponse)
             .isNotNull();
@@ -139,7 +139,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         given(passEncoder.encode(TEST_USER_PASS))
             .willReturn(TEST_USER_ENCODED_PASS);
 
-        userServiceImpl.registerAppUser(testRegisterRequestDto);
+        userServiceImpl.registerUser(testRegisterRequestDto);
 
         final var userArgumentCaptor = forClass(AppUser.class);
         verify(userRepo)
@@ -160,7 +160,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         given(userRepo.findByUserName(any()))
             .willReturn(Optional.of(testUser));
 
-        assertThatThrownBy(() -> userServiceImpl.registerAppUser(testRegisterRequestDto))
+        assertThatThrownBy(() -> userServiceImpl.registerUser(testRegisterRequestDto))
             .isInstanceOf(USER_ALREADY_EXIST_EXC_CLASS)
             .hasMessageContaining(USER_ALREADY_EXIST_MESS);
         verify(passEncoder, never())
@@ -194,7 +194,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
         assertThatThrownBy(() -> userServiceImpl.changeLoggedUserPassword(null, testPassChangeRequestDto))
             .isInstanceOf(RESPONSE_STATUS_EXC_CLASS)
-            .hasFieldOrPropertyWithValue(STATUS_PROP, UNAUTHORIZED_STATUS)
+            .hasFieldOrPropertyWithValue(STATUS_PROP, UNAUTHORIZED)
             .hasMessageContaining(USER_NOT_LOGGED_MESS);
         verify(userRepo, never())
             .findByUserName(any());

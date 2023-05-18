@@ -48,7 +48,7 @@ public class AppUserController {
         }
 
         try {
-            appUserService.registerAppUser(registerRequestDto);
+            appUserService.registerUser(registerRequestDto);
         } catch (UserAlreadyExistException uaeEx) {
             model.addAttribute(ERROR_MSG_ATTR, uaeEx.getMessage());
             return REGISTER_VIEW;

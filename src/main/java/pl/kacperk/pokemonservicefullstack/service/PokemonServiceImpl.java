@@ -5,81 +5,115 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
 import pl.kacperk.pokemonservicefullstack.repo.PokemonRepo;
 import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetails;
-import pl.kacperk.pokemonservicefullstack.util.pageable.PageableCreator;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static pl.kacperk.pokemonservicefullstack.service.AppUserServiceImpl.USER_NOT_LOGGED_MESS;
+import static pl.kacperk.pokemonservicefullstack.util.pageable.PageableCreator.getPageable;
 
 @Service
 @RequiredArgsConstructor
 public class PokemonServiceImpl implements PokemonService {
 
+    protected static final String POKEMON_NOT_FOUND_BY_ID_MESS = "Pokemon with id %s not found";
+    protected static final String POKEMON_NOT_FOUND_BY_NAME_MESS = "Pokemon with name %s not found";
+    protected static final String INVALID_REQUEST_PARAMS_MESS = "Invalid request parameters";
+
+    protected static final int TOP_POKEMONS_PAGE_NUM = 0;
+    protected static final int TOP_POKEMONS_PAGE_SIZE = 20;
+    protected static final String TOP_POKEMONS_SORT_DIR = "DESC";
+    protected static final String TOP_POKEMONS_SORT_FIELD = "numberOfLikes";
+    protected static final String TOP_POKEMONS_MATCH_BY = "";
+
+    protected static final long MIN_POKEMON_ID = 1;
+    protected static final long MAX_POKEMON_ID = 905;
+
     private final PokemonRepo pokemonRepo;
     private final AppUserService appUserService;
+    private final RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 
     @Override
-    public Pokemon getPokemonById(Long id) {
-        return pokemonRepo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, String.format("Pokemon with id %s not found", id)
-                ));
+    public Pokemon getPokemonById(final Long id) {
+        return pokemonRepo
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                NOT_FOUND, String.format(POKEMON_NOT_FOUND_BY_ID_MESS, id)
+            ));
     }
 
     @Override
-    public Pokemon getPokemonByName(String name) {
-        return pokemonRepo.findByName(name).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, String.format("Pokemon with name %s not found", name))
-        );
+    public Pokemon getPokemonByName(final String name) {
+        return pokemonRepo
+            .findByName(name)
+            .orElseThrow(() -> new ResponseStatusException(
+                NOT_FOUND, String.format(POKEMON_NOT_FOUND_BY_NAME_MESS, name)
+            ));
     }
 
     @Transactional
     @Override
-    public void addPokemonToFavourites(Long id, AppUserDetails details) {
-        AppUser loggedUser = appUserService.getLoggedAppUser(details);
+    public void addPokemonToFavourites(final Long id, final AppUserDetails details) {
+        final AppUser loggedUser = appUserService.getLoggedUser(details);
         if (loggedUser == null) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "User is not logged in"
+                UNAUTHORIZED, USER_NOT_LOGGED_MESS
             );
         }
-        Pokemon favouritePokemon = getPokemonById(id);
-        String userFavouritePokemonName = loggedUser.getFavouritePokemonName();
-        if (userFavouritePokemonName != null) {
-            getPokemonByName(userFavouritePokemonName).unlike();
+        final Pokemon favPokemon = getPokemonById(id);
+        final String userFavPokemonName = loggedUser.getFavouritePokemonName();
+        if (userFavPokemonName != null) {
+            getPokemonByName(userFavPokemonName).unlike();
         }
-        loggedUser.setFavouritePokemonName(favouritePokemon.getName());
-        favouritePokemon.like();
+        loggedUser.setFavouritePokemonName(
+            favPokemon.getName()
+        );
+        favPokemon.like();
     }
 
     @Override
-    public Page<Pokemon> getAll(Integer pageNumber, Integer pageSize,
-                                String sortDirectionName, String fieldToSortBy,
-                                String nameToMach) {
+    public Page<Pokemon> getAllPokemons(
+        final Integer pageNumber, final Integer pageSize,
+        final String sortDirectionName, final String fieldToSortBy,
+        final String nameToMach
+    ) {
         try {
-            Pageable requestedPageable =
-                    PageableCreator.getPageable(pageNumber, pageSize, sortDirectionName, fieldToSortBy);
-            return pokemonRepo.findByNameContaining(nameToMach, requestedPageable);
-        } catch (IllegalArgumentException iaEx) {
+            final Pageable requestPageable = getPageable(
+                pageNumber, pageSize, sortDirectionName, fieldToSortBy
+            );
+            return pokemonRepo.findByNameContaining(nameToMach, requestPageable);
+        } catch (final IllegalArgumentException iaEx) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Invalid request parameters"
+                BAD_REQUEST, INVALID_REQUEST_PARAMS_MESS
             );
         }
+    }
+
+    @Override
+    public Page<Pokemon> getTopPokemons() {
+        return getAllPokemons(
+            TOP_POKEMONS_PAGE_NUM, TOP_POKEMONS_PAGE_SIZE,
+            TOP_POKEMONS_SORT_DIR, TOP_POKEMONS_SORT_FIELD,
+            TOP_POKEMONS_MATCH_BY
+        );
     }
 
     @Override
     public Pokemon getTopPokemon() {
-        return getAll(0, 1, "DESC", "numberOfLikes", "")
-                .iterator()
-                .next();
+        return getTopPokemons()
+            .iterator()
+            .next();
     }
 
     @Override
     public Pokemon getRandomPokemon() {
-        long randomId = new RandomDataGenerator().nextLong(1L, 905L);
+        long randomId = randomDataGenerator.nextLong(MIN_POKEMON_ID, MAX_POKEMON_ID);
         return getPokemonById(randomId);
     }
 

@@ -10,16 +10,17 @@ import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistExcepti
 
 public interface AppUserService {
 
-    AppUser getAppUserByName(String userName);
+    AppUser getUserByName(final String userName);
 
     long getNumberOfUsers();
 
-    AppUser getLoggedAppUser(AppUserDetails details);
+    AppUser getLoggedUser(final AppUserDetails userDetails);
 
-    AppUserResponseDto getAppUserAsResponse(AppUser appUser);
+    AppUserResponseDto getUserAsResponse(final AppUser user);
 
-    void registerAppUser(AppUserRegisterRequestDto registerRequestDto) throws UserAlreadyExistException;
+    void registerUser(final AppUserRegisterRequestDto registerRequestDto) throws UserAlreadyExistException;
 
-    void changeLoggedUserPassword(AppUserDetails details,
-                                  AppUserPasswordChangeRequestDto passwordChangeRequestDto) throws ServletException;
+    void changeLoggedUserPassword(
+        final AppUserDetails details, final AppUserPasswordChangeRequestDto passChangeRequestDto
+    ) throws ServletException;
 }

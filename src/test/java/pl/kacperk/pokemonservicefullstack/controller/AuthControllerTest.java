@@ -49,7 +49,7 @@ class AuthControllerTest extends AbstractControllerTest {
     @BeforeEach
     void setUp() throws UserAlreadyExistException {
         userRepo.deleteAll();
-        userService.registerAppUser(REGISTER_REQUEST_DTO);
+        userService.registerUser(REGISTER_REQUEST_DTO);
     }
 
     @Test

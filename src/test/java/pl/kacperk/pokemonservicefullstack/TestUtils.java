@@ -1,7 +1,5 @@
 package pl.kacperk.pokemonservicefullstack;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
@@ -11,8 +9,6 @@ import java.util.Set;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
 import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type.Grass;
 import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type.Water;
@@ -79,17 +75,6 @@ public class TestUtils {
             testPokemon.setId(TEST_POKEMON_ID);
             return testPokemon;
         }
-    }
-
-    public static class ServiceUtils {
-
-        public static final Class<ResponseStatusException> RESPONSE_STATUS_EXC_CLASS =
-            ResponseStatusException.class;
-        public static final String STATUS_PROP = "status";
-        public static final HttpStatus NOT_FOUND_STATUS = NOT_FOUND;
-        public static final HttpStatus UNAUTHORIZED_STATUS = UNAUTHORIZED;
-        public static final String USER_NOT_LOGGED_MESS = "User is not logged in";
-
     }
 
     public static class PageableUtils {
