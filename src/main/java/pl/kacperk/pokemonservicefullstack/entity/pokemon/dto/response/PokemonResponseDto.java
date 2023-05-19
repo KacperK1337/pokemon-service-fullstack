@@ -7,10 +7,13 @@ import lombok.Getter;
 @Getter
 public class PokemonResponseDto {
 
-    private Long id;
-    private String name;
-    private String photoUrl;
-    private String typeNames;
-    private String possibleEvolutions;
-    private int numberOfLikes;
+    // TODO: 19.05.2023 check if you can switch types and evolutions like in Pokemon
+
+    private final Long id;
+    private final String name;
+    private final String photoUrl;
+    private final String typeNames;
+    private final String evolutions;
+    private final int numberOfLikes;
+
 }

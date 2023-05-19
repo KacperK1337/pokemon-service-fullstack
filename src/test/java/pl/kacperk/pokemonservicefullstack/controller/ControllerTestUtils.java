@@ -20,7 +20,7 @@ public class ControllerTestUtils {
     protected static final String MATCHING_PASS_PROP = "matchingPassword";
     protected static final String ID_PROP = "id";
     protected static final String NAME_PROP = "name";
-    protected static final String EVOLUTIONS_PROP = "possibleEvolutions";
+    protected static final String EVOLUTIONS_PROP = "evolutions";
     protected static final String PHOTO_URL_PROP = "photoUrl";
 
     protected static final String LOGIN_URL = "http://localhost/auth/login";

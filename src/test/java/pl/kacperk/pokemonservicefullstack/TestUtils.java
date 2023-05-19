@@ -1,29 +1,30 @@
 package pl.kacperk.pokemonservicefullstack;
 
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.PokemonType;
 
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
-import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type.Grass;
-import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type.Water;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.PokemonType.Grass;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.model.PokemonType.Water;
 
 public class TestUtils {
 
     public static class UserUtils {
 
         public static final long TEST_USER_ID = 2;
+
         public static final String TEST_USER_NAME = "testUserName";
+        public static final String NON_EXISTING_USER_NAME = "nonExistingUserName";
+
         public static final String TEST_USER_PASS = "testUserPass";
-        public static final AppUserRole ROLE_USER = USER;
 
         public static AppUser createTestAppUser() {
-            return new AppUser(ROLE_USER, TEST_USER_NAME, TEST_USER_PASS);
+            return new AppUser(USER, TEST_USER_NAME, TEST_USER_PASS);
         }
 
         public static AppUser createTestAppUserWithId() {
@@ -49,10 +50,10 @@ public class TestUtils {
             TEST_POKEMON_EVOLUTION_1, TEST_POKEMON_EVOLUTION_2
         );
 
-        public static final Type TEST_POKEMON_TYPE_1 = Water;
-        public static final Type TEST_POKEMON_TYPE_2 = Grass;
-        public static final Set<Type> TEST_POKEMON_TYPES_1 = singleton(TEST_POKEMON_TYPE_1);
-        public static final Set<Type> TEST_POKEMON_TYPES_2 = Set.of(
+        public static final PokemonType TEST_POKEMON_TYPE_1 = Water;
+        public static final PokemonType TEST_POKEMON_TYPE_2 = Grass;
+        public static final Set<PokemonType> TEST_POKEMON_TYPES_1 = singleton(TEST_POKEMON_TYPE_1);
+        public static final Set<PokemonType> TEST_POKEMON_TYPES_2 = Set.of(
             TEST_POKEMON_TYPE_1, TEST_POKEMON_TYPE_2
         );
 
@@ -61,7 +62,7 @@ public class TestUtils {
         public static final int DEF_POKEMON_LIKES = 0;
 
         public static Pokemon createTestPokemon(
-            final Set<String> testEvolutions, final Set<Type> testTypes
+            final Set<String> testEvolutions, final Set<PokemonType> testTypes
         ) {
             return new Pokemon(
                 TEST_POKEMON_NAME, testEvolutions, testTypes, TEST_POKEMON_PHOTO_URL
@@ -69,7 +70,7 @@ public class TestUtils {
         }
 
         public static Pokemon createTestPokemonWithId(
-            final Set<String> testEvolutions, final Set<Type> testTypes
+            final Set<String> testEvolutions, final Set<PokemonType> testTypes
         ) {
             final Pokemon testPokemon = createTestPokemon(testEvolutions, testTypes);
             testPokemon.setId(TEST_POKEMON_ID);

@@ -16,10 +16,6 @@ public class AppUserPasswordChangeRequestDto {
 
     @Size(min = 8, max = 60, message = "New password must be between 8 and 60 characters")
     private String password;
-
     private String matchingPassword;
 
-    public AppUserPasswordChangeRequestDto(String password) {
-        this.password = password;
-    }
 }

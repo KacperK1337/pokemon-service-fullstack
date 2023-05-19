@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class AppUserResponseDto {
 
-    private String place;
-    private String userName;
-    private String favouritePokemonName;
+    private final String place;
+    private final String userName;
+    private final String favouritePokemonName;
 
 }

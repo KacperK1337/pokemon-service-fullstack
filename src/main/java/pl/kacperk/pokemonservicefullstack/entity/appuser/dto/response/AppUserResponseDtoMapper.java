@@ -1,16 +1,18 @@
 package pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response;
 
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.util.ordinalsuffix.OrdinalSuffixGenerator;
+
+import static pl.kacperk.pokemonservicefullstack.util.ordinalsuffix.OrdinalSuffixGenerator.getNumberWithSuffix;
 
 public class AppUserResponseDtoMapper {
 
-    public static AppUserResponseDto appUserToAppUserResponseDto(AppUser appUser) {
-        String appUserPlace = OrdinalSuffixGenerator.getNumberWithSuffix(appUser.getId() - 1);
+    public static AppUserResponseDto appUserToAppUserResponseDto(final AppUser appUser) {
+        final String appUserPlace = getNumberWithSuffix(appUser.getId() - 1);
         return AppUserResponseDto.builder()
                 .place(appUserPlace)
                 .userName(appUser.getUserName())
                 .favouritePokemonName(appUser.getFavouritePokemonName())
                 .build();
     }
+
 }

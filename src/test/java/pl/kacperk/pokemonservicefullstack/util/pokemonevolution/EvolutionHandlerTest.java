@@ -18,15 +18,15 @@ class EvolutionHandlerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {TEST_EVOLUTION, TWO_EVOLUTIONS})
-    void getShortenedPokemonEvolutions_lessThan2PossibleEvolutions_notShortened(String possibleEvolutions) {
-        final var shortenedEvolutions = getShortenedPokemonEvolutions(possibleEvolutions);
+    void getShortenedPokemonEvolutions_lessThan2Evolutions_notShortened(String evolutions) {
+        final var shortenedEvolutions = getShortenedPokemonEvolutions(evolutions);
 
         assertThat(shortenedEvolutions)
-            .isEqualTo(possibleEvolutions);
+            .isEqualTo(evolutions);
     }
 
     @Test
-    void getShortenedPokemonEvolutions_3PossibleEvolutions_shortened() {
+    void getShortenedPokemonEvolutions_3Evolutions_shortened() {
         final var shortenedEvolutions = getShortenedPokemonEvolutions(THREE_EVOLUTIONS);
 
         assertThat(shortenedEvolutions)

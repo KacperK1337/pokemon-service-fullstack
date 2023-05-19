@@ -1,4 +1,4 @@
-package pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.mapper;
+package pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
@@ -22,22 +22,26 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POK
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_TYPE_2;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemon;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemonWithId;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.EVOLUTIONS_DELIMITER;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.TYPES_DELIMITER;
 import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
 import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
 
 class PokemonResponseDtoMapperTest {
 
     private static final Set<String> TEST_POKEMON_EVOLUTIONS_2_NAMES_SET = Set.of(
-        TEST_POKEMON_EVOLUTION_1 + " / " + TEST_POKEMON_EVOLUTION_2,
-        TEST_POKEMON_EVOLUTION_2 + " / " + TEST_POKEMON_EVOLUTION_1
+        TEST_POKEMON_EVOLUTION_1 + EVOLUTIONS_DELIMITER + TEST_POKEMON_EVOLUTION_2,
+        TEST_POKEMON_EVOLUTION_2 + EVOLUTIONS_DELIMITER + TEST_POKEMON_EVOLUTION_1
     );
+
     private static final String TEST_POKEMON_TYPE_1_NAME = TEST_POKEMON_TYPE_1.name();
     private static final String TEST_POKEMON_TYPE_2_NAME = TEST_POKEMON_TYPE_2.name();
     private static final Set<String> TEST_POKEMON_TYPES_2_NAMES_SET = Set.of(
-        TEST_POKEMON_TYPE_1_NAME + ", " + TEST_POKEMON_TYPE_2_NAME,
-        TEST_POKEMON_TYPE_2_NAME + ", " + TEST_POKEMON_TYPE_1_NAME
+        TEST_POKEMON_TYPE_1_NAME + TYPES_DELIMITER + TEST_POKEMON_TYPE_2_NAME,
+        TEST_POKEMON_TYPE_2_NAME + TYPES_DELIMITER + TEST_POKEMON_TYPE_1_NAME
     );
-    private static final String POKEMON_RESPONSE_DTO_EVOLUTIONS_FIELD = "possibleEvolutions";
+
+    private static final String POKEMON_RESPONSE_DTO_EVOLUTIONS_FIELD = "evolutions";
 
     @Test
     void pokemonToPokemonResponseDto_pokemonWithoutEvolution_correctPokemonResponse() {
@@ -51,7 +55,7 @@ class PokemonResponseDtoMapperTest {
             .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
             .isEqualTo(TEST_POKEMON_NAME);
-        assertThat(response.getPossibleEvolutions())
+        assertThat(response.getEvolutions())
             .isNull();
         assertThat(response.getTypeNames())
             .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
@@ -73,7 +77,7 @@ class PokemonResponseDtoMapperTest {
             .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
             .isEqualTo(TEST_POKEMON_NAME);
-        assertThat(response.getPossibleEvolutions())
+        assertThat(response.getEvolutions())
             .isEqualTo(TEST_POKEMON_EVOLUTION_1);
         assertThat(response.getTypeNames())
             .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
@@ -84,7 +88,7 @@ class PokemonResponseDtoMapperTest {
     }
 
     @Test
-    void pokemonToPokemonResponseDto_pokemonWith2PossibleEvolutions_correctPokemonResponse() {
+    void pokemonToPokemonResponseDto_pokemonWith2Evolutions_correctPokemonResponse() {
         final var testPokemon = createTestPokemonWithId(
             TEST_POKEMON_EVOLUTIONS_2, TEST_POKEMON_TYPES_1
         );
@@ -95,7 +99,7 @@ class PokemonResponseDtoMapperTest {
             .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
             .isEqualTo(TEST_POKEMON_NAME);
-        assertThat(response.getPossibleEvolutions())
+        assertThat(response.getEvolutions())
             .isIn(TEST_POKEMON_EVOLUTIONS_2_NAMES_SET);
         assertThat(response.getTypeNames())
             .isEqualTo(TEST_POKEMON_TYPE_1_NAME);
@@ -117,7 +121,7 @@ class PokemonResponseDtoMapperTest {
             .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
             .isEqualTo(TEST_POKEMON_NAME);
-        assertThat(response.getPossibleEvolutions())
+        assertThat(response.getEvolutions())
             .isNull();
         assertThat(response.getTypeNames())
             .isIn(TEST_POKEMON_TYPES_2_NAMES_SET);
@@ -141,7 +145,7 @@ class PokemonResponseDtoMapperTest {
             .isEqualTo(TEST_POKEMON_ID);
         assertThat(response.getName())
             .isEqualTo(TEST_POKEMON_NAME);
-        assertThat(response.getPossibleEvolutions())
+        assertThat(response.getEvolutions())
             .isNull();
         assertThat(response.getTypeNames())
             .isEqualTo(TEST_POKEMON_TYPE_1_NAME);

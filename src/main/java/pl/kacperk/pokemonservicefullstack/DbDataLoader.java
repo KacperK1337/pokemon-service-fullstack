@@ -9,7 +9,7 @@ import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
 import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
-import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Type;
+import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.PokemonType;
 import pl.kacperk.pokemonservicefullstack.repo.PokemonRepo;
 import pl.kacperk.pokemonservicefullstack.util.dbdataloader.DbDataLoaderUtils;
 
@@ -33,17 +33,17 @@ public class DbDataLoader {
 
     private void addPokemon(String name, String evolutionNames, String typeNames, String photoUrl) {
         String formattedName = name.replace("_", " ");
-        Set<String> possibleEvolutions = new LinkedHashSet<>();
+        Set<String> evolutions = new LinkedHashSet<>();
         if (!evolutionNames.equals("-")) {
             for (String evolutionName : evolutionNames.split("/")) {
-                possibleEvolutions.add(evolutionName.replace("_", " "));
+                evolutions.add(evolutionName.replace("_", " "));
             }
         }
-        Set<Type> types = new LinkedHashSet<>();
+        Set<PokemonType> types = new LinkedHashSet<>();
         for (String typeName : typeNames.split(",")) {
-            types.add(Type.valueOf(typeName));
+            types.add(PokemonType.valueOf(typeName));
         }
-        Pokemon pokemon = new Pokemon(formattedName, possibleEvolutions, types, photoUrl);
+        Pokemon pokemon = new Pokemon(formattedName, evolutions, types, photoUrl);
         pokemonRepo.save(pokemon);
     }
 

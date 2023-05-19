@@ -8,20 +8,25 @@ import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserRegi
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 
     @Override
-    public void initialize(PasswordMatches constraintAnnotation) {
+    public void initialize(final PasswordMatches constraintAnnotation) {
+
     }
 
     @Override
-    public boolean isValid(Object obj, ConstraintValidatorContext context) {
-        String password = "";
-        String matching = "";
-        if (obj instanceof AppUserPasswordChangeRequestDto passwordChangeRequestDto) {
-            password = passwordChangeRequestDto.getPassword();
-            matching = passwordChangeRequestDto.getMatchingPassword();
-        } else if (obj instanceof AppUserRegisterRequestDto registerRequestDto) {
-            password = registerRequestDto.getPassword();
-            matching = registerRequestDto.getMatchingPassword();
+    public boolean isValid(final Object obj, final ConstraintValidatorContext context) {
+        if (obj instanceof final AppUserPasswordChangeRequestDto passChangeRequestDto) {
+            final String pass = passChangeRequestDto.getPassword();
+            final String matchingPass = passChangeRequestDto.getMatchingPassword();
+
+            return pass.equals(matchingPass);
+        } else if (obj instanceof final AppUserRegisterRequestDto registerRequestDto) {
+            final String pass = registerRequestDto.getPassword();
+            final String matchingPass = registerRequestDto.getMatchingPassword();
+
+            return pass.equals(matchingPass);
+        } else {
+            return false;
         }
-        return password.equals(matching);
     }
+
 }

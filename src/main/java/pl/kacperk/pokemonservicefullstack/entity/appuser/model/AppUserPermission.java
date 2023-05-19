@@ -10,4 +10,5 @@ public enum AppUserPermission {
     POKEMONS_LIKE("pokemons:like");
 
     private final String permission;
+
 }

@@ -110,7 +110,7 @@ class PokemonControllerTest extends AbstractControllerTest {
     @Transactional
     void getPokemon_idParamAnonymousUser_correctModelAttributesStatusView() throws Exception {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
-        final var expectedEvolutionsSet = testPokemon.getPossibleEvolutions();
+        final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
         final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
@@ -147,7 +147,7 @@ class PokemonControllerTest extends AbstractControllerTest {
     @Transactional
     void getPokemon_idParamLoggedUser_correctModelAttributesStatusAndView() throws Exception {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
-        final var expectedEvolutionsSet = testPokemon.getPossibleEvolutions();
+        final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
         final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
         final var sessionWithLoggedUser = getLoggedUserSession(
@@ -189,7 +189,7 @@ class PokemonControllerTest extends AbstractControllerTest {
     void getPokemon_nameParamAnonymousUser_correctModelAttributesStatusAndView() throws Exception {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
         final var testPokemonName = testPokemon.getName();
-        final var expectedEvolutionsSet = testPokemon.getPossibleEvolutions();
+        final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
         final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 
@@ -230,7 +230,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
-        final var expectedEvolutionsSet = testPokemon.getPossibleEvolutions();
+        final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
         final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
 

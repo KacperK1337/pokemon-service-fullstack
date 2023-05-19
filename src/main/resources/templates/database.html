@@ -158,7 +158,7 @@
                     <td th:text="${pokemon.name}"></td>
                     <td th:text="${pokemon.typeNames}"></td>
                     <td th:text="${T(pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler)
-                    .getShortenedPokemonEvolutions(pokemon.possibleEvolutions)}"></td>
+                    .getShortenedPokemonEvolutions(pokemon.evolutions)}"></td>
                     <td th:text="${pokemon.numberOfLikes}"></td>
                 </tr>
                 </tbody>

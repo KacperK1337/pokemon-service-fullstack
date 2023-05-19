@@ -45,8 +45,8 @@ public class PokemonController {
     protected static final String SORT_BY_REQUEST_PARAM_DEF_VAL = "id";
     protected static final String MATCH_BY_REQUEST_PARAM_DEF_VAL = "";
 
-    protected static final String EVOLUTIONS_SET_ATTR = "possibleEvolutionsSet";
-    protected static final String EVOLUTIONS_ATTR = "possibleEvolutions";
+    protected static final String EVOLUTIONS_SET_ATTR = "evolutionsSet";
+    protected static final String EVOLUTIONS_ATTR = "evolutions";
     protected static final String POKEMON_ATTR = "pokemon";
     protected static final String PAGE_NUM_ATTR = "pageNum";
     protected static final String PAGE_SIZE_ATTR = "pageSize";
@@ -85,7 +85,7 @@ public class PokemonController {
     }
 
     private void setPokemonModelAttributes(final Model model, final Pokemon pokemon) {
-        final Set<String> evolutionsSet = pokemon.getPossibleEvolutions();
+        final Set<String> evolutionsSet = pokemon.getEvolutions();
         model.addAttribute(EVOLUTIONS_SET_ATTR, evolutionsSet);
         model.addAttribute(EVOLUTIONS_ATTR, evolutionsSet.size());
         final PokemonResponseDto responseDto = pokemonToPokemonResponseDto(pokemon);

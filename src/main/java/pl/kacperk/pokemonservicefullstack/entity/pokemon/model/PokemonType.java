@@ -1,6 +1,7 @@
 package pl.kacperk.pokemonservicefullstack.entity.pokemon.model;
 
-public enum Type {
+public enum PokemonType {
+
     Normal,
     Fire,
     Water,
@@ -19,4 +20,5 @@ public enum Type {
     Dragon,
     Dark,
     Fairy
+
 }

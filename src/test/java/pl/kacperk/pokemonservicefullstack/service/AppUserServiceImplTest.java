@@ -11,7 +11,6 @@ import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserPass
 import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserRegisterRequestDto;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
-import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper;
 import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistException;
 
 import java.util.Optional;
@@ -25,9 +24,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
+import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.appUserToAppUserDetails;
 import static pl.kacperk.pokemonservicefullstack.service.ServiceTestUtils.RESPONSE_STATUS_EXC_CLASS;
 import static pl.kacperk.pokemonservicefullstack.service.ServiceTestUtils.STATUS_PROP;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
@@ -87,7 +87,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
         userServiceImpl.getNumberOfUsers();
 
         verify(userRepo)
-            .countByRole(ROLE_USER);
+            .countByRole(USER);
     }
 
     @Test
@@ -102,7 +102,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void getLoggedAppUser_notNullAppUserDetails_getAppUserMethodInvoked() {
-        final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testUser);
+        final var testDetails = appUserToAppUserDetails(testUser);
         final var testDetailsUsername = testDetails.getUsername();
         given(userRepo.findByUserName(testDetailsUsername))
             .willReturn(Optional.of(testUser));
@@ -171,10 +171,11 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void changeLoggedUserPass_userLoggedIn_passChangedUserLoggedOut() throws ServletException {
-        final var testDetails = AppUserDetailsMapper.appUserToAppUserDetails(testUser);
+        final var testDetails = appUserToAppUserDetails(testUser);
         final var testUserName = testDetails.getUsername();
         final var testUserPass = testDetails.getPassword();
-        final var testPassChangeRequestDto = new AppUserPasswordChangeRequestDto(testUserPass);
+        final var testPassChangeRequestDto = new AppUserPasswordChangeRequestDto();
+        testPassChangeRequestDto.setPassword(testUserPass);
         given(userRepo.findByUserName(testUserName))
             .willReturn(Optional.of(testUser));
         given(passEncoder.encode(testUserPass))

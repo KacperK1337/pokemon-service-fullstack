@@ -44,9 +44,9 @@ class PasswordMatchesValidatorTest {
 
     @Test
     void isValid_registerRequestDtoMatchingPass_valid() {
-        final var registerRequestDto = new AppUserRegisterRequestDto(
-            TEST_USER_PASS, TEST_USER_PASS
-        );
+        final var registerRequestDto = new AppUserRegisterRequestDto();
+        registerRequestDto.setPassword(TEST_USER_PASS);
+        registerRequestDto.setMatchingPassword(TEST_USER_PASS);
 
         final var result = passMatchesValidator.isValid(registerRequestDto, null);
 
@@ -56,9 +56,9 @@ class PasswordMatchesValidatorTest {
 
     @Test
     void isValid_registerRequestDtoNonMatchingPass_notValid() {
-        final var registerRequestDto = new AppUserRegisterRequestDto(
-            TEST_USER_PASS, TEST_USER_NAME
-        );
+        final var registerRequestDto = new AppUserRegisterRequestDto();
+        registerRequestDto.setPassword(TEST_USER_PASS);
+        registerRequestDto.setMatchingPassword(TEST_USER_NAME);
 
         final var result = passMatchesValidator.isValid(registerRequestDto, null);
 

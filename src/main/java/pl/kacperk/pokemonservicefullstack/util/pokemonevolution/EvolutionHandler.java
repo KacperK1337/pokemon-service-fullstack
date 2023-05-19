@@ -2,16 +2,16 @@ package pl.kacperk.pokemonservicefullstack.util.pokemonevolution;
 
 public class EvolutionHandler {
 
-    public static String getShortenedPokemonEvolutions(String possibleEvolutions) {
-        if (possibleEvolutions != null) {
-            int numberOfPossibleEvolutions =
-                possibleEvolutions.length() - possibleEvolutions.replace("/", "").length() + 1;
-            if (numberOfPossibleEvolutions > 2) {
-                int ending = possibleEvolutions.indexOf("/", possibleEvolutions.indexOf("/") + 1);
-                return possibleEvolutions.substring(0, ending + 1) + "...";
+    public static String getShortenedPokemonEvolutions(String evolutions) {
+        if (evolutions != null) {
+            int numberOfEvolutions =
+                evolutions.length() - evolutions.replace("/", "").length() + 1;
+            if (numberOfEvolutions > 2) {
+                int ending = evolutions.indexOf("/", evolutions.indexOf("/") + 1);
+                return evolutions.substring(0, ending + 1) + "...";
             }
         }
-        return possibleEvolutions;
+        return evolutions;
     }
 
 }

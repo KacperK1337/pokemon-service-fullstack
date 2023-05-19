@@ -8,9 +8,9 @@ import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.NON_EXISTING_USER_NAME;
-import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
 
 class AppUserRepoTest extends AbstractRepoTest {
 
@@ -44,7 +44,7 @@ class AppUserRepoTest extends AbstractRepoTest {
 
     @Test
     void countByRole_existingRole_correctResult() {
-        final var numberOfUsers = userRepo.countByRole(ROLE_USER);
+        final var numberOfUsers = userRepo.countByRole(USER);
 
         assertThat(numberOfUsers)
             .isEqualTo(NUMBER_OF_USERS);

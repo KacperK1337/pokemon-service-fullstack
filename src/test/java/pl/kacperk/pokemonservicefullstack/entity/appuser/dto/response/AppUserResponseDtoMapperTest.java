@@ -1,16 +1,16 @@
-package pl.kacperk.pokemonservicefullstack.entity.appuser.dto.mapper;
+package pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
-import pl.kacperk.pokemonservicefullstack.util.ordinalsuffix.OrdinalSuffixGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POKEMON_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_ID;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper.appUserToAppUserResponseDto;
+import static pl.kacperk.pokemonservicefullstack.util.ordinalsuffix.OrdinalSuffixGenerator.getNumberWithSuffix;
 
 class AppUserResponseDtoMapperTest {
 
@@ -28,9 +28,9 @@ class AppUserResponseDtoMapperTest {
 
     @Test
     void userToUserResponseDto_userWithoutFavouritePokemon_correctUserResponse() {
-        final var testUserPlace = OrdinalSuffixGenerator.getNumberWithSuffix(TEST_USER_PLACE);
+        final var testUserPlace = getNumberWithSuffix(TEST_USER_PLACE);
 
-        final var responseDto = AppUserResponseDtoMapper.appUserToAppUserResponseDto(testUser);
+        final var responseDto = appUserToAppUserResponseDto(testUser);
 
         assertThat(responseDto)
             .hasFieldOrPropertyWithValue(USER_RESPONSE_DTO_PLACE_FIELD, testUserPlace);
@@ -42,10 +42,10 @@ class AppUserResponseDtoMapperTest {
 
     @Test
     void userToUserResponseDto_userWithFavouritePokemon_correctUserResponse() {
-        final var testUserPlace = OrdinalSuffixGenerator.getNumberWithSuffix(TEST_USER_PLACE);
+        final var testUserPlace = getNumberWithSuffix(TEST_USER_PLACE);
         testUser.setFavouritePokemonName(TEST_POKEMON_NAME);
 
-        final var responseDto = AppUserResponseDtoMapper.appUserToAppUserResponseDto(testUser);
+        final var responseDto = appUserToAppUserResponseDto(testUser);
 
         assertThat(responseDto)
             .hasFieldOrPropertyWithValue(USER_RESPONSE_DTO_PLACE_FIELD, testUserPlace);

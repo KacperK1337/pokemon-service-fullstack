@@ -227,7 +227,7 @@ class UrlControllerTest extends AbstractControllerTest {
             model().attribute(TOP_POKEMON_ATTR, allOf(
                 hasProperty(ID_PROP, is(registeredPokemonId)),
                 hasProperty(NAME_PROP, is(registeredPokemon.getName())),
-                hasProperty(EVOLUTIONS_PROP, is(registeredPokemon.getPossibleEvolutions())),
+                hasProperty(EVOLUTIONS_PROP, is(registeredPokemon.getEvolutions())),
                 hasProperty(TYPES_PROP, is(registeredPokemon.getTypes())),
                 hasProperty(PHOTO_URL_PROP, is(registeredPokemon.getPhotoUrl()))
             ))
@@ -265,7 +265,7 @@ class UrlControllerTest extends AbstractControllerTest {
             model().attribute(TOP_POKEMON_ATTR, allOf(
                 hasProperty(ID_PROP, is(registeredPokemonId)),
                 hasProperty(NAME_PROP, is(registeredPokemon.getName())),
-                hasProperty(EVOLUTIONS_PROP, is(registeredPokemon.getPossibleEvolutions())),
+                hasProperty(EVOLUTIONS_PROP, is(registeredPokemon.getEvolutions())),
                 hasProperty(TYPES_PROP, is(registeredPokemon.getTypes())),
                 hasProperty(PHOTO_URL_PROP, is(registeredPokemon.getPhotoUrl()))
             ))
