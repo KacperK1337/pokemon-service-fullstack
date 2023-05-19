@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface PokemonRepo extends JpaRepository<Pokemon, Long> {
 
-    Optional<Pokemon> findByName(String pokemonName);
+    Optional<Pokemon> findByName(final String name);
 
-    Page<Pokemon> findByNameContaining(String match, Pageable pageable);
+    Page<Pokemon> findByNameContaining(final String match, final Pageable pageable);
 
 }

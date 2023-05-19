@@ -7,6 +7,7 @@ import pl.kacperk.pokemonservicefullstack.template.AbstractRepoTest;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.NON_EXISTING_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.ROLE_USER;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
@@ -14,7 +15,6 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestA
 class AppUserRepoTest extends AbstractRepoTest {
 
     private static final AppUser REPO_TEST_USER = createTestAppUser();
-    private static final String NON_EXISTING_USER_NAME = "nonExistingUserName";
     private static final long NUMBER_OF_USERS = 1;
 
     @Autowired
