@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
-import pl.kacperk.pokemonservicefullstack.AbstractControllerTest;
+import pl.kacperk.pokemonservicefullstack.template.AbstractControllerTest;
 import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.service.AppUserService;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper;

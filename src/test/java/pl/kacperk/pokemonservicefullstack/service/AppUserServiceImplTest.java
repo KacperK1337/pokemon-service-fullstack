@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.kacperk.pokemonservicefullstack.AbstractMockitoTest;
+import pl.kacperk.pokemonservicefullstack.template.AbstractMockitoTest;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserPasswordChangeRequestDto;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.dto.request.AppUserRegisterRequestDto;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;

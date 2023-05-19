@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.kacperk.pokemonservicefullstack.AbstractMockitoTest;
+import pl.kacperk.pokemonservicefullstack.template.AbstractMockitoTest;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
 

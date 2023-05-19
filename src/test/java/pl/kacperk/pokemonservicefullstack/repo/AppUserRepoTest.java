@@ -3,7 +3,7 @@ package pl.kacperk.pokemonservicefullstack.repo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.kacperk.pokemonservicefullstack.AbstractRepoTest;
+import pl.kacperk.pokemonservicefullstack.template.AbstractRepoTest;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

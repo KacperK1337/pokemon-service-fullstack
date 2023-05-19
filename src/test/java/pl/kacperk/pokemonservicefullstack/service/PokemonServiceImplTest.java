@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import pl.kacperk.pokemonservicefullstack.AbstractMockitoTest;
+import pl.kacperk.pokemonservicefullstack.template.AbstractMockitoTest;
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
 import pl.kacperk.pokemonservicefullstack.repo.PokemonRepo;

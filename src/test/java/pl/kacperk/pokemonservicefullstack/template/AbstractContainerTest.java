@@ -1,8 +1,9 @@
-package pl.kacperk.pokemonservicefullstack;
+package pl.kacperk.pokemonservicefullstack.template;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.kacperk.pokemonservicefullstack.container.PostgreSQLContainerRule;
 
 @Testcontainers(disabledWithoutDocker = true)
 public abstract class AbstractContainerTest {

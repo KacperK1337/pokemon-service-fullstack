@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.kacperk.pokemonservicefullstack.AbstractControllerTest;
+import pl.kacperk.pokemonservicefullstack.template.AbstractControllerTest;
 import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
 import pl.kacperk.pokemonservicefullstack.service.AppUserService;
 import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistException;

@@ -1,4 +1,4 @@
-package pl.kacperk.pokemonservicefullstack;
+package pl.kacperk.pokemonservicefullstack.container;
 
 import org.testcontainers.containers.PostgreSQLContainer;
 
