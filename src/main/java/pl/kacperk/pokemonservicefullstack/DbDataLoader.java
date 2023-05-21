@@ -58,11 +58,11 @@ public class DbDataLoader {
         final String nameWithSpaces = name.replace(RESOURCES_SPACE, SPACE);
 
         final boolean emptyEvolutions = evolutionNames.equals(POKEMON_EMPTY_EVOLUTIONS_MARK);
-        final Set<String> evolutions = emptyEvolutions ?
-            stream(evolutionNames.split(POKEMON_EVOLUTIONS_DELIMITER))
-                .map(evolutionName -> evolutionName.replace(RESOURCES_SPACE, SPACE))
-                .collect(toCollection(LinkedHashSet::new))
-            : emptySet();
+        final Set<String> evolutions = emptyEvolutions
+            ? emptySet()
+            : stream(evolutionNames.split(POKEMON_EVOLUTIONS_DELIMITER))
+            .map(evolutionName -> evolutionName.replace(RESOURCES_SPACE, SPACE))
+            .collect(toCollection(LinkedHashSet::new));
 
         final Set<PokemonType> types =
             stream(typeNames.split(POKEMON_TYPES_DELIMITER))
