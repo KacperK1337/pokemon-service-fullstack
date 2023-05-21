@@ -8,8 +8,16 @@ import org.springframework.data.domain.Sort;
 @Getter
 public enum SortDirectionEnum {
 
-    ASC(Sort.Direction.ASC),
-    DESC(Sort.Direction.DESC);
+    ASC(
+        Sort
+            .Direction
+            .ASC
+    ),
+    DESC(
+        Sort
+            .Direction
+            .DESC
+    );
 
     private final Sort.Direction sortDirection;
 

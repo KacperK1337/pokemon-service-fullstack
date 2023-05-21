@@ -5,16 +5,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler.EVOLUTIONS_DELIMITER;
+import static pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler.THREE_DOTS;
 import static pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler.getShortenedPokemonEvolutions;
 
 class EvolutionHandlerTest {
 
     private static final String TEST_EVOLUTION = "testEvolution";
-    private static final String TWO_EVOLUTIONS = TEST_EVOLUTION + "/" + TEST_EVOLUTION;
+    private static final String TWO_EVOLUTIONS =
+        TEST_EVOLUTION + EVOLUTIONS_DELIMITER + TEST_EVOLUTION;
     private static final String THREE_EVOLUTIONS =
-        TEST_EVOLUTION + "/" + TEST_EVOLUTION + "/" + TEST_EVOLUTION;
+        TEST_EVOLUTION + EVOLUTIONS_DELIMITER + TEST_EVOLUTION + EVOLUTIONS_DELIMITER + TEST_EVOLUTION;
     private static final String EVOLUTIONS_SHORTENED =
-        TEST_EVOLUTION + "/" + TEST_EVOLUTION + "/...";
+        TEST_EVOLUTION + EVOLUTIONS_DELIMITER + TEST_EVOLUTION + EVOLUTIONS_DELIMITER + THREE_DOTS;
 
     @ParameterizedTest
     @ValueSource(strings = {TEST_EVOLUTION, TWO_EVOLUTIONS})

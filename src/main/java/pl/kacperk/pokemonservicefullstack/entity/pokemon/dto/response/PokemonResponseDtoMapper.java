@@ -1,6 +1,5 @@
 package pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response;
 
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.data.domain.Page;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.PokemonType;
 import pl.kacperk.pokemonservicefullstack.entity.pokemon.model.Pokemon;
@@ -28,7 +27,7 @@ public class PokemonResponseDtoMapper {
         return sb.toString();
     }
 
-    private static String getTypeNames(@NotEmpty final Set<PokemonType> types) {
+    private static String getTypeNames(final Set<PokemonType> types) {
         final StringBuilder sb = new StringBuilder();
         for (final PokemonType type : types) {
             sb.append(type);

@@ -7,17 +7,18 @@ public class OrdinalSuffixGenerator {
     protected static final String RD_SUFFIX = "rd";
     protected static final String TH_SUFFIX = "th";
 
-    public static String getNumberWithSuffix(long number) {
-        long j = number % 10;
-        long k = number % 100;
-        if (j == 1 && k != 11) {
+    public static String getNumberWithSuffix(final long number) {
+        final long mod10 = number % 10;
+        final long mod100 = number % 100;
+        if (mod10 == 1 && mod100 != 11) {
             return number + ST_SUFFIX;
-        } else if (j == 2 && k != 12) {
+        } else if (mod10 == 2 && mod100 != 12) {
             return number + ND_SUFFIX;
-        } else if (j == 3 && k != 13) {
+        } else if (mod10 == 3 && mod100 != 13) {
             return number + RD_SUFFIX;
         } else {
             return number + TH_SUFFIX;
         }
     }
+
 }
