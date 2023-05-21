@@ -13,11 +13,13 @@ import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetails;
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
 
+    protected static final String LOGGED_USER_ATTR = "loggedUser";
+
     private final AppUserService appUserService;
 
-    @ModelAttribute("loggedUser")
-    public AppUserResponseDto getLoggedUserResponse(@AuthenticationPrincipal AppUserDetails appUserDetails) {
-        AppUser loggedUser = appUserService.getLoggedUser(appUserDetails);
+    @ModelAttribute(LOGGED_USER_ATTR)
+    public AppUserResponseDto getLoggedUserAsResponse(@AuthenticationPrincipal final AppUserDetails userDetails) {
+        final AppUser loggedUser = appUserService.getLoggedUser(userDetails);
         return appUserService.getUserAsResponse(loggedUser);
     }
 }

@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_PASS;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
-import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.appUserToAppUserDetails;
+import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.userToDetails;
 
 class AppUserDetailsMapperTest {
 
@@ -21,7 +21,7 @@ class AppUserDetailsMapperTest {
 
     @Test
     void userToUserDetails_testUser_correctUserDetails() {
-        final var details = appUserToAppUserDetails(testUser);
+        final var details = userToDetails(testUser);
 
         assertThat(details.getAuthorities())
             .isEqualTo(
@@ -43,7 +43,7 @@ class AppUserDetailsMapperTest {
     @Test
     void userToUserDetails_customUser_correctUserDetails() {
         testUser.setAccountNonExpired(false);
-        final var details = appUserToAppUserDetails(testUser);
+        final var details = userToDetails(testUser);
 
         assertThat(details.getAuthorities())
             .isEqualTo(

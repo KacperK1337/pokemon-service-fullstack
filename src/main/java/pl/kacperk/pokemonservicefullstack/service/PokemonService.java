@@ -13,7 +13,7 @@ public interface PokemonService {
     void addPokemonToFavourites(final Long id, final AppUserDetails userDetails);
 
     Page<Pokemon> getAllPokemons(
-        final Integer pageNumber, final Integer pageSize,
+        final int pageNumber, final int pageSize,
         final String sortDirectionName, final String fieldToSortBy,
         final String nameToMach
     );

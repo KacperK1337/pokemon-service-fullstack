@@ -46,7 +46,7 @@ import static pl.kacperk.pokemonservicefullstack.controller.UrlController.PASS_C
 import static pl.kacperk.pokemonservicefullstack.controller.UrlController.POKEMON_FAVOURITE_MAPPING;
 import static pl.kacperk.pokemonservicefullstack.controller.UrlController.POKEMON_FAVOURITE_VIEW;
 import static pl.kacperk.pokemonservicefullstack.controller.UrlController.TOP_POKEMON_ATTR;
-import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.appUserToAppUserDetails;
+import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.userToDetails;
 
 class UrlControllerTest extends AbstractControllerTest {
 
@@ -212,7 +212,7 @@ class UrlControllerTest extends AbstractControllerTest {
         final var registeredPokemonId = 3L;
         final var registeredPokemon = pokemonService.getPokemonById(registeredPokemonId);
         final var registeredUser = userService.getUserByName(REGISTERED_USER_NAME);
-        final var registeredUserDetails = appUserToAppUserDetails(registeredUser);
+        final var registeredUserDetails = userToDetails(registeredUser);
         pokemonService.addPokemonToFavourites(registeredPokemonId, registeredUserDetails);
 
         final var resultActions = mockMvc.perform(
@@ -249,7 +249,7 @@ class UrlControllerTest extends AbstractControllerTest {
         final var registeredPokemonId = 3L;
         final var registeredPokemon = pokemonService.getPokemonById(registeredPokemonId);
         final var registeredUser = userService.getUserByName(REGISTERED_USER_NAME);
-        final var registeredUserDetails = appUserToAppUserDetails(registeredUser);
+        final var registeredUserDetails = userToDetails(registeredUser);
         pokemonService.addPokemonToFavourites(registeredPokemonId, registeredUserDetails);
 
         final var resultActions = mockMvc.perform(

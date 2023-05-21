@@ -17,7 +17,7 @@ import pl.kacperk.pokemonservicefullstack.util.exception.UserAlreadyExistExcepti
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper.appUserToAppUserResponseDto;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper.userToResponseDto;
 import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
 
 @Service
@@ -59,7 +59,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public AppUserResponseDto getUserAsResponse(AppUser user) {
-        return (user == null ? null : appUserToAppUserResponseDto(user));
+        return (user == null ? null : userToResponseDto(user));
     }
 
     @Transactional

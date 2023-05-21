@@ -6,12 +6,12 @@ import static pl.kacperk.pokemonservicefullstack.util.ordinalsuffix.OrdinalSuffi
 
 public class AppUserResponseDtoMapper {
 
-    public static AppUserResponseDto appUserToAppUserResponseDto(final AppUser appUser) {
-        final String appUserPlace = getNumberWithSuffix(appUser.getId() - 1);
+    public static AppUserResponseDto userToResponseDto(final AppUser user) {
+        final String appUserPlace = getNumberWithSuffix(user.getId() - 1);
         return AppUserResponseDto.builder()
                 .place(appUserPlace)
-                .userName(appUser.getUserName())
-                .favouritePokemonName(appUser.getFavouritePokemonName())
+                .userName(user.getUserName())
+                .favouritePokemonName(user.getFavouritePokemonName())
                 .build();
     }
 

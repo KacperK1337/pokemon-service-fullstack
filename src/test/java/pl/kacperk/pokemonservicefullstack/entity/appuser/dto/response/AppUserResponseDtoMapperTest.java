@@ -9,7 +9,7 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.TEST_POK
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_ID;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUserWithId;
-import static pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper.appUserToAppUserResponseDto;
+import static pl.kacperk.pokemonservicefullstack.entity.appuser.dto.response.AppUserResponseDtoMapper.userToResponseDto;
 import static pl.kacperk.pokemonservicefullstack.util.ordinalsuffix.OrdinalSuffixGenerator.getNumberWithSuffix;
 
 class AppUserResponseDtoMapperTest {
@@ -30,7 +30,7 @@ class AppUserResponseDtoMapperTest {
     void userToUserResponseDto_userWithoutFavouritePokemon_correctUserResponse() {
         final var testUserPlace = getNumberWithSuffix(TEST_USER_PLACE);
 
-        final var responseDto = appUserToAppUserResponseDto(testUser);
+        final var responseDto = userToResponseDto(testUser);
 
         assertThat(responseDto)
             .hasFieldOrPropertyWithValue(USER_RESPONSE_DTO_PLACE_FIELD, testUserPlace);
@@ -45,7 +45,7 @@ class AppUserResponseDtoMapperTest {
         final var testUserPlace = getNumberWithSuffix(TEST_USER_PLACE);
         testUser.setFavouritePokemonName(TEST_POKEMON_NAME);
 
-        final var responseDto = appUserToAppUserResponseDto(testUser);
+        final var responseDto = userToResponseDto(testUser);
 
         assertThat(responseDto)
             .hasFieldOrPropertyWithValue(USER_RESPONSE_DTO_PLACE_FIELD, testUserPlace);

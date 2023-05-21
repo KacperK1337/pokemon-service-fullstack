@@ -112,7 +112,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
         final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
-        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToResponseDto(testPokemon);
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)
@@ -149,7 +149,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         final var testPokemon = pokemonService.getPokemonById(TEST_POKEMON_ID);
         final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
-        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToResponseDto(testPokemon);
         final var sessionWithLoggedUser = getLoggedUserSession(
             REGISTERED_USER_NAME, REGISTERED_USER_PASS, mockMvc
         );
@@ -191,7 +191,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         final var testPokemonName = testPokemon.getName();
         final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
-        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToResponseDto(testPokemon);
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)
@@ -232,7 +232,7 @@ class PokemonControllerTest extends AbstractControllerTest {
         );
         final var expectedEvolutionsSet = testPokemon.getEvolutions();
         final var expectedEvolutions = expectedEvolutionsSet.size();
-        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToPokemonResponseDto(testPokemon);
+        final var expectedPokemonResponse = PokemonResponseDtoMapper.pokemonToResponseDto(testPokemon);
 
         final var resultActions = mockMvc.perform(
             get(POKEMONS_GET_POKEMON_MAPPING)

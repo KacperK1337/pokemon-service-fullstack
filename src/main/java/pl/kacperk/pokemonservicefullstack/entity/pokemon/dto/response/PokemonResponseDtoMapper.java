@@ -38,7 +38,7 @@ public class PokemonResponseDtoMapper {
         return sb.toString();
     }
 
-    public static PokemonResponseDto pokemonToPokemonResponseDto(final Pokemon pokemon) {
+    public static PokemonResponseDto pokemonToResponseDto(final Pokemon pokemon) {
         final String pokemonTypeNames = getTypeNames(pokemon.getTypes());
         final String pokemonEvolutionNames = getEvolutionNames(pokemon.getEvolutions());
         return PokemonResponseDto.builder()
@@ -51,9 +51,9 @@ public class PokemonResponseDtoMapper {
             .build();
     }
 
-    public static Set<PokemonResponseDto> pokemonsToPokemonResponseDtos(final Page<Pokemon> pokemons) {
+    public static Set<PokemonResponseDto> pokemonsToResponseDtos(final Page<Pokemon> pokemons) {
         return pokemons.stream()
-            .map(PokemonResponseDtoMapper::pokemonToPokemonResponseDto)
+            .map(PokemonResponseDtoMapper::pokemonToResponseDto)
             .collect(toCollection(LinkedHashSet::new));
     }
 

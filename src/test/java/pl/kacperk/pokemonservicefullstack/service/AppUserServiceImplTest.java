@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole.USER;
-import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.appUserToAppUserDetails;
+import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsMapper.userToDetails;
 import static pl.kacperk.pokemonservicefullstack.service.ServiceTestUtils.RESPONSE_STATUS_EXC_CLASS;
 import static pl.kacperk.pokemonservicefullstack.service.ServiceTestUtils.STATUS_PROP;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
@@ -102,7 +102,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void getLoggedAppUser_notNullAppUserDetails_getAppUserMethodInvoked() {
-        final var testDetails = appUserToAppUserDetails(testUser);
+        final var testDetails = userToDetails(testUser);
         final var testDetailsUsername = testDetails.getUsername();
         given(userRepo.findByUserName(testDetailsUsername))
             .willReturn(Optional.of(testUser));
@@ -171,7 +171,7 @@ class AppUserServiceImplTest extends AbstractMockitoTest {
 
     @Test
     void changeLoggedUserPass_userLoggedIn_passChangedUserLoggedOut() throws ServletException {
-        final var testDetails = appUserToAppUserDetails(testUser);
+        final var testDetails = userToDetails(testUser);
         final var testUserName = testDetails.getUsername();
         final var testUserPass = testDetails.getPassword();
         final var testPassChangeRequestDto = new AppUserPasswordChangeRequestDto();

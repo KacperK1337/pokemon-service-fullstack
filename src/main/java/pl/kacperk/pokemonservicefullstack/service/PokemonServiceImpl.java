@@ -79,7 +79,7 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public Page<Pokemon> getAllPokemons(
-        final Integer pageNumber, final Integer pageSize,
+        final int pageNumber, final int pageSize,
         final String sortDirectionName, final String fieldToSortBy,
         final String nameToMach
     ) {

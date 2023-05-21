@@ -24,8 +24,8 @@ import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTe
 import static pl.kacperk.pokemonservicefullstack.TestUtils.PokemonUtils.createTestPokemonWithId;
 import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.EVOLUTIONS_DELIMITER;
 import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.TYPES_DELIMITER;
-import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
-import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonToResponseDto;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonsToResponseDtos;
 
 class PokemonResponseDtoMapperTest {
 
@@ -49,7 +49,7 @@ class PokemonResponseDtoMapperTest {
             TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_1
         );
 
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToResponseDto(testPokemon);
 
         assertThat(response.getId())
             .isEqualTo(TEST_POKEMON_ID);
@@ -71,7 +71,7 @@ class PokemonResponseDtoMapperTest {
             TEST_POKEMON_EVOLUTIONS_1, TEST_POKEMON_TYPES_1
         );
 
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToResponseDto(testPokemon);
 
         assertThat(response.getId())
             .isEqualTo(TEST_POKEMON_ID);
@@ -93,7 +93,7 @@ class PokemonResponseDtoMapperTest {
             TEST_POKEMON_EVOLUTIONS_2, TEST_POKEMON_TYPES_1
         );
 
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToResponseDto(testPokemon);
 
         assertThat(response.getId())
             .isEqualTo(TEST_POKEMON_ID);
@@ -115,7 +115,7 @@ class PokemonResponseDtoMapperTest {
             TEST_POKEMON_EVOLUTIONS_NONE, TEST_POKEMON_TYPES_2
         );
 
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToResponseDto(testPokemon);
 
         assertThat(response.getId())
             .isEqualTo(TEST_POKEMON_ID);
@@ -139,7 +139,7 @@ class PokemonResponseDtoMapperTest {
         final var pokemonLikes = 1;
         testPokemon.setNumberOfLikes(pokemonLikes);
 
-        final var response = pokemonToPokemonResponseDto(testPokemon);
+        final var response = pokemonToResponseDto(testPokemon);
 
         assertThat(response.getId())
             .isEqualTo(TEST_POKEMON_ID);
@@ -167,7 +167,7 @@ class PokemonResponseDtoMapperTest {
             testPokemon1, testPokemon2
         ));
 
-        final var responseSet = pokemonsToPokemonResponseDtos(testPokemonsPage);
+        final var responseSet = pokemonsToResponseDtos(testPokemonsPage);
 
         assertThat(responseSet.size())
             .isEqualTo(2);

@@ -1,18 +1,21 @@
 package pl.kacperk.pokemonservicefullstack.security.userdetails;
 
 import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUser;
+import pl.kacperk.pokemonservicefullstack.entity.appuser.model.AppUserRole;
 
 public class AppUserDetailsMapper {
 
-    public static AppUserDetails appUserToAppUserDetails(AppUser appUser) {
+    public static AppUserDetails userToDetails(AppUser user) {
+        final AppUserRole userRole = user.getRole();
         return AppUserDetails.builder()
-                .authorities(appUser.getRole().getGrantedAuthorities())
-                .username(appUser.getUserName())
-                .password(appUser.getPassword())
-                .isAccountNonExpired(appUser.isAccountNonExpired())
-                .isAccountNonLocked(appUser.isAccountNonLocked())
-                .isCredentialsNonExpired(appUser.isCredentialsNonExpired())
-                .isEnabled(appUser.isEnabled())
-                .build();
+            .authorities(userRole.getGrantedAuthorities())
+            .username(user.getUserName())
+            .password(user.getPassword())
+            .isAccountNonExpired(user.isAccountNonExpired())
+            .isAccountNonLocked(user.isAccountNonLocked())
+            .isCredentialsNonExpired(user.isCredentialsNonExpired())
+            .isEnabled(user.isEnabled())
+            .build();
     }
+    
 }

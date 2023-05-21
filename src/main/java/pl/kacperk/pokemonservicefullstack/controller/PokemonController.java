@@ -17,8 +17,8 @@ import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetails;
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonToPokemonResponseDto;
-import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonsToPokemonResponseDtos;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonToResponseDto;
+import static pl.kacperk.pokemonservicefullstack.entity.pokemon.dto.response.PokemonResponseDtoMapper.pokemonsToResponseDtos;
 import static pl.kacperk.pokemonservicefullstack.util.pagenavigation.PageLimitsCalculator.getPageLimits;
 
 @Controller
@@ -88,7 +88,7 @@ public class PokemonController {
         final Set<String> evolutionsSet = pokemon.getEvolutions();
         model.addAttribute(EVOLUTIONS_SET_ATTR, evolutionsSet);
         model.addAttribute(EVOLUTIONS_ATTR, evolutionsSet.size());
-        final PokemonResponseDto responseDto = pokemonToPokemonResponseDto(pokemon);
+        final PokemonResponseDto responseDto = pokemonToResponseDto(pokemon);
         model.addAttribute(POKEMON_ATTR, responseDto);
     }
 
@@ -114,7 +114,6 @@ public class PokemonController {
         return POKEMON_VIEW;
     }
 
-    // TODO: 17.05.2023 check if Object vars can be primitives here and beyond
     @GetMapping(POKEMONS_GET_ALL_MAPPING)
     public String getAllPokemons(
         final Model model,
@@ -145,7 +144,7 @@ public class PokemonController {
             sortDirectionName, fieldToSortBy,
             nameToMatch
         );
-        final Set<PokemonResponseDto> responseDtos = pokemonsToPokemonResponseDtos(pokemons);
+        final Set<PokemonResponseDto> responseDtos = pokemonsToResponseDtos(pokemons);
         model.addAttribute(POKEMONS_ATTR, responseDtos);
         final int allPages = pokemons.getTotalPages();
         final long totalElements = pokemons.getTotalElements();
@@ -161,7 +160,7 @@ public class PokemonController {
     @GetMapping(POKEMONS_GET_TOP_MAPPING)
     public String getTopPokemons(final Model model) {
         final Page<Pokemon> topPokemons = pokemonService.getTopPokemons();
-        final Set<PokemonResponseDto> responseDtos = pokemonsToPokemonResponseDtos(topPokemons);
+        final Set<PokemonResponseDto> responseDtos = pokemonsToResponseDtos(topPokemons);
         model.addAttribute(TOP_POKEMONS_ATTR, responseDtos);
 
         return RANKING_VIEW;

@@ -12,16 +12,18 @@ import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
 @AllArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
 
+    protected static final String USERNAME_NOT_FOUND_MESS = "Username %s not found";
+
     private final AppUserRepo appUserRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appUser = appUserRepo
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        final AppUser user = appUserRepo
                 .findByUserName(username)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException(String.format("Username %s not found", username))
+                        new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESS, username))
                 );
-        return AppUserDetailsMapper.appUserToAppUserDetails(appUser);
+        return AppUserDetailsMapper.userToDetails(user);
     }
 
 }

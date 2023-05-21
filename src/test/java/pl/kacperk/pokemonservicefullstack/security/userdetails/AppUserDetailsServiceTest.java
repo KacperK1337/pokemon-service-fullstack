@@ -15,12 +15,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.TEST_USER_NAME;
 import static pl.kacperk.pokemonservicefullstack.TestUtils.UserUtils.createTestAppUser;
+import static pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsService.USERNAME_NOT_FOUND_MESS;
 
 class AppUserDetailsServiceTest extends AbstractMockitoTest {
 
     private static final Class<UsernameNotFoundException> USERNAME_NOT_FOUND_EXCEPTION_CLASS =
         UsernameNotFoundException.class;
-    private static final String USERNAME_NOT_FOUND_MESS = "Username %s not found";
 
     @Mock
     private AppUserRepo userRepo;
