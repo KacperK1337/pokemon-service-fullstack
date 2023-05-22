@@ -10,15 +10,19 @@ public abstract class AbstractContainerTest {
 
     public static final PostgreSQLContainerRule CONTAINER = PostgreSQLContainerRule.getInstance();
 
+    private static final String SPRING_DB_URL = "spring.datasource.url";
+    private static final String SPRING_DB_USERNAME = "spring.datasource.username";
+    private static final String SPRING_DB_PASS = "spring.datasource.password";
+
     static {
         CONTAINER.start();
     }
 
     @DynamicPropertySource
-    static void databaseProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", CONTAINER::getUsername);
-        registry.add("spring.datasource.password", CONTAINER::getPassword);
+    static void databaseProperties(final DynamicPropertyRegistry registry) {
+        registry.add(SPRING_DB_URL, CONTAINER::getJdbcUrl);
+        registry.add(SPRING_DB_USERNAME, CONTAINER::getUsername);
+        registry.add(SPRING_DB_PASS, CONTAINER::getPassword);
     }
 
 }

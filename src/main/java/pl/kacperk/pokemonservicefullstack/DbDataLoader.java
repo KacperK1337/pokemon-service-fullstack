@@ -76,11 +76,11 @@ public class DbDataLoader {
         pokemonRepo.save(pokemon);
     }
 
-    private void writeAppUsers(final BufferedReader appUserReader) {
+    private void loadAppUsers(final BufferedReader userReader) {
         String line;
-        try (appUserReader) {
+        try (userReader) {
             while (
-                (line = appUserReader.readLine()) != null
+                (line = userReader.readLine()) != null
             ) {
                 final String[] fields = line.split(SPACE);
                 addUser(fields[0], fields[1], fields[2]);
@@ -90,7 +90,7 @@ public class DbDataLoader {
         }
     }
 
-    private void writePokemons(final BufferedReader pokemonReader) {
+    private void loadPokemons(final BufferedReader pokemonReader) {
         String line;
         try (pokemonReader) {
             while (
@@ -106,10 +106,10 @@ public class DbDataLoader {
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
-        writeAppUsers(
+        loadAppUsers(
             createResourceBufferedReader(USERS_DB_SOURCE)
         );
-        writePokemons(
+        loadPokemons(
             createResourceBufferedReader(POKEMONS_DB_SOURCE)
         );
     }

@@ -16,13 +16,16 @@ class PageableCreatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {DEF_SORT, NON_DEF_SORT})
-    void getPageable_differentSortDir_pageableParamsCorrect(String sortDirection) {
+    void getPageable_differentSortDir_pageableParamsCorrect(final String sortDirection) {
         final var expectedSortDirection = SortDirectionEnum
             .valueOf(sortDirection)
             .getSortDirection();
         final var expectedSort = Sort.by(expectedSortDirection, DEF_FIELD_TO_SORT);
 
-        final var pageable = getPageable(DEF_PAGE_NUM, DEF_PAGE_SIZE, sortDirection, DEF_FIELD_TO_SORT);
+        final var pageable = getPageable(
+            DEF_PAGE_NUM, DEF_PAGE_SIZE,
+            sortDirection, DEF_FIELD_TO_SORT
+        );
 
         assertThat(pageable.getPageNumber())
             .isEqualTo(DEF_PAGE_NUM);

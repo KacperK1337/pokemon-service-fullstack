@@ -35,4 +35,5 @@ class DbDataLoaderUtilsTest {
                 String.format(NO_RESOURCE_MESS, NON_EXISTING_RESOURCE_PATH)
             );
     }
+
 }
