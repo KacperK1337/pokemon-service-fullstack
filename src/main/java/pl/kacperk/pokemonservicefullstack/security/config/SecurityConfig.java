@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import pl.kacperk.pokemonservicefullstack.security.userdetails.AppUserDetailsService;
 
 import static java.util.concurrent.TimeUnit.DAYS;
+import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +49,7 @@ public class SecurityConfig {
     private static final String PASS_PARAM = "password";
     private static final String USERNAME_PARAM = "username";
 
-    private static final String REMEMBER_ME_KEY = "e7XaTsNq#QBR!Xa";
+    private static final String REMEMBER_ME_KEY = randomAscii(16);
     private static final String REMEMBER_ME_PARAM = "remember-me";
     private static final String JSESSION_ID_PARAM = "JSESSIONID";
     private static final int REMEMBER_ME_VALIDITY_TIME = (int) DAYS.toSeconds(21);
