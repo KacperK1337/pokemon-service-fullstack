@@ -7,9 +7,15 @@ import org.springframework.data.domain.Sort;
 public class PageableCreator {
 
     public static Pageable getPageable(
-            Integer pageNumber, Integer pageSize, String sortDirectionName, String fieldToSortBy
+        final int pageNumber, final int pageSize,
+        final String sortDirectionName, final String fieldToSortBy
     ) {
-        Sort.Direction sortDirection = SortDirectionEnum.valueOf(sortDirectionName).getSortDirection();
-        return PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, fieldToSortBy));
+        final Sort.Direction sortDirection = SortDirectionEnum
+            .valueOf(sortDirectionName)
+            .getSortDirection();
+        return PageRequest.of(
+            pageNumber, pageSize, Sort.by(sortDirection, fieldToSortBy)
+        );
     }
+
 }

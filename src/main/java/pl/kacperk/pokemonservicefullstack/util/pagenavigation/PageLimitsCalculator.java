@@ -6,9 +6,10 @@ public class PageLimitsCalculator {
     protected static final int NEXT_PAGES_LIMIT = 3;
     protected static final int ALL_PAGES_LIMIT = PREVIOUS_PAGES_LIMIT + NEXT_PAGES_LIMIT + 1;
 
-    public static int[] getPageLimits(int totalPages, int pageNumber) {
+    public static int[] getPageLimits(final int totalPages, final int pageNumber) {
         int pageLeftLimit = 0;
         int pageRightLimit = totalPages - 1;
+
         if (totalPages > ALL_PAGES_LIMIT) {
             if (pageNumber <= PREVIOUS_PAGES_LIMIT) {
                 pageRightLimit = ALL_PAGES_LIMIT - 1;
@@ -19,6 +20,8 @@ public class PageLimitsCalculator {
                 pageLeftLimit = totalPages - ALL_PAGES_LIMIT;
             }
         }
+
         return new int[]{pageLeftLimit, pageRightLimit};
     }
+
 }

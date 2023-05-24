@@ -47,19 +47,19 @@
             <hr>
             <p class="p-left-large pt-2" th:text="${pokemon.typeNames.contains(',') ?
             'Types: ' + pokemon.typeNames : 'Type: ' + pokemon.typeNames}"></p>
-            <p class="p-left-large" th:if="${possibleEvolutions == 0}">
+            <p class="p-left-large" th:if="${evolutions == 0}">
                 Has no evolution
             </p>
-            <p class="p-left-large" th:if="${possibleEvolutions == 1}">
+            <p class="p-left-large" th:if="${evolutions == 1}">
                 Evolution:
-                <a class="other-link" style="cursor: pointer" th:text="${pokemon.possibleEvolutions}"
-                   th:data-singleEvolutionName="${pokemon.possibleEvolutions}"
+                <a class="other-link" style="cursor: pointer" th:text="${pokemon.evolutions}"
+                   th:data-singleEvolutionName="${pokemon.evolutions}"
                    onclick="getPokemonWithName(this.getAttribute('data-singleEvolutionName'));">
                 </a>
             </p>
-            <div class="p-left-large" th:if="${possibleEvolutions > 1}">
+            <div class="p-left-large" th:if="${evolutions > 1}">
                 Possible evolutions:
-                <div class="inline-left" th:each="evolution, iterStat : ${possibleEvolutionsSet}">
+                <div class="inline-left" th:each="evolution, iterStat : ${evolutionsSet}">
                     <a class="other-link" style="cursor: pointer" th:text="${evolution}"
                        th:data-evolutionName="${evolution}"
                        onclick="getPokemonWithName(this.getAttribute('data-evolutionName'));">
