@@ -10,7 +10,7 @@
     </parent>
     <groupId>pl.kacperk</groupId>
     <artifactId>pokemon-service-fullstack</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>pokemon-service-fullstack</name>
     <description>pokemon-service-fullstack</description>
     <properties>
