@@ -1,14 +1,13 @@
 package pl.kacperk.pokemonservicefullstack;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.kacperk.pokemonservicefullstack.api.appuser.repo.AppUserRepo;
-import pl.kacperk.pokemonservicefullstack.api.pokemon.repo.PokemonRepo;
+import pl.kacperk.pokemonservicefullstack.repo.AppUserRepo;
+import pl.kacperk.pokemonservicefullstack.repo.PokemonRepo;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -25,25 +24,21 @@ class DbDataLoaderTest {
     @Mock
     private PokemonRepo pokemonRepo;
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passEncoder;
     private DbDataLoader dbDataLoader;
 
     @BeforeEach
     void setUp() {
-        dbDataLoader = new DbDataLoader(userRepo, pokemonRepo, passwordEncoder);
-    }
-
-    @AfterEach
-    void tearDown() {
         userRepo.deleteAll();
         pokemonRepo.deleteAll();
+        dbDataLoader = new DbDataLoader(userRepo, pokemonRepo, passEncoder);
     }
 
     @Test
     void start_usersResourcesNotEmpty_resourcesSavedToRepo() {
         dbDataLoader.start();
 
-        verify(passwordEncoder, times(TOTAL_RESOURCE_TEST_USERS))
+        verify(passEncoder, times(TOTAL_RESOURCE_TEST_USERS))
             .encode(any());
         verify(userRepo, times(TOTAL_RESOURCE_TEST_USERS))
             .save(any());

@@ -14,8 +14,8 @@
             crossorigin="anonymous"></script>
 
     <!--    Main-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
-    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script th:src="@{/js/main.js}"></script>
 
     <style th:inline="text">
 
@@ -24,7 +24,7 @@
         }
 
         .main-background {
-            height: 79.7vh;
+            height: 78.9vh;
         }
 
     </style>
@@ -56,11 +56,16 @@
         </p>
         <hr class="hr-short">
         <h4 class="h-left-fade-08 mx-2 my-2">
-            Is the current state of service final?
+            What features are you planning to implement at this moment?
         </h4>
         <p class="p-left-large mx-2 my-2">
-            - As you can see, the website has a lot of room for development,
-            so as long as I can, I will update it with new features.
+            - Admin subpage that will handle some high level operations on pokemons (e.g. adding new)
+        </p>
+        <p class="p-left-large mx-2 my-2">
+            - More pokemon stats and interactions between them
+        </p>
+        <p class="p-left-large mx-2 my-2">
+            - Website responsiveness for mobiles and custom resolutions
         </p>
     </div>
 </main>

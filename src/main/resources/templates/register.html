@@ -15,8 +15,8 @@
             crossorigin="anonymous"></script>
 
     <!--    Main-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
-    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script th:src="@{/js/main.js}"></script>
 
     <style th:inline="text">
 
@@ -38,7 +38,7 @@
 <main class="main-background">
     <form class="form-sign-in" th:object="${registerRequestDto}" th:action="@{/api/users/register}" method="post">
         <div class="pt-1 pb-2">
-            <img src="/static/img/logo.svg" th:src="@{/img/logo.svg}" class="pt-4" alt="logo" width="80"
+            <img th:src="@{/img/logo.svg}" class="pt-4" width="80"
                  height="80">
             <h1 class="form-signin-heading pt-3 pb-2 h3">Create your account</h1>
             <div class="form-floating mb-1">

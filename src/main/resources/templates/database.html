@@ -15,8 +15,8 @@
             crossorigin="anonymous"></script>
 
     <!--    Main-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
-    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script th:src="@{/js/main.js}"></script>
 
     <style th:inline="text">
 
@@ -158,7 +158,7 @@
                     <td th:text="${pokemon.name}"></td>
                     <td th:text="${pokemon.typeNames}"></td>
                     <td th:text="${T(pl.kacperk.pokemonservicefullstack.util.pokemonevolution.EvolutionHandler)
-                    .getShortenedPokemonEvolutions(pokemon.possibleEvolutions)}"></td>
+                    .getShortenedPokemonEvolutions(pokemon.evolutions)}"></td>
                     <td th:text="${pokemon.numberOfLikes}"></td>
                 </tr>
                 </tbody>

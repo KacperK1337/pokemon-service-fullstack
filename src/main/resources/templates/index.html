@@ -15,8 +15,8 @@
             crossorigin="anonymous"></script>
 
     <!--    Main-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
-    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script th:src="@{/js/main.js}"></script>
 
     <style th:inline="text">
 
@@ -38,7 +38,7 @@
 <main class="main-background pt-3">
     <section class="pt-4 pb-1 px-1 mx-5 jumbotron text-center">
         <div class="container">
-            <h1 class="jumbotron-heading pb-2">Welcome to Pokemon Service</h1>
+            <h2 class="jumbotron-heading pb-2">Welcome to Pokemon Service</h2>
             <p class="lead text-muted">
                 Here you can find every pokemon in the pokedex and check its stats.
                 If you create an account, you can also add one pokemon of your choice to your favorites.
@@ -57,8 +57,7 @@
         <div class="row justify-content-center align-items-center">
             <div class="col-md-5 mx-4">
                 <div class="card-link card mb-4 box-shadow border-0">
-                    <img th:src="@{/img/random.png}" class="card-img-top card-img-index img-max"
-                         alt="rando">
+                    <img th:src="@{/img/random.png}" class="card-img-top card-img-index img-max">
                     <div class="card-body card-body-index rounded-bottom">
                         <p class="card-text">
                             Feeling lucky?
@@ -74,8 +73,7 @@
                     <a style="cursor: pointer"
                        th:data-topPokemonId="${topPokemon.id}"
                        onclick="getPokemonWithId(this.getAttribute('data-topPokemonId'));">
-                        <img th:src="@{${topPokemon.photoUrl}}" class="card-img-top card-img-index mx-auto my-auto"
-                             alt="favourite pokemon">
+                        <img th:src="@{${topPokemon.photoUrl}}" class="card-img-top card-img-index mx-auto my-auto">
                     </a>
                     <div class="card-body card-body-index rounded-bottom">
                         <p class="card-text pt-2"
@@ -88,8 +86,7 @@
         <div class="row justify-content-center align-items-center pt-3">
             <div class="col-md-5 mx-4">
                 <div class="card-link card mb-4 box-shadow border-0">
-                    <img th:src="@{/img/magnifier.png}" class="card-img-top card-img-index img-max"
-                         alt="rando">
+                    <img th:src="@{/img/magnifier.png}" class="card-img-top card-img-index img-max">
                     <div class="card-body card-body-index mycard-body flex-wrap rounded-bottom">
                         <p class="card-text" th:text="'Members with account: ' + ${numberOfUsers}"></p>
                         <p class="card-text" th:text="${loggedUser != null} ?
@@ -100,8 +97,7 @@
             </div>
             <div class="col-md-5 mx-4">
                 <div class="card-link card mb-4 box-shadow border-0">
-                    <img th:src="@{/img/questionmark.png}" class="card-img-top card-img-index img-max"
-                         alt="question">
+                    <img th:src="@{/img/questionmark.png}" class="card-img-top card-img-index img-max">
                     <div class="card-body card-body-index mycard-body pt-3 rounded-bottom">
                         <p class="card-text">
                             If you have questions about the site or noticed any irregularities,
