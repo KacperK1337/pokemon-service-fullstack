@@ -26,13 +26,15 @@ The exact operation of the entire application is presented in the [Demo](#demo) 
 
 - **Running main app:**
 
-Make sure docker daemon is running on your machine and simply run this command:
+Make sure docker daemon is running on your machine and run this set of commands:
+
+```mvn clean compile package -Dmaven.test.skip```
 
 ```docker-compose up```
 
 This will start the application with initial data (905 pokemons and 1 superuser) on port 8080.
 
-- **Running tests: [UPCOMING SOON]**
+- **Running tests:**
 
 All integration tests run with Testcontainers and will be ignored if you don't have docker daemon running on your machine.
 
@@ -59,7 +61,7 @@ Below is a video showing an example of using all of the functionalities offered 
 https://user-images.githubusercontent.com/95027426/211678387-e3abbc21-938d-471e-b396-e8e2a3681fe3.mp4
 
 ### Version history
-**1.1.0 - Major performance update [UPCOMING SOON]**
+**1.1.0 - Major performance update**
 
 - big improvement on app and tests performance 
 - big improvement on code readability

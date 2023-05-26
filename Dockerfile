@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-oracle
+FROM openjdk:17-jdk-oracle
 COPY target/pokemon-service-fullstack-1.1.0.jar /app/pokemon-service-fullstack-1.1.0.jar
 WORKDIR /app
 EXPOSE 8080
