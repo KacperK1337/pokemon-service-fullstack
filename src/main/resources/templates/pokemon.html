@@ -15,8 +15,8 @@
             crossorigin="anonymous"></script>
 
     <!--    Main-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
-    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script th:src="@{/js/main.js}"></script>
 
     <style th:inline="text">
 
@@ -39,7 +39,7 @@
     <div class="container row">
         <div class="col-md-6 mx-4 mt-5">
             <div class="card-link card card-pokemon mb-4 box-shadow rounded-bottom border-0">
-                <img th:src="@{${pokemon.photoUrl}}" class="card-img-top card-img-pokemon" alt="pokemon">
+                <img th:src="@{${pokemon.photoUrl}}" class="card-img-top card-img-pokemon">
             </div>
         </div>
         <div class="col-md-5 mt-5 mx-0 px-0">

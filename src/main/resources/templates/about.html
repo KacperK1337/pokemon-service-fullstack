@@ -14,9 +14,8 @@
             crossorigin="anonymous"></script>
 
     <!--    Main-->
-    <!-- todo prod: if thhref delete href-->
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css" th:href="@{/css/main.css}"/>
-    <script src="/static/js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script th:src="@{/js/main.js}"></script>
 
     <style th:inline="text">
 
@@ -25,7 +24,7 @@
         }
 
         .main-background {
-            height: 140vh;
+            height: 130vh;
         }
 
     </style>
@@ -38,12 +37,12 @@
 <main class="main-background">
     <div class="container-fluid px-4 pt-4">
         <h3 class="h-left-fade-08 mx-2 inline-left">
-            About the service
+            Pokemon Service 1.1.0
         </h3>
         <hr>
         <p class="p-left-large mx-2 my-2">
-            Pokemon service is a web service created by Kacper Koźmiński as part of a portfolio project.
-            The service was made using mainly Java with Spring Boot and partly with HTML, CSS and JS.
+            Pokemon service is a multipage webapp created by Kacper Koźmiński as part of a portfolio project.
+            Application was made using mainly Java with Spring Boot and partly with HTML, CSS and JS.
         </p>
         <hr class="hr-short">
         <p class="p-left-large mx-2 my-2">
@@ -85,12 +84,8 @@
         </p>
         <hr class="hr-short">
         <p class="p-left-large mx-2 my-2">
-            Sources used in the production of the Pokemon Service:
+            Sources:
         </p>
-        <a class="p-left-large other-link block-left mx-2" href="https://openai.com/dall-e-2/"
-           target="_blank">
-            - DALLE 2 AI image generator
-        </a>
         <a class="p-left-large other-link block-left mx-2" href="https://pokemondb.net/pokedex/national"
            target="_blank">
             - Pokemon pictures (pokedex)
