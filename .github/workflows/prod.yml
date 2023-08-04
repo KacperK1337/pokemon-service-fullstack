@@ -22,7 +22,7 @@ jobs:
           java-version: 17
 
       - name: Build
-        run: mvn clean package
+        run: mvn package
 
       - name: Run
-        run: java -jar pokemon-service-fullstack-v0.jar
+        run: java -jar target/pokemon-service-fullstack-v0.jar
