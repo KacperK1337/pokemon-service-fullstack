@@ -9,17 +9,20 @@ permissions:
 
 jobs:
   build-and-run:
-    needs: maven
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'oracle'
           java-version: 17
+
       - name: Build
         run: mvn clean package
+
       - name: Run
         run: java -jar pokemon-service-fullstack-v0.jar
