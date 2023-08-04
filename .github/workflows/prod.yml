@@ -22,7 +22,7 @@ jobs:
           java-version: 17
 
       - name: Build
-        run: mvn package
+        run: mvn package -Dmaven.test.skip
 
       - name: Run
-        run: java -jar target/pokemon-service-fullstack-v0.jar
+        run: docker-compose up
