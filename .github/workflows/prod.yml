@@ -21,8 +21,10 @@ jobs:
           distribution: 'oracle'
           java-version: 17
 
-      - name: Build
+      - name: Build with maven
         run: mvn package -Dmaven.test.skip
 
-      - name: Run
-        run: docker-compose up
+      - name: Run with docker
+        run: |
+          docker-compose build
+          docker-compose up -d
